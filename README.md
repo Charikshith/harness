@@ -37,6 +37,10 @@ node skills/harness-creator/scripts/run-benchmark.mjs --target /path/to/project 
 4. **Scope** — Prevents overreach and half-finished work
 5. **Lifecycle** — Makes the next session restartable
 
+## Credit
+
+Based on [learn-harness-engineering](https://github.com/walkinglabs/learn-harness-engineering) by walkinglabs.
+
 ## License
 
 MIT
