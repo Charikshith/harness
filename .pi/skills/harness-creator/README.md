@@ -7,7 +7,7 @@ It helps a repository provide five things agents need: instructions, state, veri
 ## Install
 
 ```bash
-npx skills add walkinglabs/learn-harness-engineering --skill harness-creator
+npx skills add Charikshith/harness --skill harness-creator
 ```
 
 Or copy `skills/harness-creator/` into your skill path.
