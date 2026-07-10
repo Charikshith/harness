@@ -15,10 +15,11 @@ import {
 const args = parseArgs(process.argv.slice(2));
 
 if (args.help) {
-  console.log(`Usage: node scripts/create-harness.mjs [--target DIR] [--agent-file AGENTS.md|CLAUDE.md] [--package-manager npm|pnpm|yarn|bun] [--force]
+  console.log(`Usage: node scripts/create-harness.mjs [--target DIR] [--package-manager npm|pnpm|yarn|bun] [--force]
 
 Creates a minimal production harness:
-  AGENTS.md or CLAUDE.md
+  AGENTS.md (full instruction file)
+  CLAUDE.md (reference to AGENTS.md)
   feature_list.json
   progress.md
   session-handoff.md
@@ -29,7 +30,6 @@ Existing files are skipped unless --force is set.`);
 }
 
 const target = path.resolve(args.target || args._[0] || process.cwd());
-const agentFile = args.agentFile || 'AGENTS.md';
 const force = Boolean(args.force);
 const project = await detectProject(target);
 project.packageManager = detectPackageManager(target, args.packageManager);
@@ -40,7 +40,7 @@ const commands = args.commands
 await mkdir(target, { recursive: true });
 
 const replacements = {
-  AGENT_FILE_NAME: agentFile,
+  AGENT_FILE_NAME: 'AGENTS.md',
   PROJECT_PURPOSE: project.stack === 'generic'
     ? 'Project harness for reliable agent-assisted development.'
     : `Project harness for reliable agent-assisted development in a ${project.stack} codebase.`,
@@ -49,7 +49,7 @@ const replacements = {
 };
 
 const results = [];
-results.push(await copyTemplate('agents.md', path.join(target, agentFile), replacements, { force }));
+results.push(await copyTemplate('agents.md', path.join(target, 'AGENTS.md'), replacements, { force }));
 results.push(await copyTemplate('feature-list.json', path.join(target, 'feature_list.json'), {}, { force }));
 results.push(await copyTemplate('progress.md', path.join(target, 'progress.md'), {}, { force }));
 results.push(await copyTemplate('session-handoff.md', path.join(target, 'session-handoff.md'), {}, { force }));
@@ -61,6 +61,15 @@ if (force || !await exists(initPath)) {
   results.push({ path: initPath, status: 'written' });
 } else {
   results.push({ path: initPath, status: 'skipped', reason: 'exists' });
+}
+
+// Create CLAUDE.md as a reference to AGENTS.md
+const claudePath = path.join(target, 'CLAUDE.md');
+if (force || !await exists(claudePath)) {
+  await writeText(claudePath, 'See [AGENTS.md](AGENTS.md)');
+  results.push({ path: claudePath, status: 'written' });
+} else {
+  results.push({ path: claudePath, status: 'skipped', reason: 'exists' });
 }
 
 console.log(`Created harness for ${target}`);
