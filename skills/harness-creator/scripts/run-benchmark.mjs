@@ -112,6 +112,8 @@ function scoreEvals(evalsJson) {
   checks.push({ pass: cases.some((item) => /memory/i.test(item.name)), message: 'Covers memory taxonomy' });
   checks.push({ pass: cases.some((item) => /tool|permission|safety/i.test(item.name)), message: 'Covers tool safety' });
   checks.push({ pass: cases.some((item) => /multi-agent|delegation|coordination/i.test(item.name)), message: 'Covers multi-agent coordination' });
+  checks.push({ pass: cases.some((item) => /context|budget|token/i.test(item.name)), message: 'Covers context budget' });
+  checks.push({ pass: cases.some((item) => /lifecycle|bootstrap/i.test(item.name)), message: 'Covers lifecycle bootstrap' });
   checks.push({ pass: cases.every((item) => item.prompt && item.expected_output && Array.isArray(item.expectations)), message: 'Each eval has prompt, expected output, expectations' });
   checks.push({ pass: cases.every((item) => item.expectations?.length >= 3), message: 'Each eval has at least three expectation checks' });
 

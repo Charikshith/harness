@@ -21,27 +21,27 @@ if [ -f package.json ]; then
     "$PM" install
   fi
 
-  node -e "const s=require('./package.json').scripts||{}; process.exit(s.check||s.typecheck||s['type-check']?0:1)" && {
+  if node -e "const s=require('./package.json').scripts||{}; process.exit(s.check||s.typecheck||s['type-check']?0:1)"; then
     if node -e "const s=require('./package.json').scripts||{}; process.exit(s.check?0:1)"; then
-      [ "$PM" = "npm" ] && npm run check || "$PM" run check
+      "$PM" run check
     elif node -e "const s=require('./package.json').scripts||{}; process.exit(s.typecheck?0:1)"; then
-      [ "$PM" = "npm" ] && npm run typecheck || "$PM" run typecheck
+      "$PM" run typecheck
     else
-      [ "$PM" = "npm" ] && npm run type-check || "$PM" run type-check
+      "$PM" run type-check
     fi
-  }
+  fi
 
-  node -e "const s=require('./package.json').scripts||{}; process.exit(s.lint?0:1)" && {
-    [ "$PM" = "npm" ] && npm run lint || "$PM" run lint
-  }
+  if node -e "const s=require('./package.json').scripts||{}; process.exit(s.lint?0:1)"; then
+    "$PM" run lint
+  fi
 
-  node -e "const s=require('./package.json').scripts||{}; process.exit(s.test?0:1)" && {
-    [ "$PM" = "npm" ] && npm test || "$PM" test
-  }
+  if node -e "const s=require('./package.json').scripts||{}; process.exit(s.test?0:1)"; then
+    if [ "$PM" = "npm" ]; then npm test; else "$PM" test; fi
+  fi
 
-  node -e "const s=require('./package.json').scripts||{}; process.exit(s.build?0:1)" && {
-    [ "$PM" = "npm" ] && npm run build || "$PM" run build
-  }
+  if node -e "const s=require('./package.json').scripts||{}; process.exit(s.build?0:1)"; then
+    "$PM" run build
+  fi
 elif [ -f pyproject.toml ] || [ -f requirements.txt ]; then
   echo "=== Running Python verification ==="
   PY="$(command -v python3 || command -v python)"

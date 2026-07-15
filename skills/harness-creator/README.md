@@ -59,7 +59,7 @@ The score is structural. It tells you whether the harness is present and coheren
 ```text
 harness-creator/
 ├── SKILL.md
-├── metadata.json
+├── README.md
 ├── agents/openai.yaml
 ├── scripts/
 │   ├── create-harness.mjs

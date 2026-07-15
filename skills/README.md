@@ -1,19 +1,3 @@
-<p align="center">
-  <a href="README.md"><img alt="English" src="https://img.shields.io/badge/English-d9d9d9"></a>
-  <a href="README-CN.md"><img alt="简体中文" src="https://img.shields.io/badge/简体中文-d9d9d9"></a>
-  <a href="README-ZH-TW.md"><img alt="繁體中文" src="https://img.shields.io/badge/繁體中文-d9d9d9"></a>
-  <a href="README-JA.md"><img alt="日本語" src="https://img.shields.io/badge/日本語-d9d9d9"></a>
-  <a href="README-ES.md"><img alt="Español" src="https://img.shields.io/badge/Español-d9d9d9"></a>
-  <a href="README-FR.md"><img alt="Français" src="https://img.shields.io/badge/Français-d9d9d9"></a>
-  <a href="README-KO.md"><img alt="한국어" src="https://img.shields.io/badge/한국어-d9d9d9"></a>
-  <a href="README-AR.md"><img alt="العربية" src="https://img.shields.io/badge/العربية-d9d9d9"></a>
-  <a href="README-VI.md"><img alt="Tiếng_Việt" src="https://img.shields.io/badge/Tiếng_Việt-d9d9d9"></a>
-  <a href="README-DE.md"><img alt="Deutsch" src="https://img.shields.io/badge/Deutsch-d9d9d9"></a>
-  <a href="README-TR.md"><img alt="Türkçe" src="https://img.shields.io/badge/Türkçe-d9d9d9"></a>
-  <a href="README-PT-BR.md"><img alt="Português (Brasil)" src="https://img.shields.io/badge/Português (Brasil)-d9d9d9"></a>
-  <a href="README-UK.md"><img alt="Українська" src="https://img.shields.io/badge/Українська-d9d9d9"></a>
-</p>
-
 # Skills
 
 This directory contains reusable AI agent skills for the Learn Harness Engineering project. Each skill is a self-contained prompt template that can be loaded by AI coding agents (Claude Code, Codex, Cursor, Windsurf, etc.) to perform specialized tasks.
@@ -43,23 +27,10 @@ The `harness-creator` skill was developed using the **skill-creator** methodolog
 ```
 skills/
 ├── README.md                    # This file
-├── README-CN.md                 # Chinese version
-├── README-ZH-TW.md              # Traditional Chinese version
-├── README-JA.md                 # Japanese version
-├── README-ES.md                 # Spanish version
-├── README-FR.md                 # French version
-├── README-AR.md                 # Arabic version
-├── README-VI.md                 # Vietnamese version
-├── README-DE.md                 # German version
-├── README-TR.md                 # Turkish version
-├── README-PT-BR.md              # Portuguese (Brazil) version
-├── README-UK.md                 # Ukrainian version
 └── harness-creator/             # Harness engineering skill
-    ├── SKILL.md                 # Main skill definition
-    ├── SKILL.md.en              # English-only version
+    ├── SKILL.md                 # Main skill definition (entry point + triggers)
     ├── README.md                # Detailed documentation
-    ├── metadata.json            # Skill metadata & triggers
-    ├── agents/                  # Skill UI metadata
+    ├── agents/                  # Skill UI metadata (agents/openai.yaml)
     ├── scripts/                 # Scaffold, validate, benchmark helpers
     ├── evals/                   # Test cases
     ├── templates/               # Scaffold templates
