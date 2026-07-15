@@ -3,7 +3,7 @@ type: pattern
 title: "Tool Registry and Safety Pattern"
 description: "Fail-closed registry with per-call concurrency classification, multi-source permission pipeline, bypass-immune rules, and audit trail"
 tags: [tools, safety, permissions, concurrency, registry, audit]
-updated: 2026-07-15
+timestamp: 2026-07-15
 ---
 
 # Tool Registry and Safety Pattern

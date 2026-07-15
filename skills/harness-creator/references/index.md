@@ -3,7 +3,7 @@ type: index
 title: "References Index"
 description: "Table of contents for references/ — patterns and reference material for harness engineering"
 tags: [index, references, patterns]
-updated: 2026-07-15
+timestamp: 2026-07-15
 ---
 
 # References Index

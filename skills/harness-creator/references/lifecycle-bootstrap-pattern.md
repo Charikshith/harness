@@ -3,7 +3,7 @@ type: pattern
 title: "Lifecycle and Bootstrap Pattern"
 description: "Dependency-ordered initialization with trust gates, hook dispatch with all-or-nothing trust, long-running task tracking with two-phase eviction"
 tags: [lifecycle, bootstrap, hooks, startup, trust, initialization]
-updated: 2026-07-15
+timestamp: 2026-07-15
 ---
 
 # Lifecycle and Bootstrap Pattern

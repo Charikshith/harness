@@ -3,7 +3,7 @@ type: reference
 title: "Gotchas — Harness Engineering Failure Modes"
 description: "15 non-obvious failure modes across memory, tools, multi-agent, context, and lifecycle subsystems — each with symptom, cause, and fix"
 tags: [gotchas, failure-modes, debugging, anti-patterns, troubleshooting]
-updated: 2026-07-15
+timestamp: 2026-07-15
 ---
 
 # Gotchas — Harness Engineering Failure Modes

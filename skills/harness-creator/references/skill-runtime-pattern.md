@@ -3,7 +3,7 @@ type: pattern
 title: "Skill Runtime Pattern"
 description: "What belongs in a skill vs what stays in the project: progressive disclosure, skill shape (SKILL.md + references/ + templates/ + evals/), and design rules"
 tags: [skills, packaging, reuse, runtime, progressive-disclosure]
-updated: 2026-07-15
+timestamp: 2026-07-15
 ---
 
 # Skill Runtime Pattern
@@ -49,3 +49,9 @@ A production skill should use progressive disclosure:
 - [ ] Templates are safe to copy into a target repository.
 - [ ] Installation command has been tested with `skills add --list` or equivalent.
 - [ ] The skill does not depend on private local paths.
+
+## Related Patterns
+
+- [Context Engineering](context-engineering-pattern.md) — Progressive disclosure is the core mechanism a skill's runtime shape relies on
+- [Lifecycle and Bootstrap](lifecycle-bootstrap-pattern.md) — When and how a skill's references and scripts load at startup
+- [Gotchas](gotchas.md) — Failure modes to check against the "verify every referenced file exists" design rule
