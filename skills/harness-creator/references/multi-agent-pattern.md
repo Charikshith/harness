@@ -1,3 +1,11 @@
+---
+type: pattern
+title: "Multi-Agent Coordination Pattern"
+description: "Coordinator/fork/swarm delegation patterns with context inheritance rules, fire-and-forget task registration, and recursive fork prevention"
+tags: [multi-agent, delegation, coordination, fork, swarm, parallelism]
+updated: 2026-07-15
+---
+
 # Multi-Agent Coordination Pattern
 
 ## Problem

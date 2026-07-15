@@ -1,5 +1,6 @@
 ---
 name: harness-creator
+version: "0.2.0"
 description: >-
   Build, audit, and improve harnesses that make AI coding agents reliable: AGENTS.md/CLAUDE.md
   instruction files, feature/state tracking, verification gates, scope boundaries, session
@@ -77,6 +78,9 @@ Be clear that this is a structural benchmark. The benchmark first runs a self-ch
 
 ## When to Read References
 
+Start with [references/index.md](references/index.md) for a discoverable table of contents.
+Each entry includes type, tags, and a one-line summary so you can route without opening every file.
+
 Load only the reference needed for the user's problem:
 
 - Memory across sessions: [Memory Persistence](references/memory-persistence-pattern.md)
@@ -86,6 +90,8 @@ Load only the reference needed for the user's problem:
 - Delegation and parallel agents: [Multi-Agent Coordination](references/multi-agent-pattern.md)
 - Hooks, startup, long-running work: [Lifecycle & Bootstrap](references/lifecycle-bootstrap-pattern.md)
 - Non-obvious failure modes: [Gotchas](references/gotchas.md)
+
+See also: [types.md](types.md) for the document type taxonomy, [templates/index.md](templates/index.md) for available templates, [scripts/index.md](scripts/index.md) for script documentation.
 
 ## Design Rules
 

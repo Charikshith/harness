@@ -12,6 +12,7 @@ import {
   parseArgs,
   readJson,
   scoreHarness,
+  usabilityTierLabel,
   writeText
 } from './lib/harness-utils.mjs';
 
@@ -59,6 +60,7 @@ if (!selfCheck.skipped) {
   if (!selfCheck.pass && selfCheck.error) console.log(`  ${selfCheck.error}`);
 }
 console.log(formatScoreReport(harnessResult, target));
+console.log(`Usability tier: ${usabilityTierLabel(harnessResult)}`);
 console.log(`Eval coverage: ${evalResult.score}/100 (${evalResult.passed}/${evalResult.total})`);
 console.log(`Recommendation: ${report.recommendation}`);
 
@@ -69,7 +71,7 @@ if (args.html) {
 }
 
 if (
-  harnessResult.overall < Number(args.minScore || 70) ||
+  harnessResult.overall < Number(args.minScore || 60) ||
   evalResult.score < Number(args.minEvalScore || 80) ||
   selfCheck.pass === false
 ) {

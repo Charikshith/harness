@@ -1,11 +1,4 @@
 {
-  "_meta": {
-    "type": "template",
-    "title": "Feature List Template",
-    "description": "Feature state tracker: id, name, description, dependencies, status, and evidence for agent-driven development",
-    "artifact": "feature_list.json",
-    "tags": ["state", "features", "tracking", "dependencies"]
-  },
   "features": [
     {
       "id": "feat-001",

@@ -1,18 +1,4 @@
----
-type: template
-title: "Progress Log Template"
-description: "Session progress log for agent continuity: current state, done/in-progress/next, blockers, decisions, files modified, evidence"
-artifact: "progress.md"
-tags: [state, progress, continuity, session, tracking]
----
-
 # Session Progress Log
-
-> **Why this structure**: This template instantiates patterns from:
-> - [Memory Persistence](../references/memory-persistence-pattern.md) — appendix/update style, two-step save invariant, bounded index with on-demand topics
-> - [Lifecycle & Bootstrap](../references/lifecycle-bootstrap-pattern.md) — end-of-session routine, evidence recording, restart markers
->
-> See [templates/index.md](index.md) for all available templates.
 
 ## Current State
 

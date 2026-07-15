@@ -1,22 +1,6 @@
----
-type: template
-title: "AGENTS.md / CLAUDE.md Template"
-description: "Startup workflow, working rules, definition of done, end-of-session procedure, and verification commands for a coding-agent harness"
-artifact: "AGENTS.md or CLAUDE.md"
-tags: [instructions, startup, workflow, done-definition, scope]
----
+# AGENTS.md
 
-# {{AGENT_FILE_NAME}}
-
-{{PROJECT_PURPOSE}}
-
-> **Why this structure**: This template instantiates patterns from:
-> - [Lifecycle & Bootstrap](../references/lifecycle-bootstrap-pattern.md) — startup workflow, end-of-session routine, trust gates
-> - [Memory Persistence](../references/memory-persistence-pattern.md) — progress.md as a session continuity artifact, two-step updates
-> - [Tool Registry & Safety](../references/tool-registry-pattern.md) — verification commands as a safety gate before claiming done
-> - [Context Engineering](../references/context-engineering-pattern.md) — progressive disclosure of project docs before code editing
->
-> See [templates/index.md](index.md) for all available templates.
+Project harness for reliable agent-assisted development in a Python codebase.
 
 ## Startup Workflow
 
@@ -69,16 +53,17 @@ Before ending a session:
 
 ```bash
 # Full verification (recommended)
-{{PRIMARY_VERIFICATION_COMMAND}}
+./init.sh
 ```
 
 Required checks:
-{{VERIFICATION_COMMANDS}}
+- `python3 -m pytest || [ $? -eq 5 ]`
+- `python3 -m compileall -q -x '(^|/)(\.?venv|env|node_modules|build|dist|__pycache__)(/|$)' .`
 
 ## Escalation
 
 If you encounter:
-- **Architecture decisions**: Consult project architecture docs if present, otherwise ask user
+- **Architecture decisions**: Consult `docs/ARCHITECTURE.md` if present, otherwise ask user
 - **Unclear requirements**: Check product/requirements docs if present, otherwise ask user
 - **Repeated test failures**: Update progress, flag for human review
 - **Scope ambiguity**: Re-read `feature_list.json` for definition of done

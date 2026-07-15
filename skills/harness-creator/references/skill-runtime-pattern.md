@@ -1,3 +1,11 @@
+---
+type: pattern
+title: "Skill Runtime Pattern"
+description: "What belongs in a skill vs what stays in the project: progressive disclosure, skill shape (SKILL.md + references/ + templates/ + evals/), and design rules"
+tags: [skills, packaging, reuse, runtime, progressive-disclosure]
+updated: 2026-07-15
+---
+
 # Skill Runtime Pattern
 
 Use this pattern when you want to package reusable agent behavior as a skill instead of repeating long instructions in every repository.

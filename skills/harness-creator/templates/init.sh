@@ -1,4 +1,17 @@
+---
+type: template
+title: "init.sh Verification Template"
+description: "Standard startup and verification entrypoint: detects project type, installs dependencies, runs type checks, lint, tests, and build"
+artifact: "init.sh"
+tags: [verification, init, bootstrap, startup, ci]
+---
+
 #!/bin/bash
+# Why this structure: This template instantiates patterns from:
+# - Lifecycle & Bootstrap (../references/lifecycle-bootstrap-pattern.md) — standard startup entrypoint, fail-fast, clean-state checks
+# - Tool Registry & Safety (../references/tool-registry-pattern.md) — verification as a safety gate before claiming done
+# - Context Engineering (../references/context-engineering-pattern.md) — progressive disclosure via project type detection
+# See templates/index.md for all available templates.
 set -e
 
 echo "=== Harness Initialization ==="

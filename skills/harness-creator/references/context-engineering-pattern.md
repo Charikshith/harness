@@ -1,3 +1,11 @@
+---
+type: pattern
+title: "Context Engineering Pattern"
+description: "Four context operations (SELECT/WRITE/COMPRESS/ISOLATE), progressive disclosure, memoized builders with explicit invalidation, and context budget tracking"
+tags: [context, budget, tokens, progressive-disclosure, compression, isolation]
+updated: 2026-07-15
+---
+
 # Context Engineering Pattern
 
 ## Problem

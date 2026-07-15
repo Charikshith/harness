@@ -438,3 +438,19 @@ export async function copyFileSafe(source, target, { force = false } = {}) {
   await copyFile(source, target);
   return { path: target, status: 'written' };
 }
+
+export function usabilityTierLabel(result) {
+  const score = result.overall;
+  if (score >= 85) return '✅ production — Ready for multi-session agent work';
+  if (score >= 60) return '⚠️ usable — Works for single sessions; gaps in handoff and state';
+  if (score >= 30) return '🔶 degraded — Agent has basic instructions but will drift across sessions';
+  return '❌ insufficient — Agent has no reliable startup path';
+}
+
+export function usabilityTier(result) {
+  const score = result.overall;
+  if (score >= 85) return 'production';
+  if (score >= 60) return 'usable';
+  if (score >= 30) return 'degraded';
+  return 'insufficient';
+}
