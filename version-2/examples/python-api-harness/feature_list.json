@@ -1,0 +1,44 @@
+{
+  "features": [
+    {
+      "id": "feat-001",
+      "name": "Project Scaffold",
+      "description": "Set up FastAPI project with dependency injection, logging, health check endpoint, and Docker dev environment",
+      "dependencies": [],
+      "status": "done",
+      "evidence": "pytest: 23 tests pass. docker compose up succeeds. health endpoint returns 200."
+    },
+    {
+      "id": "feat-002",
+      "name": "User CRUD Endpoints",
+      "description": "Implement REST endpoints for user management: create, read, update, delete with input validation and SQLAlchemy models",
+      "dependencies": ["feat-001"],
+      "status": "done",
+      "evidence": "pytest tests/api/test_users.py: 18 tests pass. Manual: POST/PUT 422 on invalid input confirmed."
+    },
+    {
+      "id": "feat-003",
+      "name": "Rate Limiting Middleware",
+      "description": "Add token-bucket rate limiter as ASGI middleware with per-endpoint configuration and Redis-backed counters",
+      "dependencies": ["feat-002"],
+      "status": "in-progress",
+      "evidence": "Middleware class done. Redis integration working. Working on: per-endpoint config parsing from YAML."
+    },
+    {
+      "id": "feat-004",
+      "name": "Audit Logging",
+      "description": "Capture all state-changing API calls with actor, timestamp, endpoint, and diff payload to PostgreSQL audit table",
+      "dependencies": ["feat-002"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-005",
+      "name": "OpenAPI Client Generation",
+      "description": "Auto-generate TypeScript client SDK from FastAPI OpenAPI schema and publish as npm package",
+      "dependencies": ["feat-003", "feat-004"],
+      "status": "not-started",
+      "evidence": ""
+    }
+  ]
+}

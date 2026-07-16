@@ -1,0 +1,44 @@
+{
+  "features": [
+    {
+      "id": "feat-001",
+      "name": "User Authentication",
+      "description": "Implement login, logout, and token refresh using JWT stored in HttpOnly cookies",
+      "dependencies": [],
+      "status": "done",
+      "evidence": "npm test -- auth.service.spec.ts (12 tests pass), manual sign-in flow confirmed on staging"
+    },
+    {
+      "id": "feat-002",
+      "name": "Dashboard Layout",
+      "description": "Build responsive dashboard with collapsible sidebar, top nav, and content area using CSS Grid",
+      "dependencies": ["feat-001"],
+      "status": "done",
+      "evidence": "Vitest: Dashboard.test.tsx (8 tests pass), Storybook: Dashboard and Sidebar stories render, responsive breakpoints verified"
+    },
+    {
+      "id": "feat-003",
+      "name": "Q&A with Citations",
+      "description": "Allow users to ask questions against uploaded documents and receive answers with inline citation links back to source paragraphs",
+      "dependencies": ["feat-002"],
+      "status": "in-progress",
+      "evidence": "Document chunking pipeline done. Chunker.test.ts passes. Working on IPC handler between renderer and chunk worker."
+    },
+    {
+      "id": "feat-004",
+      "name": "Export to PDF",
+      "description": "Add PDF export for Q&A sessions with embedded citations and metadata header",
+      "dependencies": ["feat-003"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-005",
+      "name": "Dark Mode",
+      "description": "Add theme toggle with system preference detection and persisted user override",
+      "dependencies": ["feat-002"],
+      "status": "not-started",
+      "evidence": ""
+    }
+  ]
+}

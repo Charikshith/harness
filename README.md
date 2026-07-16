@@ -5,8 +5,27 @@ Build and audit harnesses that make AI coding agents reliable.
 ## Install
 
 ```bash
+# Latest (currently v2 — OKF-aligned)
 npx skills add Charikshith/harness --skill harness-creator
 ```
+
+### Install a specific version
+
+The repo keeps each release as a self-contained folder so you can pin a version:
+
+```bash
+# Version 1 — pre-OKF (folder: version-1/)
+npx skills add Charikshith/harness --skill harness-creator-v1
+
+# Version 2 — OKF-aligned overhaul (folder: version-2/)
+npx skills add Charikshith/harness --skill harness-creator-v2
+```
+
+| Version | Folder | Skill name | Notes |
+|---|---|---|---|
+| Latest | `skills/harness-creator/` | `harness-creator` | Tracks the newest release |
+| v1 | `version-1/` | `harness-creator-v1` | Step-by-step instructions, state/progress files, per-subsystem docs |
+| v2 | `version-2/` | `harness-creator-v2` | v1 + OKF knowledge layer, `enrich-harness.mjs`, tiered CI validation, worked examples |
 
 ## Use
 
