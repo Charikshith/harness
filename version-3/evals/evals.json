@@ -1,0 +1,212 @@
+{
+  "skill_name": "harness-creator",
+  "evals": [
+    {
+      "id": 1,
+      "name": "Minimal Harness Creation",
+      "prompt": "I have a new TypeScript + React project with no agent setup. Create a minimal harness that makes my agent reliable for single-feature development.",
+      "expected_output": "AGENTS.md (~100-140 lines), feature_list.json with 3-5 placeholder features, init.sh with verification commands",
+      "files": [],
+      "expectations": [
+        "AGENTS.md includes startup workflow (read files, run init, check feature list, state understanding)",
+        "AGENTS.md includes one-feature-at-a-time policy",
+        "AGENTS.md includes Coding Policy section with the 6-rung ladder (YAGNI through minimum code)",
+        "AGENTS.md includes Editing Discipline section",
+        "feature_list.json has valid JSON with id, name, description, status fields",
+        "init.sh runs install, type/static check, test, and build commands when available",
+        "All files are in project root directory"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Session Continuity Setup",
+      "prompt": "My agent forgets everything between sessions. I need persistent memory and session handoff so it can work on multi-day features.",
+      "expected_output": "progress.md template, session-handoff.md structure, memory directory setup instructions",
+      "files": [],
+      "expectations": [
+        "progress.md includes sections: current state, what's done, what's in progress, what's next (with per-step verify), ponytail debt, blockers/notes for next session",
+        "session-handoff.md includes: what was accomplished, what remains, blockers/decisions, files modified",
+        "Instructions for memory directory creation (.claude/memory/ or similar)",
+        "Two-step save invariant explained (topic file then index)"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Harness Assessment",
+      "prompt": "I have an existing AGENTS.md file but my agent still breaks things. Assess my harness and tell me what to improve first.",
+      "expected_output": "Six-dimension assessment with scores 1-5 for each (5 structural + 1 behavioral), bottleneck identified, prioritized improvement plan",
+      "files": ["existing-AGENTS.md"],
+      "expectations": [
+        "Assessment covers all 6 dimensions: Instructions, State, Verification, Scope, Lifecycle, Behavioral",
+        "Each dimension scored 1-5 with justification",
+        "Lowest-scoring dimension identified as bottleneck or candidate bottleneck",
+        "Behavioral dimension evaluated separately from structural",
+        "Prioritized improvement plan with 2-3 concrete next steps"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Verification Workflow Design",
+      "prompt": "My agent says 'done' but the tests fail. Design a verification workflow that forces the agent to actually verify before claiming completion.",
+      "expected_output": "Verification commands list, AGENTS.md section updates including test-first DoD, optional quality score tracking",
+      "files": [],
+      "expectations": [
+        "Explicit verification commands listed (tests, lint, type-check, build)",
+        "AGENTS.md includes Definition of Done section with test-first requirement (bugs: reproduce first; features: write check first)",
+        "End-of-session checklist includes verification evidence recording",
+        "Failure path says not to claim done when verification fails"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Memory Taxonomy Design",
+      "prompt": "I want my agent to remember project conventions and user preferences across sessions. Design a memory taxonomy and tell me what belongs where.",
+      "expected_output": "Memory layer definitions, type taxonomy for auto-memory, what to save vs what to skip",
+      "files": [],
+      "expectations": [
+        "Instruction memory defined (human-curated, version-controlled)",
+        "Auto-memory defined (agent-written, persistent)",
+        "Type taxonomy with 3-4 types (e.g., user/feedback/project/reference)",
+        "Clear guidance on what NOT to save (derivable content)"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Tool Safety Design",
+      "prompt": "My custom coding agent can run shell commands and edit files. Design the tool registry and permission harness so it is powerful but does not silently do dangerous things.",
+      "expected_output": "Tool registry policy with per-call concurrency classification, default permissions, denial handling, and audit trail",
+      "files": [],
+      "expectations": [
+        "Sensitive tools default to ask or deny instead of allow",
+        "Concurrency safety is classified per call rather than per tool",
+        "Permission evaluation side effects are acknowledged and not cached unsafely",
+        "Audit trail records command, decision, and reason"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Context Budget Plan",
+      "prompt": "My agent loads too many docs at startup and gets slow. Design a context strategy that keeps important context while controlling token cost.",
+      "expected_output": "Progressive disclosure plan using select/write/compress/isolate operations and explicit context budgets",
+      "files": [],
+      "expectations": [
+        "Defines always-loaded metadata versus on-demand references",
+        "Uses SELECT, WRITE, COMPRESS, and ISOLATE operations",
+        "Includes hard caps or budget thresholds",
+        "Explains invalidation for memoized context builders"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Multi-Agent Coordination",
+      "prompt": "I want multiple agents to work on a large refactor without stepping on each other. Design a multi-agent harness and rules for delegation.",
+      "expected_output": "Coordinator/delegation design with ownership boundaries, context sharing policy, and merge/review gates",
+      "files": [],
+      "expectations": [
+        "Defines coordinator, worker, and optional reviewer responsibilities",
+        "Assigns disjoint file or module ownership",
+        "Prevents recursive fork children from forking again",
+        "Includes integration and verification gate before claiming done"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Lifecycle Bootstrap",
+      "prompt": "Every new session starts inconsistently. Design startup, hook, and handoff lifecycle rules so a new agent can resume safely.",
+      "expected_output": "Lifecycle bootstrap design with init.sh, clean-state checks, handoff reads, and hook trust boundaries",
+      "files": [],
+      "expectations": [
+        "init.sh is the standard startup and verification entrypoint",
+        "Startup reads AGENTS.md, feature_list.json, progress.md, and handoff when present",
+        "Startup includes assumption surfacing step (state understanding, stop-and-ask for structural ambiguity)",
+        "End-of-session procedure records evidence, blockers, and next step",
+        "Hooks are gated by trust and failure behavior is explicit"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Scripted Harness Validation",
+      "prompt": "Use the harness-creator scripts to scaffold a harness, validate it, and produce an HTML assessment report for a repository.",
+      "expected_output": "Commands using create-harness.mjs, validate-harness.mjs, and render-assessment-html.mjs plus interpretation of score",
+      "files": [],
+      "expectations": [
+        "Uses create-harness.mjs with a target directory",
+        "Uses validate-harness.mjs and explains six-dimension score output (5 structural + 1 behavioral)",
+        "Uses render-assessment-html.mjs or run-benchmark.mjs with --html",
+        "Explains that structural + behavioral benchmark complements but does not replace real before/after agent sessions"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Behavioral Policy — Coding Minimalism",
+      "prompt": "My agent over-engineers every solution with unnecessary abstractions and dependencies. Set up behavioral policies so it produces the minimum code.",
+      "expected_output": "AGENTS.md with Coding Policy (Ponytail ladder) and Coding Standards sections, guidance on ponytail: comments",
+      "files": [],
+      "expectations": [
+        "Coding Policy section has the 6-rung ladder: YAGNI → stdlib → native → dep → one-liner → minimum",
+        "Coding Standards section forbids unrequested abstractions, speculative features, scaffolding 'for later'",
+        "Includes ponytail: comment convention for marking deliberate shortcuts",
+        "Guidance explains the ladder is a reflex, not a research project"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Behavioral Policy — Surgical Editing",
+      "prompt": "My agent keeps refactoring unrelated code every time it makes a small change. I need surgical editing discipline enforced.",
+      "expected_output": "AGENTS.md section on Editing Discipline with Karpathy §3 rules",
+      "files": [],
+      "expectations": [
+        "Editing Discipline section says touch only what the feature requires",
+        "Explicitly forbids reformatting adjacent code, comments, whitespace",
+        "Requires matching existing style rather than personal preference",
+        "Unrelated issues are noted in progress.md, not fixed in this diff",
+        "Every changed line should trace to the feature in feature_list.json"
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Behavioral Policy — Safety Carve-Outs",
+      "prompt": "I'm worried the 'be lazy' policy will cause the agent to skip important safety checks. Add explicit safety carve-outs.",
+      "expected_output": "AGENTS.md Safety section listing never-simplify-away items",
+      "files": [],
+      "expectations": [
+        "Safety section explicitly lists: input validation at trust boundaries",
+        "Error handling that prevents data loss",
+        "Security measures",
+        "Accessibility basics",
+        "Hardware calibration for real-world constraints",
+        "Anything the user explicitly asked to keep"
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Behavioral Policy — Multi-Step Planning",
+      "prompt": "My agent jumps into multi-file changes without a plan and gets lost. Add a planning gate for complex tasks.",
+      "expected_output": "Before Multi-Step Work section with one-line success criterion and per-step verification plan format",
+      "files": [],
+      "expectations": [
+        "Multi-step gate triggers for >2 files or >3 logical steps",
+        "Requires a one-line success criterion before starting",
+        "Per-step plan format: description → verify: check",
+        "Bugs require reproduction test FIRST",
+        "Features require verification check FIRST"
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Full v3 Harness with Behavioral Layer",
+      "prompt": "I'm starting a new Python project and want the complete v3 harness — all five structural subsystems plus full behavioral policies. Set everything up.",
+      "expected_output": "Complete v3 harness: AGENTS.md (~130 lines with behavioral sections), feature_list.json, progress.md (with per-step verify and ponytail debt), init.sh, session-handoff.md, CLAUDE.md",
+      "files": [],
+      "expectations": [
+        "AGENTS.md has all 5 structural sections (Startup Workflow, Working Rules, Required Artifacts, Definition of Done, End of Session, Verification Commands, Escalation)",
+        "AGENTS.md has all behavioral sections (Coding Policy, Coding Standards, Editing Discipline, Before Multi-Step Work, Safety)",
+        "Startup Workflow includes step 7: State your understanding (assumption surfacing)",
+        "Definition of Done includes test-first ordering (bugs: reproduce first; features: write check first)",
+        "Escalation includes over-specified requirements as a trigger",
+        "progress.md has per-step verification format and Ponytail Debt section",
+        "All files are runnable/valid (JSON parses, sh script is executable)"
+      ]
+    }
+  ]
+}
