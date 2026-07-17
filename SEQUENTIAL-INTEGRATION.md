@@ -146,3 +146,215 @@ Harness (structure) + Karpathy (process) + Ponytail (policy) → Agent reliabili
 ```
 
 But if you're layering sequentially — teaching an existing project, onboarding a team, or building understanding step by step — the order is **Harness → Karpathy → Ponytail**. Infrastructure before behavior before optimization. OS before scheduler before compiler optimizer.
+
+---
+
+## Adding ECC (Everything Claude Code)
+
+ECC is the **scale layer** — 67 specialized agents, 278 skills, 94 commands, hooks automation, per-language rule matrices. It's orthogonal to the other three: it doesn't replace them, it wraps them.
+
+ECC can go **first** or **last** depending on your starting point. Harness can never go last.
+
+### The Decision Tree
+
+```
+Starting from scratch?
+│
+├─ Multi-language? Multi-developer? Enterprise? Already using Claude Code plugins?
+│   → ECC → Harness → Karpathy → Ponytail
+│   (ECC is your platform. Harness gives it state. Karpathy + Ponytail give it discipline.)
+│
+└─ Single language? Solo developer? One project? No plugin runtime yet?
+    → Harness → Karpathy → Ponytail → (optional: ECC later if you scale)
+    (Harness makes your existing agent reliable. Add ECC only when one agent isn't enough.)
+```
+
+### Path A: ECC-First ("ECC is my agent platform")
+
+Use this when ECC is the runtime you're already on — the Claude Code plugin is installed, the skill catalog is your starting point. ECC provides the agent surface, hooks, and specialist catalog. You're building reliability *on top of* scale.
+
+```
+Session 1: ECC              Session 2: HARNESS          Session 3: KARPATHY        Session 4: PONYTAIL
+─────────────────           ─────────────────           ────────────────           ────────────────
+Platform (runtime)          Container (state)           Process (behavior)         Policy (content)
+
+67 agents, 278 skills   →   feature_list.json      →   Surgical editing       →   6-rung ladder
+94 commands, hooks           progress.md                 Test-first DoD              Intensity levels
+Per-language rules           init.sh                     Assumption surfacing        ponytail: comments
+Session persistence          session-handoff.md          Multi-step planning         Debt tracking
+Enterprise controls          6-dimension scoring         Safety carve-outs           Review/audit
+```
+
+**Why ECC first:** ECC is the runtime — the plugin you install that provides the agent surface, hooks, commands, and skill catalog. You build on top of it. Harness adds shared state to ECC's agents. Karpathy and Ponytail add behavioral discipline to ECC's agents.
+
+**Why not ECC last in this scenario:** ECC is your foundation. You can't retrofit the platform after building on a different one — ECC's hooks, commands, agent routing, and install surface are structural, not just content. It's like installing the OS after the applications.
+
+#### Session 1: ECC Platform Install
+
+```
+Install:
+  npm / plugin marketplace install
+  Full profile: agents (67), skills (278), commands (94), hooks, rules (22 languages)
+
+Agent gains:
+  ✅ 67 specialized sub-agents (planner, architect, code-reviewer, tdd-guide, security-reviewer...)
+  ✅ 278 reusable skill modules (coding-standards, react-patterns, tdd-workflow, api-design...)
+  ✅ 94 slash commands (/tdd, /plan, /code-review, /build-fix, /feature-dev...)
+  ✅ Hook automation (PreToolUse validation, Stop quality gates, SessionStart context loading)
+  ✅ Per-language rules (22 languages × 5-7 concern files each)
+  ✅ Continuous learning (observer hooks, session persistence)
+  ✅ Enterprise controls (install profiles, team config sync, audit allowlists)
+
+ECC gap at this stage:
+  ❌ No shared feature state — 67 agents, zero files that say "we're working on X, Y is done"
+  ❌ No runnable verification gate — TDD skill exists but nothing forces test execution
+  ❌ No surgical editing policy — coding-standards has KISS/DRY/YAGNI but nothing about diff hygiene
+  ❌ No assumption surfacing — agents plan but don't proactively state their interpretation
+```
+
+#### Session 2: Harness Layer (added to ECC)
+
+```
+Files created:
+  feature_list.json  — Shared feature state tracker (every ECC agent reads this)
+  progress.md        — Session continuity log (what's done, what's next, what's blocked)
+  init.sh            — Runnable verification entrypoint (gates all ECC agents)
+  session-handoff.md — Structured handoff between ECC agents across sessions
+
+Files modified:
+  AGENTS.md  — Adds: startup workflow (read these files in this order)
+  .claude/commands/feature-dev.md  — Wired to feature_list.json + progress.md + init.sh
+
+Agent gains:
+  ✅ Every ECC agent now knows which feature is active and what's done
+  ✅ Verification gate — agent can't delegate "done" claim to a specialist without init.sh passing
+  ✅ Session continuity — observer hooks capture patterns; progress.md captures state
+  ✅ Agent handoff — when code-reviewer finishes, the next agent knows what was found
+```
+
+#### Session 3: Karpathy Process Layer
+
+```
+Files modified:
+  AGENTS.md  — Adds:
+    Startup step 7: State your understanding → structural → stop and ask; cosmetic → proceed
+    Editing Discipline: touch only required lines, match style, no drive-by refactors
+    Definition of Done: bugs → reproduce first; features → write check first
+    Before Multi-Step Work: one-line success criterion + per-step verify plan
+
+  rules/common/coding-style.md  — Adds:
+    Surgical editing rule (the single most impactful behavioral rule ECC is missing)
+
+Agent gains:
+  ✅ ECC agents now edit surgically — the code-reviewer reports quality, but the editor
+    (often the generalist) now doesn't pad diffs in the first place
+  ✅ Proactive assumption surfacing — before delegating to planner, the generalist
+    states its understanding. Wrong interpretation caught before 3 agents waste time
+  ✅ Test-first ordering — tdd-guide already does TDD, but now DoD gates all agents
+  ✅ Multi-step planning — planner gets a one-line criterion before producing a plan
+```
+
+#### Session 4: Ponytail Policy Layer
+
+```
+Files modified:
+  AGENTS.md  — Adds:
+    Coding Policy: 6-rung ladder
+    Coding Standards: no abstractions, ponytail: comments
+
+  rules/common/coding-style.md  — Adds:
+    ponytail: comment convention
+
+  progress.md  — Adds:
+    Ponytail Debt section
+
+Files created:
+  skills/ponytail-policy/SKILL.md  — ECC skill wrapper for the ladder (installable, versioned)
+
+Agent gains:
+  ✅ Every ECC agent operates on the ladder — planner doesn't plan a dependency cascade,
+    code-reviewer flags reach-for-a-dep-first as a review finding
+  ✅ Shortcut accountability — ponytail: comments survive across sessions via progress.md
+  ✅ User-adjustable risk — /ponytail lite|full|ultra
+  ✅ Whole-repo and diff audit via ECC commands
+```
+
+### Path B: Harness-First ("I'm building a single-agent project, ECC is the optional upgrade")
+
+Use this when you're starting simple — one language, one developer, one project. You don't need 67 agents and 22 language rule matrices. Get the single agent reliable first, then scale.
+
+```
+Session 1: HARNESS           Session 2: KARPATHY         Session 3: PONYTAIL        Session 4: ECC
+─────────────────           ─────────────────           ────────────────           ──────────────
+Container (state)           Process (behavior)          Policy (content)           Scale (specialists)
+
+feature_list.json       →   Surgical editing       →   6-rung ladder          →   67 specialists
+progress.md                 Test-first DoD              Intensity levels           278 skills
+init.sh                     Assumption surfacing        ponytail: comments         Per-language rules
+session-handoff.md          Multi-step planning         Debt tracking              Hook automation
+```
+
+**Why ECC last:** ECC is overkill for one language, one developer. You don't need 67 agents and 22 language rule matrices until you hit multi-language, multi-developer complexity. Get the single agent reliable first, then scale. When you do add ECC:
+- ECC's 67 agents read the harness files (feature_list.json, progress.md) for shared state
+- ECC's rules layer adds per-language depth on top of the behavioral policies
+- ECC's hooks automate verification (init.sh wired as a pre-commit hook)
+- ECC's skill catalog makes Ponytail and Karpathy policies installable, not just embedded
+
+### Why ECC Can Go First OR Last (But Harness Can Never Go Last)
+
+ECC is **orthogonal** to the other three — it doesn't replace them, it wraps them. It provides a runtime with specialists, hooks, and skills. Harness provides shared state for whoever is running. So:
+
+| ECC first | ECC last |
+|---|---|
+| ECC is the platform. Harness is the state layer you add to it. | Harness is the base. ECC is the scale layer you add to it. |
+| You're already using Claude Code with plugins. | You're starting from zero. |
+| 67 agents need shared state → Harness gives it. | One agent is reliable → ECC multiplies it. |
+
+Harness, by contrast, must always come **before** Karpathy and Ponytail — because both need state tracking to survive across sessions. Karpathy without Harness = great single-session behavior, blank slate next session. Ponytail without Harness = debt ledger resets every session.
+
+### Extended Dependency Chain
+
+```
+Ponytail  ──depends on──→  Karpathy  ──depends on──→  Harness
+  (ladder)                   (surgical editing)          (state/files)
+
+ECC  ──benefits from──→  Harness
+  (agents still forget        (gives ECC agents
+   between sessions            shared state)
+   without it)
+```
+
+| Layer | Depends on | What breaks without the dependency |
+|---|---|---|
+| **Ponytail** | Karpathy + Harness | Ladder without surgical editing = minimal code with bloated diffs. Ladder without harness = debt resets every session. |
+| **Karpathy** | Harness | Test-first without state tracking is a guideline. With harness, it's gated and auditable. |
+| **Harness** | Nothing | It's the OS. Runs on bare metal. |
+| **ECC** | Nothing (structurally) | ECC's agents, skills, and hooks don't *depend* on harness files. But **without Harness, ECC agents still forget between sessions** — 67 agents with no shared feature state is chaos. ECC *benefits* from Harness even though it doesn't require it. |
+
+### The Full Stack (All Four)
+
+```
+ECC (orchestration)
+ ├─ Route to specialists (planner → tdd-guide → code-reviewer → build-resolver)
+ ├─ Hook automation (PreToolUse validation, Stop quality gates, SessionStart context)
+ ├─ Per-language rules (22 × 5-7 concern files)
+ └─ Continuous learning (observer hooks, session persistence)
+
+HARNESS (state + verification)
+ ├─ feature_list.json (shared truth for all ECC agents)
+ ├─ progress.md (continuity log)
+ ├─ init.sh (verification gate)
+ └─ session-handoff.md (agent-to-agent handoff)
+
+AGENTS.md (behavioral policies)
+ ├─ Ponytail: Coding Policy ladder, Coding Standards, Safety Carve-Outs
+ ├─ Karpathy: Editing Discipline, Test-First DoD, Multi-Step Planning, Assumption Surfacing
+ └─ Harness: Startup Workflow, Working Rules, Escalation
+```
+
+| Scenario | Without Harness | With Harness |
+|---|---|---|
+| **ECC agent works on a 3-day feature** | Session 2: agent reloads all files from scratch. Re-discovers what's done. | Session 2: agent reads progress.md, feature_list.json. Knows exactly what's done and what's next. |
+| **ECC code-reviewer finds a pattern** | Reports it. No persistent record outside the diff comment. | Records pattern in progress.md "Notes for Next Session." The next agent benefits. |
+| **ECC tdd-guide finishes testing** | Tests pass. No gate on the next session. | init.sh gates verification. Next session can't proceed until tests pass. |
+| **Generalist agent with Ponytail ladder** | Writes minimal code but forgets shortcuts from last session. | progress.md Ponytail Debt section carries shortcuts forward with ceiling + upgrade path. |
