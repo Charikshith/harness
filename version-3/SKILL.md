@@ -53,7 +53,7 @@ Every useful coding-agent harness has five structural subsystems plus behavioral
 Use the bundled script when working on a local repository:
 
 ```bash
-node skills/harness-creator/scripts/create-harness.mjs --target /path/to/project
+node version-3/scripts/create-harness.mjs --target /path/to/project
 ```
 
 Options:
@@ -73,7 +73,7 @@ For advanced features (intensity levels, debt tracking, review/audit), install t
 Run:
 
 ```bash
-node skills/harness-creator/scripts/validate-harness.mjs --target /path/to/project
+node version-3/scripts/validate-harness.mjs --target /path/to/project
 ```
 
 Report the five structural subsystem scores, the behavioral policy score, the lowest-scoring area, and the first 2-3 changes that would improve reliability. Treat the lowest score as a candidate bottleneck; confirm with failures, logs, or task outcomes before claiming causality.
@@ -85,8 +85,8 @@ Report the five structural subsystem scores, the behavioral policy score, the lo
 Use when the user wants a shareable assessment:
 
 ```bash
-node skills/harness-creator/scripts/render-assessment-html.mjs --target /path/to/project
-node skills/harness-creator/scripts/run-benchmark.mjs --target /path/to/project --html /path/to/report.html
+node version-3/scripts/render-assessment-html.mjs --target /path/to/project
+node version-3/scripts/run-benchmark.mjs --target /path/to/project --html /path/to/report.html
 ```
 
 Be clear that this is a structural benchmark. The benchmark first runs a self-check — it scaffolds a throwaway harness and validates it, proving the bundled scripts work end-to-end — then scores the target and eval coverage. Real effectiveness still needs before/after agent sessions on representative tasks.

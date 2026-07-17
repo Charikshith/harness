@@ -122,8 +122,8 @@ harness-creator/
 | Version | Folder | Key additions |
 |---|---|---|
 | v3 | `version-3/` | Embedded behavioral policies (Ponytail ladder, surgical editing, test-first, safety), 6-dimension scoring |
-| v2 | `version-2/` | OKF knowledge layer, enrich-harness.mjs, tiered CI, worked examples |
-| v1 | `version-1/` | Step-by-step instructions, state/progress files, per-subsystem docs |
+| v2 | `legacy/version-2/` | OKF knowledge layer, enrich-harness.mjs, tiered CI, worked examples |
+| v1 | `legacy/version-1/` | Step-by-step instructions, state/progress files, per-subsystem docs |
 
 ## Boundaries
 
