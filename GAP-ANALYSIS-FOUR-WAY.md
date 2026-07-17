@@ -23,33 +23,33 @@ These four systems are **four strategies for the same problem**: how to make an 
 │      278 skills, 94 commands, hooks, rules, enterprise           │
 │                                                                  │
 │  ┌──────────────────────────────────────────────────────────┐    │
-│  │              HARNESS-CREATOR v3                           │    │
-│  │       Structural container — session continuity,          │    │
-│  │       state tracking, verification gates, scoring         │    │
-│  │                                                           │    │
-│  │  ┌───────────────────────────────────────────────────┐    │    │
-│  │  │                 AGENTS.md / CLAUDE.md             │    │    │
-│  │  │                                                   │    │    │
-│  │  │  ┌──────────────────────────────────────────┐     │    │    │
-│  │  │  │            PONYTAIL                       │    │    │    │
-│  │  │  │  Code policy — ladder, intensities,       │    │    │    │
-│  │  │  │  debt tracking, review/audit              │    │    │    │
-│  │  │  │                                           │    │    │    │
-│  │  │  │  ┌──────────────────────────────────┐     │    │    │    │
-│  │  │  │  │     KARPATHY CLAUDE.md           │     │    │    │    │
-│  │  │  │  │  Process — think first,          │     │    │    │    │
-│  │  │  │  │  edit surgically, test-first     │     │    │    │    │
-│  │  │  │  │  surface ambiguity               │     │    │    │    │
-│  │  │  │  └──────────────────────────────────┘     │    │    │    │
-│  │  │  └──────────────────────────────────────────┘    │    │    │
-│  │  └───────────────────────────────────────────────────┘    │    │
-│  │                                                           │    │
-│  │  Artifacts: feature_list.json, progress.md,               │    │
-│  │  init.sh, session-handoff.md                              │    │
+│  │              HARNESS-CREATOR v3                          │    │
+│  │       Structural container — session continuity,         │    │
+│  │       state tracking, verification gates, scoring        │    │
+│  │                                                          │    │
+│  │  ┌───────────────────────────────────────────────────┐   │    │
+│  │  │                 AGENTS.md / CLAUDE.md             │   │    │
+│  │  │                                                   │   │    │
+│  │  │  ┌──────────────────────────────────────────┐     │   │    │
+│  │  │  │            PONYTAIL                      │     │   │    │
+│  │  │  │  Code policy — ladder, intensities,      │     │   │    │
+│  │  │  │  debt tracking, review/audit             │     │   │    │
+│  │  │  │                                          │     │   │    │
+│  │  │  │  ┌──────────────────────────────────┐    │     │   │    │
+│  │  │  │  │     KARPATHY CLAUDE.md           │    │     │   │    │
+│  │  │  │  │  Process — think first,          │    │     │   │    │
+│  │  │  │  │  edit surgically, test-first     │    │     │   │    │
+│  │  │  │  │  surface ambiguity               │    │     │   │    │
+│  │  │  │  └──────────────────────────────────┘    │     │   │    │
+│  │  │  └──────────────────────────────────────────┘     │   │    │
+│  │  └───────────────────────────────────────────────────┘   │    │
+│  │                                                          │    │
+│  │  Artifacts: feature_list.json, progress.md,              │    │
+│  │  init.sh, session-handoff.md                             │    │
 │  └──────────────────────────────────────────────────────────┘    │
 │                                                                  │
-│  Supporting: 7 reference patterns, 15 evals,                    │
-│  6-dimension scoring, enrichment scripts                        │
+│  Supporting: 7 reference patterns, 15 evals,                     │
+│  6-dimension scoring, enrichment scripts                         │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
