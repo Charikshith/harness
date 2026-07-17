@@ -35,8 +35,8 @@ tags: [state, progress, continuity, session, tracking]
 
 ### What's Next
 
-1. [Next action item]
-2. [Following action item]
+1. [Step description] → verify: [specific check]
+2. [Step description] → verify: [specific check]
 
 ## Blockers / Risks
 
@@ -63,3 +63,7 @@ tags: [state, progress, continuity, session, tracking]
 ## Notes for Next Session
 
 [Free-form notes that will help the next session pick up context]
+
+### Unrelated Issues Noticed (Out of Scope)
+
+- [ ] [Issue]: [location] — [why it was left alone]

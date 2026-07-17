@@ -1,11 +1,14 @@
 ---
 name: harness-creator
-version: "0.2.0"
+version: "0.3.0"
 description: >-
   Build, audit, and improve harnesses that make AI coding agents reliable: AGENTS.md/CLAUDE.md
   instruction files, feature/state tracking, verification gates, scope boundaries, session
   handoff, memory persistence, context budgets, tool-permission safety, and multi-agent
-  coordination. Use this whenever a coding agent is unreliable across sessions — forgets context,
+  coordination. Composes with Ponytail (code minimalism policy — the 6-rung ladder, intensity
+  levels, debt tracking) and Karpathy CLAUDE.md (surgical editing discipline, proactive
+  assumption surfacing, test-first verification) via the generated AGENTS.md template.
+  Use this whenever a coding agent is unreliable across sessions — forgets context,
   drifts out of scope, claims "done" before tests pass, or starts each session inconsistently —
   or when creating or assessing AGENTS.md, CLAUDE.md, feature_list.json, init.sh, progress.md, or
   session-handoff files. Reach for it even if the user never says the word "harness."
@@ -34,7 +37,8 @@ Every useful coding-agent harness has five subsystems:
 
 1. Inspect what already exists: instruction files, feature/state files, verification commands, docs, package manifests.
 2. Ask only for missing context that cannot be inferred safely: target agent, desired file name, tolerance for structure, and whether overwriting is allowed.
-3. Prefer a minimal harness first. Add memory, tool safety, multi-agent, or benchmark details only when the user's problem calls for them.
+3. Prefer a minimal harness first. The generated `AGENTS.md` template already includes inline Coding Policy (the ladder), Editing Discipline, and Before Multi-Step Work sections — these are defaults. If the project also has Ponytail or follows Karpathy CLAUDE.md conventions, those take precedence over the inline defaults.
+4. Add memory, tool safety, multi-agent, or benchmark details only when the user's problem calls for them.
 
 ## Common Tasks
 
