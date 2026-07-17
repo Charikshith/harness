@@ -21,6 +21,9 @@ Before writing code:
    **stop and ask**. Otherwise default and proceed, naming your assumption.
 
 If baseline verification is failing, repair that first before adding new scope.
+8. **Check Ponytail mode**: If the Ponytail skill is installed, confirm the
+   current intensity level (`lite`, `full`, `ultra`). Default to `full` if unset.
+   The level governs how aggressively the ladder is applied (see Coding Policy).
 
 ## Coding Policy
 
@@ -32,6 +35,20 @@ Before writing any code, stop at the first rung that holds:
 4. **Does an already-installed dependency solve it?** Use it. Never add a new dep for what a few lines can do.
 5. **Can this be one line?** Make it one line. `@lru_cache` not a cache class.
 6. **Only then:** write the minimum code that works.
+
+The ladder is a reflex, not a research project. Two rungs work → take the
+higher one and move on. The first lazy solution that works is the right one.
+
+### Intensity Levels
+
+If the Ponytail skill is installed, switch modes with `/ponytail lite|full|ultra`.
+When the skill is not installed, default to **full**.
+
+| Level | What changes |
+|-------|-------------|
+| **lite** | Build what's asked, but name the lazier alternative in one line. User picks. |
+| **full** | The ladder enforced. Stdlib and native first. Shortest diff, shortest explanation. Default. |
+| **ultra** | YAGNI extremist. Deletion before addition. Ship the one-liner and challenge the rest of the requirement in the same breath. |
 
 ## Coding Standards
 

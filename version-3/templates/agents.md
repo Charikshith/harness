@@ -41,6 +41,9 @@ Before writing code:
    your assumption.
 
 If baseline verification is failing, repair that first before adding new scope.
+8. **Check Ponytail mode**: If the Ponytail skill is installed, confirm the
+   current intensity level (`lite`, `full`, `ultra`). Default to `full` if unset.
+   The level governs how aggressively the ladder is applied (see Coding Policy).
 
 ## Coding Policy
 
@@ -57,6 +60,22 @@ Before writing any code, stop at the first rung that holds:
 
 The ladder is a reflex, not a research project. Two rungs work → take the
 higher one and move on. The first lazy solution that works is the right one.
+
+### Intensity Levels
+
+If the Ponytail skill is installed, switch modes with `/ponytail lite|full|ultra`.
+When the skill is not installed, default to **full**.
+
+| Level | What changes |
+|-------|-------------|
+| **lite** | Build what's asked, but name the lazier alternative in one line. User picks. |
+| **full** | The ladder enforced. Stdlib and native first. Shortest diff, shortest explanation. Default. |
+| **ultra** | YAGNI extremist. Deletion before addition. Ship the one-liner and challenge the rest of the requirement in the same breath. |
+
+Example: "Add a cache for these API responses."
+- lite: "Done, cache added. FYI: `functools.lru_cache` covers this in one line if you'd rather not own a cache class."
+- full: "`@lru_cache(maxsize=1000)` on the fetch function. Skipped custom cache class, add when lru_cache measurably falls short."
+- ultra: "No cache until a profiler says so. When it does: `@lru_cache`. A hand-rolled TTL cache class is a bug farm with a hit rate."
 
 ## Coding Standards
 
