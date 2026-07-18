@@ -23,6 +23,7 @@ Creates a minimal production harness:
   feature_list.json
   progress.md
   session-handoff.md
+  plan.md
   init.sh
 
 Existing files are skipped unless --force is set.`);
@@ -53,6 +54,7 @@ results.push(await copyTemplate('agents.md', path.join(target, 'AGENTS.md'), rep
 results.push(await copyTemplate('feature-list.json', path.join(target, 'feature_list.json'), {}, { force }));
 results.push(await copyTemplate('progress.md', path.join(target, 'progress.md'), {}, { force }));
 results.push(await copyTemplate('session-handoff.md', path.join(target, 'session-handoff.md'), {}, { force }));
+results.push(await copyTemplate('plan.md', path.join(target, 'plan.md'), {}, { force }));
 
 const initPath = path.join(target, 'init.sh');
 if (force || !await exists(initPath)) {

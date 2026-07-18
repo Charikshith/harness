@@ -44,7 +44,7 @@ tags: [state, schema, validation, features]
           },
           "evidence": {
             "type": "string",
-            "description": "Verification evidence when status is 'done'"
+            "description": "Verification evidence plus the completed plan (extracted from plan.md) when status is 'done'"
           }
         },
         "required": ["id", "name", "description", "status"]
