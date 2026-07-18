@@ -63,6 +63,8 @@ A feature is done only when ALL of the following are true:
 - [ ] Required verification actually ran and passed (tests / lint / type-check)
 - [ ] Evidence recorded in \`feature_list.json\` or \`progress.md\`
 - [ ] Repository remains restartable from standard startup path
+- [ ] **Scope trace passed**: every changed line maps to the named feature; no
+      bonus flags / commands / modes / abstractions were added (see Working Rules)
 `
   },
   'Verification commands discoverable': {
@@ -229,6 +231,9 @@ Required checks:
     sectionName: 'Scope boundary',
     snippet: `
 - **Stay in scope**: Don't modify files unrelated to the current feature
+- **No bonus surface**: Build only what the request names. Do NOT add new CLI flags,
+  commands, modes, config keys, or abstractions beyond the stated feature. If a
+  useful extra occurs to you, name it in one line and ask — don't build it.
 `
   },
   'Completion gate limits scope closure': {},

@@ -39,9 +39,12 @@ Before writing code:
    **stop and ask** — the cost of the wrong answer exceeds the round-trip.
    If the ambiguity is cosmetic or the safe default is clear, proceed and name
    your assumption.
-
-If baseline verification is failing, repair that first before adding new scope.
-8. **Check Ponytail mode**: If the Ponytail skill is installed, confirm the
+8. **Write a scope boundary** (one line each):
+   - **In scope:** the single feature/behavior the request names.
+   - **Out of scope:** anything not named — extra modes, flags, commands, config,
+     abstractions, or "while I'm here" improvements. If a change crosses this
+     line, stop and ask before building it.
+9. **Check Ponytail mode**: If the Ponytail skill is installed, confirm the
    current intensity level (`lite`, `full`, `ultra`). Default to `full` if unset.
    The level governs how aggressively the ladder is applied (see Coding Policy).
 
@@ -111,6 +114,9 @@ Example: "Add a cache for these API responses."
 - **Verification required**: Don't claim done without running verification commands
 - **Update artifacts**: Before ending session, update `progress.md` and `feature_list.json`
 - **Stay in scope**: Don't modify files unrelated to the current feature
+- **No bonus surface**: Build only what the request names. Do NOT add new CLI flags,
+  commands, modes, config keys, or abstractions beyond the stated feature. If a
+  useful extra occurs to you, name it in one line and ask — don't build it.
 - **Leave clean state**: Next session must be able to run `./init.sh` immediately
 
 ## Required Artifacts
@@ -145,6 +151,8 @@ A feature is done only when ALL of the following are true:
 - [ ] For features: a verification check was written FIRST, then the code
 - [ ] Required verification actually ran and passed (tests / lint / type-check)
 - [ ] Evidence recorded in `feature_list.json` or `progress.md`
+- [ ] **Scope trace passed**: every changed line maps to the named feature; no
+      bonus flags / commands / modes / abstractions were added (see Working Rules)
 - [ ] Repository remains restartable from standard startup path
 
 ## End of Session
