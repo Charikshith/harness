@@ -1,0 +1,113 @@
+{
+  "collaboration_panel": {
+    "dock": "left"
+  },
+  "debugger": {
+    "dock": "left"
+  },
+  "outline_panel": {
+    "dock": "left",
+    "git_status": true
+  },
+  "cli_default_open_behavior": "new_window",
+  "git": {
+    "inline_blame": {
+      "show_commit_summary": true
+    }
+  },
+  "agent": {
+    "button": true,
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "git_panel": {
+    "dock": "right",
+    "status_style": "icon",
+    "button": true,
+    "show_count_badge": true,
+    "file_icons": true,
+    "collapse_untracked_diff": false,
+    "tree_view": true
+  },
+  "status_bar": {
+    "line_endings_button": false
+  },
+  "code_lens": "off",
+  "colorize_brackets": true,
+  "inlay_hints": {
+    "enabled": true
+  },
+  "which_key": {
+    "enabled": true
+  },
+  "autosave": "on_window_change",
+  "buffer_font_family": ".ZedMono",
+  "project_panel": {
+    "diagnostic_badges": true,
+    "bold_folder_labels": true,
+    "hide_gitignore": false,
+    "default_width": 240.0,
+    "dock": "left",
+    "git_status_indicator": true,
+    "hide_root": false
+  },
+  "disable_ai": true,
+  "bottom_dock_layout": "contained",
+  "tab_bar": {
+    "show_pinned_tabs_in_separate_row": false
+  },
+  "tabs": {
+    "file_icons": true,
+    "git_status": true
+  },
+  "title_bar": {
+    "button_layout": "platform_default",
+    "show_menus": true,
+    "show_branch_status_icon": true
+  },
+  "terminal": {
+    "dock": "left",
+    "show_count_badge": true,
+    "button": true
+  },
+  "diff_view_style": "split",
+  "icon_theme": {
+    "mode": "dark",
+    "light": "Zed (Default)",
+    "dark": "VSCode Icons for Zed (Dark NestJS)"
+  },
+  "session": {
+    "trust_all_worktrees": true
+  },
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+    "anthropic_retention": false
+  },
+  "base_keymap": "VSCode",
+  "ui_font_size": 16,
+  "buffer_font_size": 15,
+  "theme": {
+    "mode": "dark",
+    "light": "One Light",
+    "dark": "GitHub Dark Tritanopia"
+  },
+  "experimental.theme_overrides": {
+    // Bold, rich word-level highlights
+    "version_control.word_added": "#237d45",
+    "version_control.word_deleted": "#9c353a",
+
+    // Gutter markers matching the bolder look
+    "version_control.added": "#236b3e",
+    "version_control.modified": "#236b3e",
+    "version_control.deleted": "#7a222a",
+
+    // Bolder, highly visible row backgrounds
+    "diff.inserted": "#1c4a30",
+    "diff.modified": "#1c4a30",
+    "diff.deleted": "#591f25"
+  }
+
+
+
+}
