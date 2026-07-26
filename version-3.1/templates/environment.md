@@ -2,7 +2,7 @@
 type: template
 title: "Environment Contract Template"
 description: "Declared external preconditions — tools, versions, env vars — checked by init.sh separately from the project's own tests"
-artifact: "environment.md"
+artifact: "harness/environment.md"
 tags: [verification, environment, preconditions, tools, contract]
 ---
 

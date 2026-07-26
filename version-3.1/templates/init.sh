@@ -21,7 +21,10 @@ echo "=== Harness Initialization ==="
 # debugging code that was never broken. The eval sits inside an `if` so `set -e` does not
 # abort on the first unmet requirement — reporting all of them at once beats surfacing
 # them one re-run at a time.
-if [ -f environment.md ]; then
+# Path is harness/environment.md, not environment.md: init.sh stays at the project root
+# because it is invoked as ./init.sh, but the contract it reads is harness state.
+ENV_CONTRACT="harness/environment.md"
+if [ -f "$ENV_CONTRACT" ]; then
   echo "=== Environment contract ==="
   ENV_FAILED=0
   while IFS='|' read -r _ requirement check _; do
@@ -35,7 +38,7 @@ if [ -f environment.md ]; then
       echo "  FAIL  $requirement   (check: $check)"
       ENV_FAILED=$((ENV_FAILED + 1))
     fi
-  done < environment.md
+  done < "$ENV_CONTRACT"
   if [ "$ENV_FAILED" -gt 0 ]; then
     echo "Environment contract failed ($ENV_FAILED unmet). This is the machine, not the code."
     exit 1
@@ -111,7 +114,7 @@ fi
 echo "=== Verification Complete ==="
 echo ""
 echo "Next steps:"
-echo "1. Read feature_list.json to see current feature state"
+echo "1. Read harness/feature_list.json to see current feature state"
 echo "2. Pick ONE unfinished feature to work on"
 echo "3. Implement only that feature"
 echo "4. Re-run verification before claiming done"
