@@ -1,13 +1,15 @@
 # Three-Way Gap Analysis: Ponytail ↔ Harness-Creator v2 ↔ Karpathy CLAUDE.md
 
-**Date:** 2025-07-17
+**Date:** 2026-07-17
 **Scope:** Structural and behavioral comparison across three systems for AI coding agent reliability.
 **Systems analyzed:**
-- **Ponytail** v0.1.0 — Lazy senior dev skill ecosystem (6 skills, pi extension, MCP server, 14 agent adapters)
+- **Ponytail** v4.8.4 — Lazy senior dev skill ecosystem (6 skills, pi extension, MCP server, 14 agent adapters)
 - **Harness-Creator** v2 (v0.2.0) — Agent harness framework (5-subsystem model, 7 patterns, scripts, templates, evals)
 - **Karpathy CLAUDE.md** — Behavioral guidelines (4 principles: Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution)
 
 **Perspective:** Senior Engineer / Architect. Every claim: is it actually needed, how does it add value, what are the tradeoffs.
+
+> **⚠️ Superseded:** This analysis targets Harness-Creator **v2** and treats surgical editing, the coding ladder, coding standards, test-first DoD, multi-step planning, safety carve-outs, and the complexity gate as gaps to close. **All of these now ship in `version-3/templates/agents.md`**, so the ~50-line integration plan in §8/Appendix B is already implemented — do not re-apply it. Read this as the design input that produced v3. For the current, v3-aware comparison (which also adds ECC), see [GAP-ANALYSIS-FOUR-WAY.md](GAP-ANALYSIS-FOUR-WAY.md).
 
 ---
 

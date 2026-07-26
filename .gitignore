@@ -11,6 +11,9 @@ yarn-error.log*
 # Agent harness (CLI-managed install target)
 .agents/
 
+# TokenSave code-graph cache
+.tokensave/
+
 # IDE
 .vscode/
 .idea/

@@ -1,10 +1,10 @@
 # Four-Way Gap Analysis: Harness-Creator v3 ↔ Ponytail ↔ Karpathy CLAUDE.md ↔ ECC
 
-**Date:** 2025-07-17
+**Date:** 2026-07-17
 **Scope:** Structural, behavioral, and scale comparison across four systems for AI coding agent reliability.
 **Systems analyzed:**
 - **Harness-Creator v3** (v0.3.0) — Agent harness framework with embedded behavioral policies, 6-dimension scoring
-- **Ponytail** v0.1.0 — Code minimalism policy (6-rung ladder, intensity levels, debt tracking)
+- **Ponytail** v4.8.4 — Code minimalism policy (6-rung ladder, intensity levels, debt tracking)
 - **Karpathy CLAUDE.md** — Behavioral principles (think first, edit surgically, test-first, surface ambiguity)
 - **ECC** v2.0.0 — Everything Claude Code — 67 agents, 278 skills, 94 commands, hooks, rules, enterprise governance
 
@@ -91,7 +91,7 @@ These four systems are **four strategies for the same problem**: how to make an 
 **Premise:** Agents fail because they lose state between sessions, don't verify before claiming done, and have no structural guardrails. Fix this with files, not prompts.
 
 **Delivery:**
-- AGENTS.md template (~130 lines) with startup workflow, working rules, coding policy, editing discipline, safety, verification, escalation
+- AGENTS.md template (~170 lines) with startup workflow, working rules, coding policy, editing discipline, safety, verification, escalation
 - feature_list.json — feature state tracker (source of truth)
 - progress.md — session continuity log
 - init.sh — runnable verification entrypoint
@@ -207,7 +207,7 @@ Evaluated against the Harness v3 behavioral scoring model (8 checks):
 | **Enterprise governance** | Install profiles, team config sync, audit allowlists, approval expectations, controlled rollout. |
 | **Plugin marketplace surface** | `.claude-plugin/`, `.codex-plugin/`, `.codebuddy/`, `.openclaw/` — installed, not copied. |
 | **Multi-harness ports** | Claude Code, Cursor, Codex, Windsurf, Gemini, OpenCode, Kimi, Qwen, Trae, Zed, CodeBuddy — same skill catalog, different host. |
-| **MCP server config** | 14 MCP server configurations packaged and managed. |
+| **MCP server config** | ~33 MCP server configurations packaged and managed. |
 
 ### 4.2 Unique to Harness-Creator v3
 
