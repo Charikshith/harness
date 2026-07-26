@@ -5,28 +5,28 @@
       "id": 1,
       "name": "Minimal Harness Creation",
       "prompt": "I have a new TypeScript + React project with no agent setup. Create a minimal harness that makes my agent reliable for single-feature development.",
-      "expected_output": "AGENTS.md (~100-140 lines), feature_list.json with 3-5 placeholder features, init.sh with verification commands",
+      "expected_output": "AGENTS.md (~100-140 lines), harness/feature_list.json with 3-5 placeholder features, init.sh with verification commands",
       "files": [],
       "expectations": [
         "AGENTS.md includes startup workflow (read files, run init, check feature list, state understanding)",
         "AGENTS.md includes one-feature-at-a-time policy",
         "AGENTS.md includes Coding Policy section with the 6-rung ladder (YAGNI through minimum code)",
         "AGENTS.md includes Editing Discipline section",
-        "feature_list.json has valid JSON with id, name, description, status fields",
+        "harness/feature_list.json has valid JSON with id, name, description, status fields",
         "init.sh runs install, type/static check, test, and build commands when available",
-        "All files are in project root directory"
+        "Only AGENTS.md, CLAUDE.md and init.sh are in the project root; all other harness files are under harness/"
       ]
     },
     {
       "id": 2,
       "name": "Session Continuity Setup",
       "prompt": "My agent forgets everything between sessions. I need persistent memory and session handoff so it can work on multi-day features.",
-      "expected_output": "progress.md template, session-handoff.md structure, memory directory setup instructions",
+      "expected_output": "harness/progress.md template, harness/session-handoff.md structure, memory directory setup instructions",
       "files": [],
       "expectations": [
-        "progress.md includes sections: current state, what's done, what's in progress, what's next (with per-step verify), ponytail debt, blockers/notes for next session",
-        "session-handoff.md includes: what was accomplished, what remains, blockers/decisions, files modified",
-        "Instructions for memory directory creation (.claude/memory/ or similar)",
+        "harness/progress.md includes sections: current state, what's done, what's in progress, what's next (with per-step verify), ponytail debt, blockers/notes for next session",
+        "harness/session-handoff.md includes: what was accomplished, what remains, blockers/decisions, files modified",
+        "Instructions for memory directory creation (harness/memory/, or .claude/memory/ for an existing store)",
         "Two-step save invariant explained (topic file then index)"
       ]
     },
@@ -117,7 +117,7 @@
       "files": [],
       "expectations": [
         "init.sh is the standard startup and verification entrypoint",
-        "Startup reads AGENTS.md, feature_list.json, progress.md, and handoff when present",
+        "Startup reads AGENTS.md, harness/feature_list.json, harness/progress.md, and handoff when present",
         "Startup includes assumption surfacing step (state understanding, stop-and-ask for structural ambiguity)",
         "End-of-session procedure records evidence, blockers, and next step",
         "Hooks are gated by trust and failure behavior is explicit"
@@ -159,8 +159,8 @@
         "Editing Discipline section says touch only what the feature requires",
         "Explicitly forbids reformatting adjacent code, comments, whitespace",
         "Requires matching existing style rather than personal preference",
-        "Unrelated issues are noted in progress.md, not fixed in this diff",
-        "Every changed line should trace to the feature in feature_list.json"
+        "Unrelated issues are noted in harness/progress.md, not fixed in this diff",
+        "Every changed line should trace to the feature in harness/feature_list.json"
       ]
     },
     {
@@ -196,7 +196,7 @@
       "id": 15,
       "name": "Full v3 Harness with Behavioral Layer",
       "prompt": "I'm starting a new Python project and want the complete v3 harness — all five structural subsystems plus full behavioral policies. Set everything up.",
-      "expected_output": "Complete v3 harness: AGENTS.md (~130 lines with behavioral sections), feature_list.json, progress.md (with per-step verify and ponytail debt), init.sh, session-handoff.md, CLAUDE.md",
+      "expected_output": "Complete v3 harness: AGENTS.md (~130 lines with behavioral sections), harness/feature_list.json, harness/progress.md (with per-step verify and ponytail debt), init.sh, harness/session-handoff.md, CLAUDE.md",
       "files": [],
       "expectations": [
         "AGENTS.md has all 5 structural sections (Startup Workflow, Working Rules, Required Artifacts, Definition of Done, End of Session, Verification Commands, Escalation)",
@@ -204,7 +204,7 @@
         "Startup Workflow includes step 7: State your understanding (assumption surfacing)",
         "Definition of Done includes test-first ordering (bugs: reproduce first; features: write check first)",
         "Escalation includes over-specified requirements as a trigger",
-        "progress.md has per-step verification format and Ponytail Debt section",
+        "harness/progress.md has per-step verification format and Ponytail Debt section",
         "All files are runnable/valid (JSON parses, sh script is executable)"
       ]
     },
@@ -212,36 +212,36 @@
       "id": 16,
       "name": "Memory Curation (Dreaming) Design",
       "prompt": "My memory store is filling up with stale and contradictory lessons. Design an out-of-band curation (dreaming) process that keeps it healthy without me hand-editing every session.",
-      "expected_output": "dream-queue.md with bounded proposals, curation cadence, propose-never-apply rule, human accept/reject gate, evidence-and-prevalence requirement per proposal",
+      "expected_output": "harness/dream-queue.md with bounded proposals, curation cadence, propose-never-apply rule, human accept/reject gate, evidence-and-prevalence requirement per proposal",
       "files": [],
       "expectations": [
         "Curation proposes changes but never applies them (propose-never-apply); a human accepts or rejects",
         "Every proposal states claim, evidence, and prevalence (how many sessions it recurred)",
         "Queue is bounded (cap on open proposals) to contain reviewer fatigue",
         "Cadence is sized to pattern emergence (~10 sessions / weekly), not every session",
-        "Curation edits memory/ only and never self-edits AGENTS.md"
+        "Curation edits harness/memory/ only and never self-edits AGENTS.md"
       ]
     },
     {
       "id": 17,
       "name": "Negative Knowledge — Graveyard of Abandoned Routes",
       "prompt": "Three separate sessions have now tried the same timezone library and abandoned it for the same reason, each burning a couple of hours. Memory records what worked but nothing records what didn't. Design a store for rejected routes.",
-      "expected_output": "memory/graveyard.md holding one row per rejected route with the observed cause, the cost of abandoning it, and a mandatory expiry condition; consulted before proposing a library, refactor or rewrite; kept separate from the lesson store",
+      "expected_output": "harness/memory/graveyard.md holding one row per rejected route with the observed cause, the cost of abandoning it, and a mandatory expiry condition; consulted before proposing a library, refactor or rewrite; kept separate from the lesson store",
       "files": [],
       "expectations": [
         "Every row carries an expiry condition (Recheck-if); a verdict with no expiry is folklore, since nobody can tell whether it still applies and it gets obeyed forever or ignored entirely",
         "The recorded reason is an observed failure, not a preference or a guess",
         "Each row records what the abandoned attempt cost, so the price of re-exploring it is visible",
-        "The graveyard is not a lesson store and is not linked from memory/index.md — it is consulted directly before proposing a library, refactor or rewrite",
+        "The graveyard is not a lesson store and is not linked from harness/memory/index.md — it is consulted directly before proposing a library, refactor or rewrite",
         "A validation check asserts row shape (cause and expiry present) but does not penalise the file's absence, since it is optional",
-        "Adding the file does not break the memory link-integrity check, which otherwise treats any non-index, non-journal file under memory/ as an orphaned lesson"
+        "Adding the file does not break the memory link-integrity check, which otherwise treats any non-index, non-journal file under harness/memory/ as an orphaned lesson"
       ]
     },
     {
       "id": 18,
       "name": "Environment Contract for External Preconditions",
       "prompt": "Our verification gate shells out to ffmpeg. When it fell off PATH last week the gate reported a failing test, and the next session spent an hour debugging code that was never broken. Make the harness distinguish a broken machine from broken code.",
-      "expected_output": "environment.md declaring preconditions as rows whose check is a shell command; init.sh runs them first under their own heading and exits with an explicit machine-not-code message; a verification check that is vacuously true when the file is absent",
+      "expected_output": "harness/environment.md declaring preconditions as rows whose check is a shell command; init.sh runs them first under their own heading and exits with an explicit machine-not-code message; a verification check that is vacuously true when the file is absent",
       "files": [],
       "expectations": [
         "Preconditions are declared as data (tool, version, env var) with a shell command whose exit code is the verdict — no output parsing, since versions and formats drift but exit codes do not",

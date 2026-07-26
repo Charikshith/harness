@@ -12,8 +12,8 @@ Start here. Each eval case has a prompt, expected output, and 3+ expectation che
 
 | # | Name | Tags | Summary |
 |---|---|---|---|
-| 1 | Minimal Harness Creation | creation, minimal | TypeScript+React project: create AGENTS.md, feature_list.json, init.sh |
-| 2 | Session Continuity Setup | session, continuity, handoff | progress.md, session-handoff.md, memory directory setup |
+| 1 | Minimal Harness Creation | creation, minimal | TypeScript+React project: create AGENTS.md and init.sh at the root, harness/feature_list.json |
+| 2 | Session Continuity Setup | session, continuity, handoff | harness/progress.md, harness/session-handoff.md, harness/memory/ setup |
 | 3 | Harness Assessment | assessment, scoring | Five-subsystem assessment with bottleneck identification |
 | 4 | Verification Workflow Design | verification, done-definition | Verification commands, Definition of Done, evidence recording |
 | 5 | Memory Taxonomy Design | memory, taxonomy | Instruction memory, auto-memory, type taxonomy, save conventions |
