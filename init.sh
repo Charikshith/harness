@@ -45,6 +45,9 @@ for script in version-4/scripts/*.mjs version-4/scripts/lib/*.mjs; do
   echo "  ok $script"
 done
 
+echo "=== unit checks ==="
+node version-4/scripts/insert-anchor.test.mjs
+
 echo "=== bundled examples still score 100 ==="
 for example in version-4/examples/*/; do
   node version-4/scripts/validate-harness.mjs --target "$example" --min-score 100 >/dev/null
