@@ -8,6 +8,10 @@ yarn-error.log*
 .pi/
 .commandcode/
 
+# Claude Code — settings.local.json holds a localhost base URL and absolute
+# user-specific hook paths, so committing it breaks the hook on any other clone
+.claude/
+
 # Agent harness (CLI-managed install target)
 .agents/
 
