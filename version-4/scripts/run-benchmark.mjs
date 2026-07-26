@@ -32,6 +32,20 @@ Runs a lightweight harness benchmark:
   3. Checks eval coverage in evals/evals.json.
   4. Produces a JSON report and optional HTML report.
 
+Flags:
+  --target DIR        Project to benchmark (default: cwd)
+  --output FILE       JSON report path (default: <target>/harness/harness-benchmark.json)
+  --html FILE         Also write an HTML report
+  --no-self-check     Skip step 1
+  --evals FILE        Eval definitions to score coverage against
+                      (default: the bundled evals/evals.json)
+
+Pass thresholds — these decide the exit code, so set them explicitly in CI rather
+than inheriting a default that may change:
+  --min-score N             target harness overall (default 60)
+  --min-eval-score N        eval coverage (default 80)
+  --min-self-check-score N  score the throwaway scaffold must reach (default 90)
+
 This is a structural benchmark, not an LLM judge. Use it before/after real agent sessions.`);
   process.exit(0);
 }
