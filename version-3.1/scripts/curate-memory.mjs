@@ -23,7 +23,10 @@
 import path from 'node:path';
 import {
   exists,
+  HARNESS_DIR,
   loadMemoryFiles,
+  locateHarnessFile,
+  resolveMemoryDir,
   parseArgs,
   readText,
   writeText
@@ -40,13 +43,15 @@ if (args.help) {
 
 Runs an out-of-band curation pass over a harness's memory store.
 
-Reads:   memory/journal.md, memory/index.md, memory/*.md, memory/graveyard.md
-Writes:  dream-queue.md — proposals only, and only with --apply
+Reads:   ${HARNESS_DIR}/memory/{journal,index,graveyard}.md and ${HARNESS_DIR}/memory/*.md
+Writes:  ${HARNESS_DIR}/dream-queue.md — proposals only, and only with --apply
 
   (default)   dry run; print proposals and the manual checklist
-  --apply     append proposals to dream-queue.md, respecting the ${QUEUE_CAP}-proposal cap
+  --apply     append proposals to the dream queue, respecting the ${QUEUE_CAP}-proposal cap
 
-Never edits memory/ or AGENTS.md. Curation proposes; a human decides.`);
+A harness still using the pre-${HARNESS_DIR}/ flat layout is read and written in place.
+
+Never edits the memory store or AGENTS.md. Curation proposes; a human decides.`);
   process.exit(0);
 }
 
@@ -55,7 +60,7 @@ const apply = Boolean(args.apply);
 
 const memoryFiles = await loadMemoryFiles(target);
 if (!memoryFiles.length) {
-  console.error(`No memory store found in ${target} (looked for memory/index.md).`);
+  console.error(`No memory store found in ${target} (looked for ${HARNESS_DIR}/memory/index.md).`);
   process.exit(1);
 }
 
@@ -100,7 +105,7 @@ const backticked = (text) => [...text.matchAll(/`([^`\n]+)`/g)]
 const blocks = journalBlocks(journal);
 
 if (!blocks.length) {
-  console.log(`No dated journal entries in ${path.join(target, 'memory', 'journal.md')}.`);
+  console.log(`No dated journal entries in ${path.join(target, await resolveMemoryDir(target), 'journal.md')}.`);
   console.log('Curation has no corpus to read. Accumulate sessions first — a pattern needs');
   console.log('several to exist, and a pass over an empty journal produces opinions.');
   process.exit(0);
@@ -115,7 +120,7 @@ for (const block of blocks) {
   }
 }
 
-const queuePath = path.join(target, 'dream-queue.md');
+const queuePath = path.join(target, await locateHarnessFile(target, 'dream-queue.md'));
 const queueText = await exists(queuePath) ? await readText(queuePath) : '';
 
 // Deduped against the queue's Open *and* Decided sections. Without this, a token that
