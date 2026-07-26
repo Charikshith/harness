@@ -32,7 +32,8 @@ Flags:
   --mutate       Measure whether the gate actually catches breakage (slow: copies the
                  project and runs init.sh once per mutation). Without it, that check
                  reports "not measured" and passes.
-  --log          Append this audit to memory/audit-log.jsonl. Never affects the score or
+  --log          Append this audit to <memory store>/audit-log.jsonl, alongside whichever
+                 memory directory the project already uses. Never affects the score or
                  the exit code — telemetry reports, it does not gate.
   --budget       Report the always-on context cost in lines and estimated tokens.
                  Advisory only; never affects the score or the exit code.`);
