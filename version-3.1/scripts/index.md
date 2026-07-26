@@ -12,8 +12,9 @@ Start here. All scripts use Node.js built-in modules only — zero dependencies.
 
 | Document | Type | Tags | Summary |
 |---|---|---|---|
-| [create-harness.mjs](create-harness.mjs) | script | scaffold, create, harness, bootstrap | Scaffolds AGENTS.md, feature_list.json, progress.md, init.sh, session-handoff.md |
-| [validate-harness.mjs](validate-harness.mjs) | script | validate, audit, score, assessment | Scores five harness subsystems (instructions, state, verification, scope, lifecycle) |
+| [create-harness.mjs](create-harness.mjs) | script | scaffold, create, harness, bootstrap | Scaffolds AGENTS.md, feature_list.json, progress.md, init.sh, session-handoff.md, memory/, dream-queue.md |
+| [validate-harness.mjs](validate-harness.mjs) | script | validate, audit, score, assessment | Scores seven subsystems (instructions, state, verification, scope, lifecycle, memory, behavioral). `--mutate` additionally measures whether the gate catches breakage |
+| [mutate-gate.mjs](mutate-gate.mjs) | script | mutation, adversary, verification, gate | Breaks the project or init.sh in known ways and reports what went unnoticed. Runtime probes are scored; validator probes report scorer blindness |
 | [render-assessment-html.mjs](render-assessment-html.mjs) | script | render, html, report, assessment | Renders harness assessment as a standalone HTML file |
 | [run-benchmark.mjs](run-benchmark.mjs) | script | benchmark, self-check, eval, report | Full benchmark: self-check → harness score → eval coverage → recommendation |
 | [lib/harness-utils.mjs](lib/harness-utils.mjs) | script | library, utilities, shared, scoring | Shared utilities: harness scoring, file ops, HTML rendering, arg parsing |

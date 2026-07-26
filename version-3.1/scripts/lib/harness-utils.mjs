@@ -247,7 +247,12 @@ export function dedupe(values) {
   return [...new Set(values)];
 }
 
-export function scoreHarness(files) {
+// killRate is passed in rather than computed here on purpose. Measuring it means copying
+// the project and executing init.sh, which would make scoreHarness async and impure and
+// would put a multi-second subprocess run behind every routine --json call. Callers that
+// want it run mutate-gate.mjs themselves and hand the summary in; everyone else gets a
+// vacuously-passing check and an identical score to before this existed.
+export function scoreHarness(files, { killRate } = {}) {
   const byPath = new Map(files.map((file) => [file.path, file.content]));
   // Memory artifacts are excluded from allText on purpose. They are agent-written
   // free text, so letting them feed the corpus-wide checks lets memory content
@@ -295,7 +300,8 @@ export function scoreHarness(files) {
       textHas(init + agents, ['test', 'pytest', 'vitest', 'cargo test', 'go test', 'dotnet test'], 'Test command documented'),
       textHas(init + agents, ['build', 'type', 'lint', 'compile'], 'Static/build check documented'),
       textHas(allText, ['Evidence', 'Verification Evidence', 'command and output'], 'Verification evidence is recorded'),
-      environmentContractHonoured(environment, init, 'Declared environment preconditions are checked by the entrypoint')
+      environmentContractHonoured(environment, init, 'Declared environment preconditions are checked by the entrypoint'),
+      gateCatchesBreakage(killRate, 'Gate demonstrably catches known breakage')
     ],
     scope: [
       structuredHas(agents, ['One feature at a time', 'one-feature-at-a-time'], 'One-feature-at-a-time rule exists'),
@@ -507,6 +513,34 @@ function graveyardWellFormed(graveyardText, message) {
     };
   }
   return { pass: true, message, detail: `${rows.length} rows, all with cause and expiry` };
+}
+
+// --- Verification adversary -------------------------------------------------
+// Vacuously true when unmeasured, so every invocation without --mutate scores exactly as
+// it did before this check existed. Opt-in for the same reason --log is: the measurement
+// copies the project and runs its gate, which is far too expensive for a default.
+//
+// 0.8 rather than 1.0 because a mutation set is a sample, not a specification. One
+// surviving mutant out of six is a gap worth naming in the detail line; it is not
+// evidence the gate is decorative.
+const KILL_RATE_THRESHOLD = 0.8;
+
+function gateCatchesBreakage(killRate, message) {
+  if (killRate === undefined) {
+    return { pass: true, message, detail: 'not measured (run with --mutate)' };
+  }
+  if (killRate.total === 0) {
+    return { pass: true, message, detail: 'no applicable mutations for this project type' };
+  }
+  const percent = Math.round(killRate.rate * 100);
+  if (killRate.rate < KILL_RATE_THRESHOLD) {
+    return {
+      pass: false,
+      message,
+      detail: `${killRate.killed}/${killRate.total} mutants killed (${percent}%); survived: ${killRate.survivors.join(', ')}`
+    };
+  }
+  return { pass: true, message, detail: `${killRate.killed}/${killRate.total} mutants killed (${percent}%)` };
 }
 
 // --- Environment contract ---------------------------------------------------

@@ -27,7 +27,10 @@ Tiers:
 Flags:
   --fail-fast    Exit 2 below 85, exit 1 below 60 (CI use)
   --no-fail      Never exit with error; always exit 0 (interactive use)
-  --min-score N  Custom threshold (default 60, the usable tier boundary)`);
+  --min-score N  Custom threshold (default 60, the usable tier boundary)
+  --mutate       Measure whether the gate actually catches breakage (slow: copies the
+                 project and runs init.sh once per mutation). Without it, that check
+                 reports "not measured" and passes.`);
   process.exit(0);
 }
 
@@ -36,7 +39,17 @@ const failFast = Boolean(args.failFast);
 const noFail = Boolean(args.noFail);
 const minScore = Number(args.minScore || (failFast ? 85 : 60));
 const files = await loadHarnessFiles(target);
-const result = scoreHarness(files);
+
+// Opt-in: measuring the kill rate copies the project and runs its gate once per mutation.
+// Without the flag the check reports "not measured" and passes, so the score is identical
+// to what it was before the adversary existed.
+let killRate;
+if (args.mutate) {
+  const { runMutations } = await import('./mutate-gate.mjs');
+  killRate = await runMutations(target);
+}
+
+const result = scoreHarness(files, { killRate });
 
 if (args.html) {
   const htmlPath = path.resolve(args.html);

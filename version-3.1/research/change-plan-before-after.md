@@ -120,12 +120,39 @@ scoring formula by hand.
 |---|---|---|---|---|
 | instructions | 5/5 | 5/5 | — | untouched |
 | state | 5/5 | 5/5 | — | untouched |
-| verification | 6/7 | **4/5** | ▼1 | A adds `mutationKillRate` → **fails** (gate can't catch breakage); F adds env check → passes vacuously |
+| verification | 7/7 | 5/5 | — | **Corrected after building it — see note below.** F adds env check → passes vacuously; A adds kill-rate → *unmeasurable* on a stub, so passes vacuously |
 | scope | 5/6 | **4/5** | ▼1 | E adds `open-work.md` presence → **fails** (file absent) |
 | lifecycle | 5/5 | 5/5 | — | untouched |
 | memory | 6/7 | 4/5 | — | B adds graveyard check → passes vacuously; rounding absorbs it |
 | behavioral | 8/8 | 5/5 | — | untouched |
-| **Overall** | | **91/100** | ▼6 | tier stays `production` (weakest is 4, not ≤1) |
+| **Overall** | | **97/100** | ▼3 | tier stays `production` (weakest is 4, not ≤1) |
+
+> **Corrected 2026-07-26, after implementing Cluster A.** This table originally projected
+> `verification` dropping to 4/5 and overall to 91, on the assumption that the examples'
+> gate would fail the kill-rate check. Measured, it does not — and the reason matters.
+>
+> The kill rate is scored over **runtime** mutations only: break the project, then ask
+> whether the gate catches it. Both bundled examples are stubs with no test suite, so no
+> runtime mutation applies and the check reports `no applicable mutations for this project
+> type` and passes vacuously. A project with nothing to verify cannot be shown to verify it
+> badly. Overall stays 100 with `--mutate`, and the only drop in this table is `scope` from
+> Cluster E.
+>
+> The mutations that *do* survive on every project — `hollow-gate`, `strip-all-commands` —
+> were deliberately excluded from the rate. They measure blindness in **this skill's
+> scorer**, not in any project's gate: two verification checks read `init + agents`, so
+> AGENTS.md prose satisfies them whatever `init.sh` contains. Counting them would cap every
+> project at 50%, below the 80% threshold, making the check fail permanently. A check that
+> cannot pass is not a signal. They now print under a separate `Scorer blindness` heading.
+>
+> The check still discriminates where it matters, verified on a purpose-built Node project
+> whose gate genuinely runs `node --test`:
+>
+> | Case | Kill rate | Verdict | Overall |
+> |---|---|---|---|
+> | Gate runs the tests | 1/1 (100%) | PASS | 100 |
+> | Same project, `init.sh` reduced to `echo` | 0/1 (0%) | **FAIL** | 97 |
+> | Stub with no test suite | unmeasurable | PASS (vacuous) | 100 |
 
 ### 1.3 After all clusters ship, examples regenerated + remediated
 
