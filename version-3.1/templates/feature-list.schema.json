@@ -1,8 +1,8 @@
 ---
 type: template
 title: "Feature List JSON Schema"
-description: "JSON Schema for feature_list.json: validates id, name, description, status, dependencies, and evidence fields"
-artifact: "feature_list.schema.json"
+description: "JSON Schema for harness/feature_list.json: validates id, name, description, status, dependencies, and evidence fields"
+artifact: "harness/feature_list.schema.json"
 tags: [state, schema, validation, features]
 ---
 

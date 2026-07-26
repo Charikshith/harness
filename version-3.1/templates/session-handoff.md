@@ -2,7 +2,7 @@
 type: template
 title: "Session Handoff Template"
 description: "End-of-session handoff: objective, completed items, verification evidence, files changed, decisions, blockers, startup path for next session"
-artifact: "session-handoff.md"
+artifact: "harness/session-handoff.md"
 tags: [handoff, lifecycle, continuity, session-end]
 ---
 
@@ -46,7 +46,7 @@ tags: [handoff, lifecycle, continuity, session-end]
 ## Next Session Startup
 
 1. Read `AGENTS.md`.
-2. Read `feature_list.json` and `progress.md`.
+2. Read `harness/feature_list.json` and `harness/progress.md`.
 3. Review this handoff.
 4. Run `./init.sh` or the documented verification command before editing.
 
