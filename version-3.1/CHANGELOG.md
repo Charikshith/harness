@@ -3,10 +3,85 @@ type: changelog
 title: "Changelog"
 description: "Reverse-chronological history of changes to the harness-creator skill"
 tags: [changelog, history, releases]
-updated: 2025-07-17
+updated: 2026-07-26
 ---
 
 # Changelog
+
+## 2026-07-26 (v0.4.0)
+
+**Breaking: install layout.** A scaffold used to drop eleven entries in the project root.
+Now it drops three, and everything else lives under `harness/`.
+
+```
+AGENTS.md    CLAUDE.md    init.sh    harness/
+```
+
+### Why those three stay at the root
+Not a style choice, and not negotiable per-project:
+- **`AGENTS.md`** is the cross-tool convention. Codex, Cursor, Copilot, Zed and Aider all
+  read it from the repo root. Moving it breaks every agent except Claude Code.
+- **`CLAUDE.md`** points at `AGENTS.md`, and Claude Code only looks in the root.
+- **`init.sh`** is invoked as `./init.sh` by docs, humans and CI.
+
+Everything else is read only by this harness, so nothing outside cares where it sits.
+`ROOT_FILES` in `scripts/lib/harness-utils.mjs` is the single definition; `harnessPath()`
+is the only way to spell the layout.
+
+### Path convention
+**Every path in the harness is relative to the project root**, in every file, including
+files that already live inside `harness/`. One rule, no depth arithmetic — the alternative
+(each file relative to itself) was rejected because `AGENTS.md` and `harness/progress.md`
+would then spell the same target two different ways, which is exactly the kind of thing
+that reads as correct and resolves to nothing.
+
+The single exception is the link targets inside `harness/memory/index.md`, which stay
+sibling-relative so the file remains readable standalone. `memoryIndexLinks()` now strips a
+`harness/memory/` prefix too, so both spellings resolve and neither reports as orphaned.
+
+### Backward compatibility
+A harness on the flat layout keeps working and keeps its score. Both were measured at
+100/100 before and after.
+- `loadHarnessFiles()` probes `harnessPath(name)` then the bare root name, and keys results
+  on the canonical bare name either way — so `scoreHarness()` never learns the layout and
+  needed no change at all.
+- `MEMORY_DIR_CANDIDATES` gained `harness/memory` at the front, ahead of the existing
+  `memory`, `.agents/memory` and `.claude/memory`.
+- New **`detectHarnessLayout()`** + **`locateHarnessFile()`**: an existing file is found
+  where it actually is, and a *missing* one is created into the layout the project is
+  already using. This was a real bug first, not a precaution — `enrich-harness.mjs --apply`
+  on a flat harness with `progress.md` deleted created `harness/progress.md`, leaving ten
+  files at the root and one a level down. A split layout is worse than either layout,
+  and no individual check catches it because every file is still findable on its own.
+  `create-harness.mjs` routes through the same resolver, so re-running it over a flat
+  harness skips instead of duplicating.
+
+### Moved
+- `feature_list.json`, `progress.md`, `session-handoff.md`, `dream-queue.md`,
+  `open-work.md`, `memory/`, `environment.md` → under `harness/`.
+- Generated reports too: `harness-benchmark.json`, `harness-assessment.html` and
+  `memory/audit-log.jsonl`. The audit log follows `resolveMemoryDir()`, so it lands beside
+  whichever store the project already has rather than starting a second one.
+- **`environment.md` is the one moved path inside a shell script.** `init.sh` stays at the
+  root but now reads `harness/environment.md` via an `ENV_CONTRACT` variable. Changed in
+  *both* `templates/init.sh` and `initScriptFromCommands()` — the same trap v0.3.2 recorded
+  for this block, since `create-harness.mjs` generates `init.sh` and never copies the
+  template. Verified by running a real scaffold with a passing and a failing contract.
+- Both bundled examples were `git mv`'d rather than regenerated, preserving their curated
+  memory content. Still 100/100 each.
+
+### Not moved
+`references/*.md` describe layout-agnostic *patterns*; their generic `memory/` and
+`dream-queue.md` prose is deliberately unprefixed. Only the lines stating facts about this
+scaffolder were corrected. The directory tree in `README.md` is the skill's own source
+layout, not scaffolded output, and is unchanged.
+
+### Also
+- `SKILL.md` had been left at `version: "0.3.1"` while the changelog already recorded
+  v0.3.2. Bumped to `0.4.0` rather than backfilling a version nobody shipped under.
+- Pre-existing, unfixed: both examples' `init.sh` predate the environment-contract block
+  and don't contain it. Harmless today (the check is vacuously true without the file), but
+  they are no longer byte-identical to a fresh scaffold.
 
 ## 2026-07-26 (v0.3.2)
 

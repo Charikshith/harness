@@ -1,6 +1,6 @@
 ---
 name: harness-creator-v3
-version: "0.3.1"
+version: "0.4.0"
 description: >-
   Build, audit, and improve harnesses that make AI coding agents reliable: AGENTS.md/CLAUDE.md
   instruction files, feature/state tracking, verification gates, scope boundaries, session
@@ -10,7 +10,7 @@ description: >-
   surfacing, and safety carve-outs. Use this whenever a coding agent is unreliable across
   sessions — forgets context, drifts out of scope, claims "done" before tests pass, pads diffs
   with unrelated changes, over-builds features, or starts each session inconsistently —
-  or when creating or assessing AGENTS.md, CLAUDE.md, feature_list.json, init.sh, progress.md,
+  or when creating or assessing AGENTS.md, CLAUDE.md, init.sh, harness/feature_list.json, harness/progress.md,
   or session-handoff files. Reach for it even if the user never says the word "harness."
 license: MIT
 ---
@@ -34,14 +34,14 @@ Every useful coding-agent harness has five structural subsystems, a memory layer
 | Subsystem | Minimal artifact | Purpose |
 |---|---|---|
 | Instructions | `AGENTS.md` or `CLAUDE.md` | Startup path, working rules, definition of done |
-| State | `feature_list.json`, `progress.md` | Current feature, status, evidence, next step |
+| State | `harness/feature_list.json`, `harness/progress.md` | Current feature, status, evidence, next step |
 | Verification | `init.sh` or documented commands | Tests/checks the agent must run before claiming done |
 | Scope | Feature dependencies and done criteria | Prevents overreach and half-finished work |
-| Lifecycle | `session-handoff.md`, end-of-session routine | Makes the next session restartable |
-| **Memory** | `memory/index.md`, `dream-queue.md` | What was *learned*, and how it stays curated |
+| Lifecycle | `harness/session-handoff.md`, end-of-session routine | Makes the next session restartable |
+| **Memory** | `harness/memory/index.md`, `harness/dream-queue.md` | What was *learned*, and how it stays curated |
 | **Behavioral** | Embedded in AGENTS.md | Coding policy, surgical editing, test-first, safety |
 
-**Memory is not state.** `progress.md` and `feature_list.json` record *where the work
+**Memory is not state.** `harness/progress.md` and `harness/feature_list.json` record *where the work
 stopped* — a bookmark. Memory records *what is now known that wasn't before* — a lesson.
 A harness can track state perfectly and never learn anything. That distinction is the
 whole reason memory is its own subsystem.
@@ -78,15 +78,15 @@ For advanced features (intensity levels, debt tracking, review/audit), install t
 
 Memory has two halves, and they fail differently. Build them in order.
 
-**Part 1 — the store (do this first).** Scaffold `memory/index.md` and add the Memory
+**Part 1 — the store (do this first).** Scaffold `harness/memory/index.md` and add the Memory
 section to `AGENTS.md`: read the index at startup, append lessons at session end, one
 lesson per file with a `Why:`, two-step save, bounded index. Then *use it and let it get
 messy* for a few weeks. The mess is what tells you which curation rules are actually
 needed.
 
-**Part 2 — curation (only once the store is worth curating).** Add `dream-queue.md` and
+**Part 2 — curation (only once the store is worth curating).** Add `harness/dream-queue.md` and
 the Curation section. Run the first passes **by hand**: ask a session to read recent
-progress entries plus all of `memory/` and report what recurs, contradicts, or went
+progress entries plus all of `harness/memory/` and report what recurs, contradicts, or went
 unused. That manual pass *is* dreaming. Automate only after seeing what it finds —
 otherwise you encode rules for problems you don't have.
 
@@ -156,13 +156,18 @@ See also: [types.md](types.md) for the document type taxonomy, [templates/index.
 
 For a usable minimal harness, leave the target project with:
 
+Only `AGENTS.md`, `CLAUDE.md` and `init.sh` belong in the project root — the first is the
+convention other agent tools read from root, the second points at it, the third is invoked
+as `./init.sh`. Everything else goes under `harness/`. Write every path relative to the
+project root, in every file, including files that already live inside `harness/`.
+
 - [ ] `AGENTS.md` or `CLAUDE.md` (includes behavioral policies + memory rules)
-- [ ] `feature_list.json`
-- [ ] `progress.md`
-- [ ] `memory/index.md` (bounded index; empty is fine, absent is not)
-- [ ] `dream-queue.md`
+- [ ] `harness/feature_list.json`
+- [ ] `harness/progress.md`
+- [ ] `harness/memory/index.md` (bounded index; empty is fine, absent is not)
+- [ ] `harness/dream-queue.md`
 - [ ] `init.sh`
-- [ ] Optional `session-handoff.md` for multi-session work
+- [ ] Optional `harness/session-handoff.md` for multi-session work
 - [ ] Documented verification evidence or next action
 
 If you cannot create files, provide exact file contents and commands instead.

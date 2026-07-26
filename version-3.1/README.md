@@ -26,20 +26,34 @@ The scripts use only Node.js built-in modules. They can be run after copying the
 
 ## What It Creates
 
+Three files land in the project root; all harness state goes under `harness/`, so
+scaffolding adds three visible entries to a repo root instead of eleven.
+
+```
+AGENTS.md          ← the cross-tool convention: every other agent tool reads this from root
+CLAUDE.md          ← points at AGENTS.md; Claude Code only looks in the root
+init.sh            ← stays runnable as ./init.sh from the project root
+harness/           ← everything else; read only by this harness
+```
+
+Paths inside the harness are written relative to the **project root**, not to the file
+they appear in — one rule, no depth arithmetic. The single exception is the link targets
+in `harness/memory/index.md`, which stay sibling-relative.
+
 - `AGENTS.md` — Full instruction file with embedded behavioral policies
 - `CLAUDE.md` — Reference to AGENTS.md
-- `feature_list.json` — Feature state tracker with dependencies
-- `progress.md` — Session continuity log with per-step verification
+- `harness/feature_list.json` — Feature state tracker with dependencies
+- `harness/progress.md` — Session continuity log with per-step verification
 - `init.sh` — Standard startup and verification entrypoint
-- `session-handoff.md` — Optional multi-session handoff
-- `memory/index.md` — Bounded, always-on index of agent-written lessons
-- `memory/journal.md` — Append-only session friction log; the input to curation
-- `memory/graveyard.md` — Routes tried and rejected, each with an expiry condition
-- `dream-queue.md` — Out-of-band curation proposals awaiting a human decision
-- `open-work.md` — Work seen but declined under scope discipline; recruitable
+- `harness/session-handoff.md` — Optional multi-session handoff
+- `harness/memory/index.md` — Bounded, always-on index of agent-written lessons
+- `harness/memory/journal.md` — Append-only session friction log; the input to curation
+- `harness/memory/graveyard.md` — Routes tried and rejected, each with an expiry condition
+- `harness/dream-queue.md` — Out-of-band curation proposals awaiting a human decision
+- `harness/open-work.md` — Work seen but declined under scope discipline; recruitable
 
 Two further templates exist but are **not** scaffolded — created only when a project needs
-them: `environment.md` (declared external preconditions) and `memory-entry.md` (the shape
+them: `harness/environment.md` (declared external preconditions) and `memory-entry.md` (the shape
 of a single lesson).
 
 `create-harness.mjs` detects common project types and package managers. It supports Node/npm/pnpm/yarn/bun, Python, Go, Rust, Maven, Gradle, and .NET at a basic verification-command level.
@@ -51,7 +65,7 @@ of a single lesson).
 | Dimension | Type | What it validates |
 |---|---|---|
 | Instructions | Structural | AGENTS.md exists, startup workflow, definition of done, verification commands, state routing |
-| State | Structural | feature_list.json, progress.md, handoff structure, restart support |
+| State | Structural | harness/feature_list.json, harness/progress.md, handoff structure, restart support |
 | Verification | Structural | init.sh, fail-fast, test/static commands, evidence recording, that the entrypoint actually runs a command, declared environment preconditions, and — with `--mutate` — whether the gate demonstrably catches breakage |
 | Scope | Structural | One-feature-at-a-time, dependencies, status fields, scope boundaries, recruitable open-work surface |
 | Lifecycle | Structural | Startup script, end-of-session, handoff, restart markers |
@@ -72,7 +86,7 @@ Deliberate, and not a staging decision — these stay unscored:
 | Flag | Reports | Why never a check |
 |---|---|---|
 | `--mutate` | Kill rate over runtime mutations; separately, scorer blindness | The rate *is* scored. The blindness list is not: those mutants survive on every project, so counting them would cap everyone below the threshold and the check could never pass |
-| `--log` | Appends the audit to `memory/audit-log.jsonl` | A trend can say "this got worse", never "this is unacceptable" — acceptable is contextual. Gate it and the cheapest way to go green is to stop measuring honestly |
+| `--log` | Appends the audit to `harness/memory/audit-log.jsonl` | A trend can say "this got worse", never "this is unacceptable" — acceptable is contextual. Gate it and the cheapest way to go green is to stop measuring honestly |
 | `--budget` | Always-on context in lines and estimated tokens | A budget is a warning; there is no defensible universal ceiling |
 
 ### Curation
@@ -82,11 +96,11 @@ node version-3/scripts/curate-memory.mjs --target /path/to/project          # dr
 node version-3/scripts/curate-memory.mjs --target /path/to/project --apply  # write proposals
 ```
 
-Reads the journal, lesson store and graveyard; writes proposals to `dream-queue.md` and
+Reads the journal, lesson store and graveyard; writes proposals to `harness/dream-queue.md` and
 nothing else. Two of the five curation signals are countable (a token recurring in the
 journal with no lesson; a graveyard route resurfacing) and three need a person
 (contradiction, dead stock, staleness) — the script prints those three as a checklist every
-run rather than implying it found everything. It never edits `memory/` or `AGENTS.md`.
+run rather than implying it found everything. It never edits `harness/memory/` or `AGENTS.md`.
 
 ### Behavioral Policy Details
 
