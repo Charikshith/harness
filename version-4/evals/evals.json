@@ -194,9 +194,9 @@
     },
     {
       "id": 15,
-      "name": "Full v3 Harness with Behavioral Layer",
-      "prompt": "I'm starting a new Python project and want the complete v3 harness — all five structural subsystems plus full behavioral policies. Set everything up.",
-      "expected_output": "Complete v3 harness: AGENTS.md (~130 lines with behavioral sections), harness/feature_list.json, harness/progress.md (with per-step verify and ponytail debt), init.sh, harness/session-handoff.md, CLAUDE.md",
+      "name": "Full v4 Harness with Behavioral Layer",
+      "prompt": "I'm starting a new Python project and want the complete v4 harness — all five structural subsystems plus full behavioral policies. Set everything up.",
+      "expected_output": "Complete v4 harness: AGENTS.md (~130 lines with behavioral sections), harness/feature_list.json, harness/progress.md (with per-step verify and ponytail debt), init.sh, harness/session-handoff.md, CLAUDE.md",
       "files": [],
       "expectations": [
         "AGENTS.md has all 5 structural sections (Startup Workflow, Working Rules, Required Artifacts, Definition of Done, End of Session, Verification Commands, Escalation)",

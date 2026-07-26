@@ -26,7 +26,7 @@ Start here. Each eval case has a prompt, expected output, and 3+ expectation che
 | 12 | Behavioral Policy — Surgical Editing | behavioral, editing, diff | Touch only what the feature requires; match existing style; don't refactor the unbroken |
 | 13 | Behavioral Policy — Safety Carve-Outs | behavioral, safety | What minimalism must never remove: validation, data-loss prevention, security, a11y |
 | 14 | Behavioral Policy — Multi-Step Planning | behavioral, planning, verify | One-line success criterion, numbered plan with a verify check per step |
-| 15 | Full v3 Harness with Behavioral Layer | creation, behavioral, full | Complete harness: all structural sections plus every behavioral policy |
+| 15 | Full v4 Harness with Behavioral Layer | creation, behavioral, full | Complete harness: all structural sections plus every behavioral policy |
 | 16 | Memory Curation (Dreaming) Design | memory, curation, dreaming | Out-of-band curation: propose-never-apply, bounded queue, cadence, human gate |
 | 17 | Negative Knowledge — Graveyard of Abandoned Routes | memory, graveyard, negative-knowledge | Rejected routes with observed cause, cost, and a mandatory expiry condition |
 | 18 | Environment Contract for External Preconditions | verification, environment, preconditions | Preconditions checked before tests, so a broken machine reads differently from broken code |
