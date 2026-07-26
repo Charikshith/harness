@@ -221,6 +221,50 @@
         "Cadence is sized to pattern emergence (~10 sessions / weekly), not every session",
         "Curation edits memory/ only and never self-edits AGENTS.md"
       ]
+    },
+    {
+      "id": 17,
+      "name": "Negative Knowledge — Graveyard of Abandoned Routes",
+      "prompt": "Three separate sessions have now tried the same timezone library and abandoned it for the same reason, each burning a couple of hours. Memory records what worked but nothing records what didn't. Design a store for rejected routes.",
+      "expected_output": "memory/graveyard.md holding one row per rejected route with the observed cause, the cost of abandoning it, and a mandatory expiry condition; consulted before proposing a library, refactor or rewrite; kept separate from the lesson store",
+      "files": [],
+      "expectations": [
+        "Every row carries an expiry condition (Recheck-if); a verdict with no expiry is folklore, since nobody can tell whether it still applies and it gets obeyed forever or ignored entirely",
+        "The recorded reason is an observed failure, not a preference or a guess",
+        "Each row records what the abandoned attempt cost, so the price of re-exploring it is visible",
+        "The graveyard is not a lesson store and is not linked from memory/index.md — it is consulted directly before proposing a library, refactor or rewrite",
+        "A validation check asserts row shape (cause and expiry present) but does not penalise the file's absence, since it is optional",
+        "Adding the file does not break the memory link-integrity check, which otherwise treats any non-index, non-journal file under memory/ as an orphaned lesson"
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Environment Contract for External Preconditions",
+      "prompt": "Our verification gate shells out to ffmpeg. When it fell off PATH last week the gate reported a failing test, and the next session spent an hour debugging code that was never broken. Make the harness distinguish a broken machine from broken code.",
+      "expected_output": "environment.md declaring preconditions as rows whose check is a shell command; init.sh runs them first under their own heading and exits with an explicit machine-not-code message; a verification check that is vacuously true when the file is absent",
+      "files": [],
+      "expectations": [
+        "Preconditions are declared as data (tool, version, env var) with a shell command whose exit code is the verdict — no output parsing, since versions and formats drift but exit codes do not",
+        "The contract runs before install and tests and reports under its own heading, so 'the world changed' is visually distinct from 'the code broke'",
+        "All unmet preconditions are reported in one run rather than aborting on the first, so four problems do not cost four re-runs",
+        "The file is optional and its absence is not a defect; declaring preconditions and then never checking them is the defect, because the file reads as a guarantee",
+        "The check block reaches generated entrypoints and not only the template — a scaffolder that writes init.sh programmatically would otherwise make the check unsatisfiable by construction"
+      ]
+    },
+    {
+      "id": 19,
+      "name": "Verification Adversary — Mutation-Testing the Gate",
+      "prompt": "Every check in my harness audit asks whether text is present. None asks whether the gate actually works. Prove to me that my init.sh would catch a real regression, and score it.",
+      "expected_output": "a mutation runner that breaks the project in known ways and reports what the gate failed to notice, wired in as one verification check behind an opt-in flag, vacuously true when unmeasured",
+      "files": [],
+      "expectations": [
+        "Mutations that break the gate and then run the gate are rejected as unkillable by construction — a deleted gate cannot be caught by running the gate you deleted, so such a probe reports SURVIVED on every input and is not a signal",
+        "At least one positive control breaks the project rather than the gate and asserts the gate goes red, proving the gate executes tests rather than merely naming them",
+        "Mutants that survive on every project regardless of quality are excluded from the score, because counting them caps every project below the threshold and a check that can never pass is not a signal",
+        "The measurement is opt-in and vacuously true when unmeasured, so existing audits score identically and a multi-second subprocess run does not sit behind every routine call",
+        "A project with no test suite reports the rate as unmeasurable rather than failing — nothing to verify cannot be verified badly",
+        "Evidence of the flip is required: the same project must pass with a working gate and fail with a weakened one"
+      ]
     }
   ]
 }

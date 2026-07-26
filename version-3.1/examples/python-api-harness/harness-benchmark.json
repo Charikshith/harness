@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T11:06:21.979Z",
+  "generatedAt": "2026-07-26T11:13:25.585Z",
   "target": "C:\\Users\\CharikshithPolimera\\OneDrive - Access infinity\\Products\\DEV\\PI\\harness\\version-3.1\\examples\\python-api-harness",
   "selfCheck": {
     "pass": true,
@@ -241,9 +241,9 @@
   },
   "evals": {
     "score": 100,
-    "passed": 13,
-    "total": 13,
-    "cases": 16,
+    "passed": 16,
+    "total": 16,
+    "cases": 19,
     "checks": [
       {
         "pass": true,
@@ -288,6 +288,18 @@
       {
         "pass": true,
         "message": "Covers lifecycle bootstrap"
+      },
+      {
+        "pass": true,
+        "message": "Covers negative knowledge (graveyard)"
+      },
+      {
+        "pass": true,
+        "message": "Covers environment contract"
+      },
+      {
+        "pass": true,
+        "message": "Covers verification adversary"
       },
       {
         "pass": true,

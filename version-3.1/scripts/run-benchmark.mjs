@@ -117,6 +117,9 @@ function scoreEvals(evalsJson) {
   checks.push({ pass: cases.some((item) => /multi-agent|delegation|coordination/i.test(item.name)), message: 'Covers multi-agent coordination' });
   checks.push({ pass: cases.some((item) => /context|budget|token/i.test(item.name)), message: 'Covers context budget' });
   checks.push({ pass: cases.some((item) => /lifecycle|bootstrap/i.test(item.name)), message: 'Covers lifecycle bootstrap' });
+  checks.push({ pass: cases.some((item) => /graveyard|negative knowledge|abandoned/i.test(item.name)), message: 'Covers negative knowledge (graveyard)' });
+  checks.push({ pass: cases.some((item) => /environment|precondition/i.test(item.name)), message: 'Covers environment contract' });
+  checks.push({ pass: cases.some((item) => /adversary|mutation/i.test(item.name)), message: 'Covers verification adversary' });
   checks.push({ pass: cases.every((item) => item.prompt && item.expected_output && Array.isArray(item.expectations)), message: 'Each eval has prompt, expected output, expectations' });
   checks.push({ pass: cases.every((item) => item.expectations?.length >= 3), message: 'Each eval has at least three expectation checks' });
 

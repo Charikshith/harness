@@ -115,11 +115,24 @@ denominator from 30 to 35.
 - The eight traps in `research/missing-subsystems.md` §7 remain unbuilt, each with a
   documented revisit trigger.
 
+### Eval coverage (gap closed after the cluster work)
+- **Three eval cases added** — #17 Negative Knowledge (Graveyard of Abandoned Routes),
+  #18 Environment Contract for External Preconditions, #19 Verification Adversary
+  (Mutation-Testing the Gate). 16 → **19 cases**.
+- **Three coverage checks added to `scoreEvals`.** Cases alone would have been invisible:
+  the score is computed over named-coverage checks, so without new checks the same 13/13
+  would have printed and the additions would not have registered anywhere.
+- **The old 100/100 was measuring 13 things and silent about 3.** Re-running the previous
+  16 cases against the new check set scores **13/16 (81/100)** — that gap is what the
+  earlier number concealed. With all 19 cases: 16/16, 100/100.
+- Expectations are written from what the build actually established, not from the feature
+  descriptions, so each case would catch a regression. #19 requires that unkillable-by-
+  construction probes are rejected and that mutants surviving on every project are excluded
+  from the rate; #18 requires the check to reach generated entrypoints and not only the
+  template; #17 requires that adding the file does not trip the memory link-integrity check.
+  All three encode failure modes hit while building the clusters.
+
 ### Known gaps in this release
-- **`evals/evals.json` has no cases for the graveyard, the environment contract, or the
-  adversary.** Coverage still self-reports 13/13 because `scoreEvals` has no structural map
-  from subsystem to eval — it checks for named cases, and these three have no name to check.
-  The number is honest about what it measures and silent about what it doesn't.
 - **The `init + agents` concatenation is unfixed.** It is what lets a hollow gate score 5/5,
   and it is now *reported* by `--mutate` rather than repaired. Narrowing those two checks to
   `init` alone would fail every harness that legitimately documents its commands in
