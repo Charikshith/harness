@@ -8,6 +8,23 @@ export const TEMPLATE_DIR = path.join(SKILL_ROOT, 'templates');
 export const STRUCTURAL_SUBSYSTEMS = ['instructions', 'state', 'verification', 'scope', 'lifecycle'];
 export const SUBSYSTEMS = [...STRUCTURAL_SUBSYSTEMS, 'memory', 'behavioral'];
 
+// --- Install layout ---------------------------------------------------------
+// Harness state lives in a subdirectory so scaffolding a harness adds three entries to
+// the project root instead of eleven. Those three are not a style choice:
+//   AGENTS.md   the cross-tool convention — every other agent reads it from repo root
+//   CLAUDE.md   points at AGENTS.md, and Claude Code only looks in the root
+//   init.sh     invoked as ./init.sh by docs, humans and CI
+// Everything else is read only by this harness, so nothing outside cares where it sits.
+export const HARNESS_DIR = 'harness';
+export const ROOT_FILES = new Set(['AGENTS.md', 'CLAUDE.md', 'init.sh']);
+
+// Canonical name -> on-disk path, relative to the project root. Always use this rather
+// than writing 'harness/...' inline: it is the one place the layout is defined, and the
+// backward-compatible loaders below are keyed off the same ROOT_FILES set.
+export function harnessPath(name) {
+  return ROOT_FILES.has(name) ? name : `${HARNESS_DIR}/${name}`;
+}
+
 // Display labels for non-structural subsystems. Module scope so it is allocated once.
 const SECTION_LABELS = { memory: 'Memory & Curation', behavioral: 'Behavioral Policies' };
 
@@ -197,7 +214,11 @@ export function verificationCommands(project, explicitPackageManager) {
 const ENV_CONTRACT_BLOCK = `# Environment contract runs before anything else and reports separately from test output:
 # a missing tool is not a failing test, and conflating the two sends the next session
 # debugging code that was never broken.
-if [ -f environment.md ]; then
+#
+# Path is ${HARNESS_DIR}/environment.md, not environment.md: init.sh stays at the project
+# root because it is invoked as ./init.sh, but the contract it reads is harness state.
+ENV_CONTRACT="${HARNESS_DIR}/environment.md"
+if [ -f "$ENV_CONTRACT" ]; then
   echo "=== Environment contract ==="
   ENV_FAILED=0
   while IFS='|' read -r _ requirement check _; do
@@ -211,7 +232,7 @@ if [ -f environment.md ]; then
       echo "  FAIL  $requirement   (check: $check)"
       ENV_FAILED=$((ENV_FAILED + 1))
     fi
-  done < environment.md
+  done < "$ENV_CONTRACT"
   if [ "$ENV_FAILED" -gt 0 ]; then
     echo "Environment contract failed ($ENV_FAILED unmet). This is the machine, not the code."
     exit 1
@@ -232,7 +253,7 @@ ${body}
 echo "=== Verification Complete ==="
 echo ""
 echo "Next steps:"
-echo "1. Read feature_list.json to see current feature state"
+echo "1. Read ${harnessPath('feature_list.json')} to see current feature state"
 echo "2. Pick ONE unfinished feature to work on"
 echo "3. Implement only that feature"
 echo "4. Re-run verification before claiming done"
@@ -436,7 +457,12 @@ function memoryIndexLinks(indexText) {
   // inside a comment, and those examples are not real pointers.
   const body = indexText.replace(/<!--[\s\S]*?-->/g, '');
   for (const match of body.matchAll(MEMORY_LINK_RE)) {
-    const normalised = match[1].replace(/^\.\//, '').replace(/^memory\//, '');
+    // Strip the harness/ prefix before memory/, so an index that spells its pointers
+    // repo-root-relative resolves to the same sibling names as one that does not.
+    const normalised = match[1]
+      .replace(/^\.\//, '')
+      .replace(new RegExp(`^${HARNESS_DIR}/`), '')
+      .replace(/^memory\//, '');
     if (normalised.includes('..')) continue;
     // A topic pointer is a sibling file or lives under topics/. Anything with a
     // different path prefix is a cross-reference to another doc, not a lesson.
@@ -628,13 +654,65 @@ export async function loadHarnessFiles(root) {
   ];
   const files = [];
   for (const candidate of candidates) {
-    const fullPath = path.join(root, candidate);
-    if (await exists(fullPath)) {
-      files.push({ path: candidate, content: await readText(fullPath) });
+    // Probe harnessPath() first, then the bare root name. Keys stay canonical either way,
+    // so scoreHarness never learns the layout — and a harness scaffolded before harness/
+    // existed still scores identically instead of reporting every file missing.
+    const found = await firstExisting(root, [harnessPath(candidate), candidate]);
+    if (found) {
+      files.push({ path: candidate, content: await readText(found) });
     }
   }
   files.push(...await loadMemoryFiles(root));
   return files;
+}
+
+async function firstExisting(root, relatives) {
+  for (const relative of relatives) {
+    const fullPath = path.join(root, relative);
+    if (await exists(fullPath)) return fullPath;
+  }
+  return null;
+}
+
+// State files whose location reveals which layout a project is using. init.sh and the two
+// instruction files are excluded: they sit at the root under BOTH layouts, so they
+// distinguish nothing.
+const LAYOUT_WITNESSES = [
+  'feature_list.json',
+  'progress.md',
+  'session-handoff.md',
+  'dream-queue.md',
+  'open-work.md',
+  'environment.md',
+  'memory/index.md'
+];
+
+// Which layout this project already uses: HARNESS_DIR, or '' for the pre-harness/ flat
+// layout. Greenfield projects get HARNESS_DIR.
+//
+// Load-bearing for anything that CREATES a file. Defaulting a new file to harness/ in a
+// project whose other ten files sit at the root produces a split layout — half the state
+// in each place — which is worse than either layout on its own, and no single check
+// catches it because every individual file is findable.
+export async function detectHarnessLayout(root) {
+  for (const dir of [HARNESS_DIR, '']) {
+    for (const name of LAYOUT_WITNESSES) {
+      if (await exists(path.join(root, dir, name))) return dir;
+    }
+  }
+  return HARNESS_DIR;
+}
+
+// Where `name` lives in THIS project, as a root-relative path; falls back to the layout
+// the project is already using when the file is absent, so the same call serves "patch the
+// existing file" and "create the missing one". Writers must use this over harnessPath().
+export async function locateHarnessFile(root, name) {
+  if (ROOT_FILES.has(name)) return name;
+  for (const relative of [harnessPath(name), name]) {
+    if (await exists(path.join(root, relative))) return relative;
+  }
+  const dir = await detectHarnessLayout(root);
+  return dir ? `${dir}/${name}` : name;
 }
 
 // Memory lives in a directory, not a fixed filename, so it needs discovery rather
@@ -649,8 +727,22 @@ export async function isDirectory(target) {
   }
 }
 
-const MEMORY_DIR_CANDIDATES = ['memory', '.agents/memory', '.claude/memory'];
+const MEMORY_DIR_CANDIDATES = [`${HARNESS_DIR}/memory`, 'memory', '.agents/memory', '.claude/memory'];
 const MEMORY_MAX_FILES = 200;
+
+// Where the store actually is, or where a new one belongs. Writers must use this rather
+// than assuming the canonical location: appending to harness/memory/ in a project whose
+// store is still at memory/ splits the store in two and half the lessons go unread.
+export async function resolveMemoryDir(root) {
+  for (const dir of MEMORY_DIR_CANDIDATES) {
+    if (await exists(path.join(root, dir, 'index.md'))) return dir;
+  }
+  // No store yet — put it where the rest of this project's state lives, not where a
+  // greenfield project would want it. See detectHarnessLayout().
+  return await locateHarnessFile(root, 'memory/index.md') === 'memory/index.md'
+    ? 'memory'
+    : `${HARNESS_DIR}/memory`;
+}
 
 export async function loadMemoryFiles(root) {
   for (const dir of MEMORY_DIR_CANDIDATES) {
@@ -702,7 +794,7 @@ export async function appendAuditEntry(root, result) {
       Object.entries(result.subsystems).map(([name, item]) => [name, item.score])
     )
   }) + '\n';
-  const logPath = path.join(root, 'memory', 'audit-log.jsonl');
+  const logPath = path.join(root, await resolveMemoryDir(root), 'audit-log.jsonl');
   await mkdir(path.dirname(logPath), { recursive: true });
   await appendFile(logPath, line, 'utf8');
   return logPath;
