@@ -10,6 +10,26 @@ updated: 2026-07-26
 
 ## 2026-07-26 (v0.4.0)
 
+### One version scheme
+The skill was carrying two, and they disagreed. Folder and title said `v3`/`v3.1`, the
+`memory` pill said `v3.1`, `SKILL.md` said `0.3.1`, and this file said `v0.4.0`.
+
+Collapsed onto the scheme this file already used:
+- `version-3.1/` → **`version-4/`**. `SKILL.md` name → `harness-creator-v4`, titles →
+  `Harness Creator v4` / `harness-creator v4`. `version-3/` is untouched frozen history.
+- Labels that answer *"when did this land"* became semver, not `v4`. "New in v3" is now
+  "Since v0.3.0"; the memory pills are `v0.3.1`. Relabelling those `v4` would have claimed
+  behavioral policies and the memory subsystem shipped in this release, which is false.
+- `README.md`'s install and usage commands pointed at `version-3/scripts/...` — the
+  *previous* generation — while documenting current behaviour. Now `version-4/`.
+- Authoritative version lives in exactly two places: the `SKILL.md` semver and these
+  headings. `README.md` says so, so the folder name cannot drift back into being a claim.
+
+`harness-components.html` was a stale v0.3.1 snapshot and its "Still open" list had gone
+false on all three counts: evals now cover memory and curation (19 evals, coverage 100/100),
+both examples score 100/100 with `memory: 5/5`, and `scripts/curate-memory.mjs` ships.
+Replaced with what is *currently* open, each item verified rather than assumed.
+
 **Breaking: install layout.** A scaffold used to drop eleven entries in the project root.
 Now it drops three, and everything else lives under `harness/`.
 
