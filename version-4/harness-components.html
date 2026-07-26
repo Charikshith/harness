@@ -131,7 +131,7 @@
 <div class="wrap">
 
 <header class="hero">
-  <div class="eyebrow">harness-creator · version 3.1</div>
+  <div class="eyebrow">harness-creator · version 4 (0.4.0)</div>
   <h1>Harness Components</h1>
   <p class="sub">What every part of the harness is, what it changes when it runs, and which files it touches — plus how the memory and curation loop fits into a session.</p>
 </header>
@@ -148,7 +148,7 @@
     <li><a href="#memory">Memory layer</a></li>
     <li><a href="#flow2">Memory &amp; curation diagram</a></li>
     <li><a href="#curation">Curation (dreaming)</a></li>
-    <li><a href="#scripts">The four scripts</a></li>
+    <li><a href="#scripts">The scripts</a></li>
     <li><a href="#scoring">How scoring works</a></li>
     <li><a href="#map">Template → file map</a></li>
   </ol>
@@ -350,7 +350,7 @@
 </dl>
 <ul class="files">
   <li><b>generated from</b> templates/memory-index.md</li>
-  <li><b>writes</b> memory/index.md</li>
+  <li><b>writes</b> harness/memory/index.md</li>
   <li><b>shape defined by</b> templates/memory-entry.md <span style="opacity:.6">(not scaffolded; consulted)</span></li>
 </ul>
 </div>
@@ -362,7 +362,7 @@
 <p>Commands, paths and symbols go in backticks: a journal with no backticks is a journal of feature restatements and will yield no proposals.</p>
 <ul class="files">
   <li><b>generated from</b> templates/memory-journal.md</li>
-  <li><b>writes</b> memory/journal.md</li>
+  <li><b>writes</b> harness/memory/journal.md</li>
 </ul>
 </div>
 
@@ -428,9 +428,9 @@
 
     <rect x="255" y="140" width="150" height="120" rx="10" fill="var(--panel)" stroke="var(--mem)" stroke-width="2"/>
     <text x="330" y="166" font-size="12.5" font-weight="700" text-anchor="middle" fill="var(--mem)">THE STORE</text>
-    <text x="330" y="188" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">memory/index.md</text>
+    <text x="330" y="188" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">harness/memory/index.md</text>
     <text x="330" y="205" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">memory/&lt;slug&gt;.md</text>
-    <text x="330" y="222" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">memory/journal.md</text>
+    <text x="330" y="222" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">harness/memory/journal.md</text>
     <text x="330" y="245" font-size="10" text-anchor="middle" fill="var(--ink-soft)">markdown · bash + grep</text>
 
     <path d="M204,98 L253,155" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
@@ -685,7 +685,7 @@
 </ul>
 </div>
 
-<h2 id="scripts"><span class="num">10</span>The four scripts</h2>
+<h2 id="scripts"><span class="num">10</span>The scripts</h2>
 <p class="lede">Node.js, standard library only, zero dependencies. None of them is copied into the target project.</p>
 
 <div class="tw">
@@ -694,8 +694,8 @@
   <tbody>
     <tr>
       <td><code>create-harness.mjs</code></td>
-      <td>Scaffolds a harness. Detects stack and package manager to build the verification commands. Skips existing files unless <code>--force</code>. Pre-flights the <code>memory</code> path and exits before writing anything if it is not a directory.</td>
-      <td><b>writes</b> AGENTS.md · CLAUDE.md · feature_list.json · progress.md · session-handoff.md · memory/index.md · memory/journal.md · dream-queue.md · init.sh</td>
+      <td>Scaffolds a harness. Detects stack and package manager to build the verification commands. Skips existing files unless <code>--force</code>. Pre-flights the <code>harness/</code> and <code>harness/memory/</code> paths and exits before writing anything if it is not a directory.</td>
+      <td><b>writes</b> at the root: AGENTS.md · CLAUDE.md · init.sh — under harness/: feature_list.json · progress.md · session-handoff.md · memory/{index,journal,graveyard}.md · dream-queue.md · open-work.md</td>
     </tr>
     <tr>
       <td><code>validate-harness.mjs</code></td>
@@ -715,7 +715,7 @@
     <tr>
       <td><code>render-assessment-html.mjs</code></td>
       <td>Renders the assessment as a standalone HTML file.</td>
-      <td><b>writes</b> &lt;target&gt;/harness-assessment.html</td>
+      <td><b>writes</b> &lt;target&gt;/harness/harness-assessment.html</td>
     </tr>
   </tbody>
 </table>
@@ -787,6 +787,11 @@
 
 <h3>Closed since v0.3.1</h3>
 <ul>
+  <li><code>enrich-harness.mjs</code> inserted snippets immediately after the matched
+      <em>heading</em> line rather than after the section body, so anchoring on an existing
+      heading pushed that section's own content below the inserted one. Fixed: insertion is
+      now markdown- and fence-aware, inserts once, and reads the in-progress buffer so fixes
+      in one run can anchor on sections added by earlier fixes.</li>
   <li>Memory and curation cases now exist in <code>evals/evals.json</code> — 19 evals, and
       <code>run-benchmark.mjs</code> reports eval coverage 100/100.</li>
   <li>Both bundled examples were regenerated and migrated; each now scores
@@ -797,9 +802,6 @@
 
 <h3>Still open</h3>
 <ul>
-  <li><code>enrich-harness.mjs</code> inserts a snippet immediately after the matched
-      <em>heading</em> line rather than after the section body, so anchoring on an existing
-      heading can push that section's own content below the inserted one.</li>
   <li>Both examples' <code>init.sh</code> predate the environment contract block and do not
       contain it. Harmless — the check is vacuously true without the file — but they are no
       longer byte-identical to a fresh scaffold.</li>
