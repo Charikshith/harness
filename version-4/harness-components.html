@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Harness Components — harness-creator v3.1</title>
+<title>Harness Components — harness-creator v4</title>
 <style>
   :root {
     --bg: #fbfaf8; --panel: #ffffff; --ink: #1a1a1a; --ink-soft: #5c5a57;
@@ -160,7 +160,7 @@
 <p>The skill that generates it does three things: <strong>scaffold</strong> a harness into a project, <strong>score</strong> an existing one, and <strong>retrofit</strong> missing pieces into one that already exists. Everything it writes is a plain file a human can read and edit.</p>
 
 <div class="note">
-  <strong>The core distinction in v3.1.</strong> Earlier versions tracked <em>state</em> — where the work stopped — very well, and recorded no <em>learning</em> at all. State is a bookmark; a lesson is knowledge. A harness could score full marks and never get better at anything. Memory is now its own subsystem for exactly that reason.
+  <strong>The core distinction introduced in v0.3.1.</strong> Earlier versions tracked <em>state</em> — where the work stopped — very well, and recorded no <em>learning</em> at all. State is a bookmark; a lesson is knowledge. A harness could score full marks and never get better at anything. Memory is now its own subsystem for exactly that reason.
 </div>
 
 <h2 id="flow1"><span class="num">02</span>Session flow</h2>
@@ -264,7 +264,7 @@
     </g>
   </svg>
   </div>
-  <figcaption>Green = memory layer, new in v3.1. Dashed = read but never acted on by the agent.</figcaption>
+  <figcaption>Green = memory layer, new in v0.3.1. Dashed = read but never acted on by the agent.</figcaption>
 </figure>
 
 <h2 id="subsystems"><span class="num">03</span>The seven subsystems</h2>
@@ -275,11 +275,11 @@
   <thead><tr><th>Subsystem</th><th>Question it answers</th><th>Minimal artifact</th></tr></thead>
   <tbody>
     <tr><td><strong>Instructions</strong></td><td>How do we work here?</td><td><code>AGENTS.md</code></td></tr>
-    <tr><td><strong>State</strong></td><td>Where did the work stop?</td><td><code>feature_list.json</code>, <code>progress.md</code></td></tr>
+    <tr><td><strong>State</strong></td><td>Where did the work stop?</td><td><code>harness/feature_list.json</code>, <code>harness/progress.md</code></td></tr>
     <tr><td><strong>Verification</strong></td><td>How do we know it works?</td><td><code>init.sh</code></td></tr>
     <tr><td><strong>Scope</strong></td><td>What are we <em>not</em> doing?</td><td>Feature deps + done criteria</td></tr>
-    <tr><td><strong>Lifecycle</strong></td><td>How does the next session restart?</td><td><code>session-handoff.md</code></td></tr>
-    <tr><td><strong>Memory</strong> <span class="pill new">v3.1</span></td><td>What is now known that wasn't?</td><td><code>memory/index.md</code>, <code>memory/journal.md</code></td></tr>
+    <tr><td><strong>Lifecycle</strong></td><td>How does the next session restart?</td><td><code>harness/session-handoff.md</code></td></tr>
+    <tr><td><strong>Memory</strong> <span class="pill new">v0.3.1</span></td><td>What is now known that wasn't?</td><td><code>harness/memory/index.md</code>, <code>harness/memory/journal.md</code></td></tr>
     <tr><td><strong>Behavioral</strong></td><td>How should code be written?</td><td>Embedded in <code>AGENTS.md</code></td></tr>
   </tbody>
 </table>
@@ -306,7 +306,7 @@
 <p class="lede">Episodic. Answers “where am I”, and stops being true once the current feature ships.</p>
 
 <div class="card">
-<h3><code>feature_list.json</code></h3>
+<h3><code>harness/feature_list.json</code></h3>
 <p>The source of truth for what to build. Each entry carries <code>id</code>, <code>description</code>, <code>dependencies</code>, <code>status</code> and <code>evidence</code>. The <code>evidence</code> field is what makes “done” falsifiable — a status of <code>done</code> with an empty evidence field is a red flag, not a completion.</p>
 <ul class="files">
   <li><b>generated from</b> templates/feature-list.json</li>
@@ -316,8 +316,8 @@
 </div>
 
 <div class="card">
-<h3><code>progress.md</code> &amp; <code>session-handoff.md</code></h3>
-<p>Continuity. <code>progress.md</code> holds current state, decisions made (with rejected alternatives), risks and accumulated debt. <code>session-handoff.md</code> holds the verification evidence table, files changed, and the recommended next step.</p>
+<h3><code>harness/progress.md</code> &amp; <code>harness/session-handoff.md</code></h3>
+<p>Continuity. <code>harness/progress.md</code> holds current state, decisions made (with rejected alternatives), risks and accumulated debt. <code>harness/session-handoff.md</code> holds the verification evidence table, files changed, and the recommended next step.</p>
 <p><strong>These are not memory.</strong> They are the bookmark. Conflating them with memory was the single most common failure this version fixes.</p>
 <ul class="files">
   <li><b>generated from</b> templates/progress.md, templates/session-handoff.md</li>
@@ -337,15 +337,15 @@
 </ul>
 </div>
 
-<h2 id="memory"><span class="num">07</span>Memory layer <span class="pill new">new in v3.1</span></h2>
+<h2 id="memory"><span class="num">07</span>Memory layer <span class="pill new">new in v0.3.1</span></h2>
 <p class="lede">Durable. Answers “what do I now know that I didn't before”, and outlives the feature that taught it.</p>
 
 <div class="card mem">
-<h3><code>memory/index.md</code></h3>
+<h3><code>harness/memory/index.md</code></h3>
 <p>The always-on index: one pointer row per lesson, read every session. Topic files are opened only when a row looks relevant — progressive disclosure, so depth stays available without paying context for it.</p>
 <dl class="kv">
   <dt>Hard cap</dt><dd>~200 lines / 25KB. Overflow is a signal to merge or delete lessons, never to raise the cap.</dd>
-  <dt>Two-step save</dt><dd>Write <code>memory/&lt;slug&gt;.md</code> <em>first</em>, then append the index row. Topic-file-first is deliberate: a crash between the two leaves an orphan, never a broken index.</dd>
+  <dt>Two-step save</dt><dd>Write <code>harness/memory/&lt;slug&gt;.md</code> <em>first</em>, then append the index row. Topic-file-first is deliberate: a crash between the two leaves an orphan, never a broken index.</dd>
   <dt>Retired, not deleted</dt><dd>A wrong lesson is the record of how far it propagated. It moves to a Retired section with a reason.</dd>
 </dl>
 <ul class="files">
@@ -356,7 +356,7 @@
 </div>
 
 <div class="card mem">
-<h3><code>memory/journal.md</code></h3>
+<h3><code>harness/memory/journal.md</code></h3>
 <p>Append-only. One dated block per session: what you looked up, what surprised you, what correction you received, what you would do differently. Three to five lines, no prose.</p>
 <p><strong>This is the corpus curation reads.</strong> Without it, “find recurring patterns” has nothing to count and every proposal is an opinion. It is not a lesson store and not a progress log — it is raw, unfiltered friction.</p>
 <p>Commands, paths and symbols go in backticks: a journal with no backticks is a journal of feature restatements and will yield no proposals.</p>
@@ -482,9 +482,9 @@
 
 <div class="card mem">
 <ol>
-  <li><strong>At startup, read <code>memory/index.md</code>.</strong> One pointer row per lesson. The agent scans the rows and opens a topic file only when a row looks relevant to the task in hand. This is progressive disclosure: full depth stays available, but you pay context only for what you open.</li>
+  <li><strong>At startup, read <code>harness/memory/index.md</code>.</strong> One pointer row per lesson. The agent scans the rows and opens a topic file only when a row looks relevant to the task in hand. This is progressive disclosure: full depth stays available, but you pay context only for what you open.</li>
   <li><strong>Do the work.</strong> Memory is not touched again mid-task. Nothing is appended opportunistically — that's what produces stores full of noise.</li>
-  <li><strong>At the end, append one dated block to <code>memory/journal.md</code>.</strong> Three to five lines answering only: what did I have to look up, what surprised me, what correction did I receive, what would I do differently. Raw and unfiltered. If a session produced none of those, write <code>nothing</code> — that is a real signal, not a gap.</li>
+  <li><strong>At the end, append one dated block to <code>harness/memory/journal.md</code>.</strong> Three to five lines answering only: what did I have to look up, what surprised me, what correction did I receive, what would I do differently. Raw and unfiltered. If a session produced none of those, write <code>nothing</code> — that is a real signal, not a gap.</li>
   <li><strong>Only if a lesson is already obviously durable</strong>, do the two-step save now. A direct user correction always qualifies. Everything else stays in the journal and waits for curation to decide whether it's a pattern.</li>
 </ol>
 </div>
@@ -519,11 +519,11 @@
 
 <div class="card mem">
 <ol>
-  <li><strong>Read the journal against the store.</strong> Inputs are <code>memory/journal.md</code> (the accumulated friction) plus <code>memory/index.md</code> and its topic files (what's already known).</li>
+  <li><strong>Read the journal against the store.</strong> Inputs are <code>harness/memory/journal.md</code> (the accumulated friction) plus <code>harness/memory/index.md</code> and its topic files (what's already known).</li>
   <li><strong>Look for exactly four things.</strong> Not "anything interesting" — a bounded checklist, so the pass is repeatable and its output predictable. See the table below.</li>
-  <li><strong>Write proposals to <code>dream-queue.md</code>.</strong> Each carries a <em>claim</em>, its <em>evidence</em> (which journal dates or files), and a <em>prevalence count</em>. No citation, no entry.</li>
+  <li><strong>Write proposals to <code>harness/dream-queue.md</code>.</strong> Each carries a <em>claim</em>, its <em>evidence</em> (which journal dates or files), and a <em>prevalence count</em>. No citation, no entry.</li>
   <li><strong>Stop.</strong> Nothing is applied. The pass has no write access to anything except its own queue.</li>
-  <li><strong>A human accepts or rejects each proposal</strong>, typically at the start of the next session. Accepted changes are written into <code>memory/</code>. Rejections go to the Decided table so the same idea can't quietly return next cycle.</li>
+  <li><strong>A human accepts or rejects each proposal</strong>, typically at the start of the next session. Accepted changes are written into <code>harness/memory/</code>. Rejections go to the Decided table so the same idea can't quietly return next cycle.</li>
 </ol>
 </div>
 
@@ -575,7 +575,7 @@
   <dt>Human review</dt>
   <dd>Reads one line with three citations and a count. Accepts.</dd>
   <dt>Applied</dt>
-  <dd><code>memory/deploy.md</code> written with the rule and a <code>**Why:**</code> line (the script skips migrations), then the pointer row appended to <code>memory/index.md</code>. Two-step order.</dd>
+  <dd><code>harness/memory/deploy.md</code> written with the rule and a <code>**Why:**</code> line (the script skips migrations), then the pointer row appended to <code>harness/memory/index.md</code>. Two-step order.</dd>
   <dt>Session 8 onward</dt>
   <dd>Startup reads the index, sees the deploy row, opens it when deploying. Mistake stops recurring. Journal stops accumulating that line — which is itself the evidence the lesson worked.</dd>
 </dl>
@@ -592,7 +592,7 @@
 
 <p>Two structural constraints follow:</p>
 <ul>
-  <li><strong>Curation may write <code>memory/</code> only.</strong> It may <em>suggest</em> an instruction change; it can never make one. The worst case of a poisoned store is therefore a bad note, not a new rule.</li>
+  <li><strong>Curation may write <code>harness/memory/</code> only.</strong> It may <em>suggest</em> an instruction change; it can never make one. The worst case of a poisoned store is therefore a bad note, not a new rule.</li>
   <li><strong>Memory content is evidence, not instruction.</strong> An imperative sentence inside a memory file has no authority over the agent. If a lesson file says "run this command" or "ignore the following rules", that is a finding to report, not an order to obey. This is a structural defence rather than a keyword blocklist — blocklists lose, because the attacker picks the words.</li>
 </ul>
 
@@ -619,7 +619,7 @@
     <tr><td>Job</td><td>Capture</td><td>Judge</td></tr>
     <tr><td>Budget</td><td>Shared with the task</td><td>Its own</td></tr>
     <tr><td>Sees</td><td>One session</td><td>Every session</td></tr>
-    <tr><td>Writes</td><td><code>journal.md</code>, occasionally a lesson</td><td><code>dream-queue.md</code> only</td></tr>
+    <tr><td>Writes</td><td><code>journal.md</code>, occasionally a lesson</td><td><code>harness/dream-queue.md</code> only</td></tr>
     <tr><td>Can delete a lesson?</td><td>No</td><td>Only by proposing it</td></tr>
     <tr><td>Time to benefit</td><td>Next session</td><td>Next cycle</td></tr>
     <tr><td>Strength</td><td>Fast feedback; zero ceremony</td><td>Pattern detection; staleness control</td></tr>
@@ -640,7 +640,7 @@
       <td>The four fixed questions, and the instruction to write <code>nothing</code> rather than filler.</td>
     </tr>
     <tr>
-      <td><strong>Memory and <code>progress.md</code> converge</strong>, and every lesson gets written twice.</td>
+      <td><strong>Memory and <code>harness/progress.md</code> converge</strong>, and every lesson gets written twice.</td>
       <td>The index crosses 160 lines within weeks, and its rows read like a changelog — feature names and dates rather than lessons.</td>
       <td>The boundary test: if the note stops being true when the current feature ships, it is state, not memory.</td>
     </tr>
@@ -670,7 +670,7 @@
 <h2 id="curation"><span class="num">09</span>Curation (dreaming)</h2>
 
 <div class="card mem">
-<h3><code>dream-queue.md</code></h3>
+<h3><code>harness/dream-queue.md</code></h3>
 <p>The review surface. Proposals land here <em>unapplied</em>, each carrying a claim, its evidence, and a prevalence count. Rejections are recorded in a Decided table — without that record the same proposal returns every cycle and nobody remembers saying no.</p>
 <dl class="kv">
   <dt>Cadence</dt><dd>Every ~10 sessions, weekly, or when the index passes 160 lines. Running it after every session produces noise and trains the reviewer to skim.</dd>
@@ -760,15 +760,15 @@
   <thead><tr><th>Template</th><th>Becomes</th><th>Scaffolded?</th></tr></thead>
   <tbody>
     <tr><td><code>templates/agents.md</code></td><td><code>AGENTS.md</code> + <code>CLAUDE.md</code> pointer</td><td>yes</td></tr>
-    <tr><td><code>templates/feature-list.json</code></td><td><code>feature_list.json</code></td><td>yes</td></tr>
+    <tr><td><code>templates/feature-list.json</code></td><td><code>harness/feature_list.json</code></td><td>yes</td></tr>
     <tr><td><code>templates/feature-list.schema.json</code></td><td>— validation only</td><td>no</td></tr>
-    <tr><td><code>templates/progress.md</code></td><td><code>progress.md</code></td><td>yes</td></tr>
-    <tr><td><code>templates/session-handoff.md</code></td><td><code>session-handoff.md</code></td><td>yes</td></tr>
+    <tr><td><code>templates/progress.md</code></td><td><code>harness/progress.md</code></td><td>yes</td></tr>
+    <tr><td><code>templates/session-handoff.md</code></td><td><code>harness/session-handoff.md</code></td><td>yes</td></tr>
     <tr><td><code>templates/init.sh</code></td><td><code>init.sh</code></td><td>yes</td></tr>
-    <tr><td><code>templates/memory-index.md</code> <span class="pill new">v3.1</span></td><td><code>memory/index.md</code></td><td>yes</td></tr>
-    <tr><td><code>templates/memory-journal.md</code> <span class="pill new">v3.1</span></td><td><code>memory/journal.md</code></td><td>yes</td></tr>
-    <tr><td><code>templates/memory-entry.md</code> <span class="pill new">v3.1</span></td><td><code>memory/&lt;slug&gt;.md</code></td><td>no — shape reference</td></tr>
-    <tr><td><code>templates/dream-queue.md</code> <span class="pill new">v3.1</span></td><td><code>dream-queue.md</code></td><td>yes</td></tr>
+    <tr><td><code>templates/memory-index.md</code> <span class="pill new">v0.3.1</span></td><td><code>harness/memory/index.md</code></td><td>yes</td></tr>
+    <tr><td><code>templates/memory-journal.md</code> <span class="pill new">v0.3.1</span></td><td><code>harness/memory/journal.md</code></td><td>yes</td></tr>
+    <tr><td><code>templates/memory-entry.md</code> <span class="pill new">v0.3.1</span></td><td><code>harness/memory/&lt;slug&gt;.md</code></td><td>no — shape reference</td></tr>
+    <tr><td><code>templates/dream-queue.md</code> <span class="pill new">v0.3.1</span></td><td><code>harness/dream-queue.md</code></td><td>yes</td></tr>
   </tbody>
 </table>
 </div>
@@ -777,7 +777,7 @@
 <p>Loaded on demand, never copied into a target. <code>references/index.md</code> routes between them by type and tags.</p>
 <ul>
   <li><code>memory-persistence-pattern.md</code> — the store: layers, two-step save, bounded index, local-override priority</li>
-  <li><code>dreaming-pattern.md</code> <span class="pill new">v3.1</span> — curation: cadence, propose-never-apply, bounded queue, six gotchas</li>
+  <li><code>dreaming-pattern.md</code> <span class="pill new">v0.3.1</span> — curation: cadence, propose-never-apply, bounded queue, six gotchas</li>
   <li><code>context-engineering-pattern.md</code> — progressive disclosure and context budget</li>
   <li><code>lifecycle-bootstrap-pattern.md</code> — hooks, startup, long-running work</li>
   <li><code>tool-registry-pattern.md</code> — permissions, tools, concurrency</li>
@@ -785,15 +785,31 @@
   <li><code>gotchas.md</code> — non-obvious failure modes</li>
 </ul>
 
+<h3>Closed since v0.3.1</h3>
+<ul>
+  <li>Memory and curation cases now exist in <code>evals/evals.json</code> — 19 evals, and
+      <code>run-benchmark.mjs</code> reports eval coverage 100/100.</li>
+  <li>Both bundled examples were regenerated and migrated; each now scores
+      <code>100/100</code> with <code>memory: 5/5</code> and reports <code>production</code>.</li>
+  <li><code>scripts/curate-memory.mjs</code> ships — the two countable curation signals are
+      automated, the three that need judgement are printed as a checklist.</li>
+</ul>
+
 <h3>Still open</h3>
 <ul>
-  <li>No memory or curation cases in <code>evals/evals.json</code>; eval coverage reports 92/100 because of it.</li>
-  <li>Both bundled examples predate memory — they score <code>memory: 1/5</code> and report <code>usable</code>.</li>
-  <li>No bundled curation script. Deliberate, not forgotten.</li>
+  <li><code>enrich-harness.mjs</code> inserts a snippet immediately after the matched
+      <em>heading</em> line rather than after the section body, so anchoring on an existing
+      heading can push that section's own content below the inserted one.</li>
+  <li>Both examples' <code>init.sh</code> predate the environment contract block and do not
+      contain it. Harmless — the check is vacuously true without the file — but they are no
+      longer byte-identical to a fresh scaffold.</li>
+  <li><code>templates/feature-list.schema.json</code> carries YAML frontmatter and so has
+      never been parseable as JSON.</li>
 </ul>
 
 <p style="margin-top:44px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:.86rem">
-harness-creator v0.3.1 · generated 2026-07-25 · seven subsystems, scored out of 35
+harness-creator v4 (0.4.0) · updated 2026-07-27 · seven subsystems, scored out of 35 ·
+harness state under <code>harness/</code>, three files at the project root
 </p>
 
 </div>
