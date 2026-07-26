@@ -28,6 +28,7 @@ Creates a minimal production harness:
   memory/journal.md (append-only friction log; the input to curation)
   memory/graveyard.md (rejected routes, each with an expiry condition)
   dream-queue.md (out-of-band curation proposals, human-gated)
+  open-work.md (work seen but declined under scope discipline)
   init.sh
 
 Existing files are skipped unless --force is set.`);
@@ -72,6 +73,7 @@ results.push(await copyTemplate('memory-index.md', path.join(target, 'memory', '
 results.push(await copyTemplate('memory-journal.md', path.join(target, 'memory', 'journal.md'), {}, { force }));
 results.push(await copyTemplate('memory-graveyard.md', path.join(target, 'memory', 'graveyard.md'), {}, { force }));
 results.push(await copyTemplate('dream-queue.md', path.join(target, 'dream-queue.md'), {}, { force }));
+results.push(await copyTemplate('open-work.md', path.join(target, 'open-work.md'), {}, { force }));
 
 const initPath = path.join(target, 'init.sh');
 if (force || !await exists(initPath)) {

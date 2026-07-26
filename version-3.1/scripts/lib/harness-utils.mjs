@@ -308,7 +308,8 @@ export function scoreHarness(files, { killRate } = {}) {
       textHas(featureList, ['dependencies'], 'Feature dependencies are tracked'),
       textHas(agents + featureList, ['status'], 'Feature status is explicit'),
       structuredHas(agents, ['Stay in scope', 'scope'], 'Scope boundary documented'),
-      structuredHas(agents, ['Definition of Done'], 'Completion gate limits scope closure')
+      structuredHas(agents, ['Definition of Done'], 'Completion gate limits scope closure'),
+      hasFile(byPath, ['open-work.md'], 'Recruitable open-work surface exists')
     ],
     lifecycle: [
       hasFile(byPath, ['init.sh'], 'Startup script exists'),
