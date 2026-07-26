@@ -6,24 +6,24 @@
 //
 //   runtime    mutate the PROJECT, then RUN init.sh.
 //              Asks: does this project's gate catch breakage in this project?
-//              A project controls the answer, so this is what gets SCORED.
 //
 //   validator  mutate init.sh, then SCORE the harness.
 //              Asks: can the scorer tell a working gate from a decorative one?
-//              No individual project can fix the answer, so this is REPORTED, not scored.
 //
-// Both distinctions are load-bearing.
-//
-// The pairing matters: mutating init.sh and then running init.sh is unkillable by
+// The pairing is load-bearing: mutating init.sh and then running init.sh is unkillable by
 // construction — deleting a gate cannot be caught by running the gate you just deleted.
-// That combination reports SURVIVED however good the harness is.
+// That combination reports SURVIVED however good the harness is, so no mutation uses it.
 //
-// The scoring split matters just as much. `hollow-gate` survives on a stub and on a
-// well-tested project alike, because two verification checks read `init + agents` and
-// AGENTS.md prose satisfies them whatever init.sh contains. Counting it against a project
-// would mean no project could ever exceed 50% and the check would fail permanently — a
-// check that cannot pass is not a signal. It is a finding about this skill, so it is
-// printed under "scorer blindness" and left out of the rate.
+// Both probe types are now scored. That was not always true. When this script was written,
+// `hollow-gate` and `strip-all-commands` survived on a stub and on a well-tested project
+// alike, because two verification checks read `init + agents` and AGENTS.md prose satisfied
+// them whatever init.sh contained. Counting them then would have capped every project at
+// 50%, below the threshold, making the check permanently unpassable — so they were reported
+// separately as "scorer blindness" and left out of the rate.
+//
+// That gap is now closed: verification has an `Entrypoint actually runs a command` check, so
+// both mutants are killed and both discriminate. A surviving validator mutant now means a
+// real scorer gap rather than a permanent artifact, which is worth failing on.
 import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
@@ -135,20 +135,21 @@ export async function runMutations(target, { onResult } = {}) {
     }
   }
 
-  // Scored: runtime probes only. See the header comment — validator probes measure this
-  // skill's blindness, not this project's gate, and no project can act on them.
-  const scored = results.filter((item) => item.applicable && item.probe === 'runtime');
+  // Every applicable mutation is scored, both probe types. See the header comment for why
+  // validator probes were once excluded and why that no longer applies.
+  const scored = results.filter((item) => item.applicable);
   const killed = scored.filter((item) => item.killed).length;
-  const blindness = results.filter((item) =>
-    item.applicable && item.probe === 'validator' && !item.killed).map((item) => item.id);
+  const survivors = scored.filter((item) => !item.killed);
 
   return {
     killed,
     total: scored.length,
     skipped: results.filter((item) => !item.applicable).length,
     rate: scored.length ? killed / scored.length : null,
-    survivors: scored.filter((item) => !item.killed).map((item) => item.id),
-    blindness,
+    survivors: survivors.map((item) => item.id),
+    // A surviving validator mutant points at the scorer; a surviving runtime mutant points
+    // at this project's gate. Same rate, different thing to go fix.
+    scorerGaps: survivors.filter((item) => item.probe === 'validator').map((item) => item.id),
     results
   };
 }
@@ -195,18 +196,16 @@ Reports only; always exits 0. Wire it into scoring via validate-harness.mjs --mu
 
   console.log('');
   if (summary.total === 0) {
-    console.log('Kill rate: unmeasurable — no runtime mutation applies to this project.');
-    console.log('A project with no test suite has nothing for its gate to verify.');
+    console.log('Kill rate: unmeasurable — no mutation applies to this project.');
   } else {
-    console.log(`Kill rate: ${summary.killed}/${summary.total} (${Math.round(summary.rate * 100)}%) — scored.`);
+    console.log(`Kill rate: ${summary.killed}/${summary.total} (${Math.round(summary.rate * 100)}%).`);
   }
   if (summary.survivors.length) {
-    console.log(`Surviving: ${summary.survivors.join(', ')} — this gate cannot distinguish these from a healthy run.`);
+    console.log(`Surviving: ${summary.survivors.join(', ')} — indistinguishable from a healthy run.`);
   }
   if (summary.skipped) console.log(`${summary.skipped} mutation(s) skipped as not applicable.`);
-  if (summary.blindness.length) {
-    console.log(`\nScorer blindness (not counted against this project): ${summary.blindness.join(', ')}`);
-    console.log('These survive on every project. Two verification checks read init + agents,');
-    console.log('so AGENTS.md prose satisfies them whatever init.sh actually contains.');
+  if (summary.scorerGaps.length) {
+    console.log(`\nOf those, ${summary.scorerGaps.join(', ')} survived a *validator* probe —`);
+    console.log('the gap is in the scorer, not in this project. Fix a check, not the repo.');
   }
 }

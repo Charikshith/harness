@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T11:13:25.363Z",
+  "generatedAt": "2026-07-26T13:00:30.808Z",
   "target": "C:\\Users\\CharikshithPolimera\\OneDrive - Access infinity\\Products\\DEV\\PI\\harness\\version-3.1\\examples\\react-harness",
   "selfCheck": {
     "pass": true,
@@ -67,8 +67,8 @@
       },
       "verification": {
         "score": 5,
-        "passed": 7,
-        "total": 7,
+        "passed": 8,
+        "total": 8,
         "checks": [
           {
             "pass": true,
@@ -89,6 +89,11 @@
           {
             "pass": true,
             "message": "Verification evidence is recorded"
+          },
+          {
+            "pass": true,
+            "message": "Entrypoint actually runs a command",
+            "detail": "15 command line(s)"
           },
           {
             "pass": true,

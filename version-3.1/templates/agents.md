@@ -162,6 +162,10 @@ so it competes with no task for attention.
   resurfaced — meaning its prohibition went unread, or its `Recheck-if` quietly came true.
 - **Propose, never apply.** Write proposals to `dream-queue.md` with claim, evidence and
   prevalence. A human accepts or rejects each one.
+- **Two of the five signals are countable and two are not.** `curate-memory.mjs` finds the
+  recurring-but-unrecorded and reconsidered signals by counting; contradiction, dead stock
+  and staleness need a person to read and decide. A pass that only ran the script is
+  incomplete, and the script says so when it finishes.
 - Curation may change `memory/` only. It may *suggest* an instruction change but must
   never edit this file itself.
 - Cap the queue at 5 open proposals. A pass that finds more must merge or drop its own

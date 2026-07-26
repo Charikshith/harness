@@ -300,6 +300,7 @@ export function scoreHarness(files, { killRate } = {}) {
       textHas(init + agents, ['test', 'pytest', 'vitest', 'cargo test', 'go test', 'dotnet test'], 'Test command documented'),
       textHas(init + agents, ['build', 'type', 'lint', 'compile'], 'Static/build check documented'),
       textHas(allText, ['Evidence', 'Verification Evidence', 'command and output'], 'Verification evidence is recorded'),
+      entrypointExecutesSomething(init, 'Entrypoint actually runs a command'),
       environmentContractHonoured(environment, init, 'Declared environment preconditions are checked by the entrypoint'),
       gateCatchesBreakage(killRate, 'Gate demonstrably catches known breakage')
     ],
@@ -514,6 +515,33 @@ function graveyardWellFormed(graveyardText, message) {
     };
   }
   return { pass: true, message, detail: `${rows.length} rows, all with cause and expiry` };
+}
+
+// --- Entrypoint substance ---------------------------------------------------
+// The two checks above deliberately read `init + agents`: they ask whether a test command
+// is *documented*, and documenting it in AGENTS.md is legitimate. Narrowing them to `init`
+// would fail every harness that keeps its command list in prose.
+//
+// But that left nothing asking whether init.sh RUNS anything, so an entrypoint reduced to
+// `set -e; exit 0` scored verification 5/5 — measured, on both bundled examples. That is a
+// different question, so it gets its own check rather than a redefinition of theirs.
+//
+// `exit` is excluded on purpose: exiting is not verifying. Comments, blanks, the shebang,
+// `set -*`, `echo`, and bare shell control keywords are all scaffolding, not work.
+const SHELL_NOISE = /^(set\b|echo\b|exit\b|then$|else$|elif\b|fi$|do$|done$|esac$|case\b|while\b|for\b|if\b|\{$|\}$|;;$|\*\)|\S+\))/;
+
+function entrypointExecutesSomething(initText, message) {
+  if (!initText.trim()) {
+    return { pass: false, message, detail: 'no entrypoint to inspect' };
+  }
+  const substantive = initText.split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#') && !SHELL_NOISE.test(line));
+
+  if (!substantive.length) {
+    return { pass: false, message, detail: 'entrypoint contains no command — only echoes, comments or control flow' };
+  }
+  return { pass: true, message, detail: `${substantive.length} command line(s)` };
 }
 
 // --- Verification adversary -------------------------------------------------

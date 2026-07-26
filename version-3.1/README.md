@@ -52,7 +52,7 @@ of a single lesson).
 |---|---|---|
 | Instructions | Structural | AGENTS.md exists, startup workflow, definition of done, verification commands, state routing |
 | State | Structural | feature_list.json, progress.md, handoff structure, restart support |
-| Verification | Structural | init.sh, fail-fast, test/static commands, evidence recording, declared environment preconditions, and — with `--mutate` — whether the gate demonstrably catches breakage |
+| Verification | Structural | init.sh, fail-fast, test/static commands, evidence recording, that the entrypoint actually runs a command, declared environment preconditions, and — with `--mutate` — whether the gate demonstrably catches breakage |
 | Scope | Structural | One-feature-at-a-time, dependencies, status fields, scope boundaries, recruitable open-work surface |
 | Lifecycle | Structural | Startup script, end-of-session, handoff, restart markers |
 | **Memory** | **v3.1 new** | Index exists, is initialised and within its cap; links intact (no dangling/orphaned lessons); curation input present; two-step save and curation cadence documented; graveyard rows carry a cause and an expiry |
@@ -74,6 +74,19 @@ Deliberate, and not a staging decision — these stay unscored:
 | `--mutate` | Kill rate over runtime mutations; separately, scorer blindness | The rate *is* scored. The blindness list is not: those mutants survive on every project, so counting them would cap everyone below the threshold and the check could never pass |
 | `--log` | Appends the audit to `memory/audit-log.jsonl` | A trend can say "this got worse", never "this is unacceptable" — acceptable is contextual. Gate it and the cheapest way to go green is to stop measuring honestly |
 | `--budget` | Always-on context in lines and estimated tokens | A budget is a warning; there is no defensible universal ceiling |
+
+### Curation
+
+```bash
+node version-3/scripts/curate-memory.mjs --target /path/to/project          # dry run
+node version-3/scripts/curate-memory.mjs --target /path/to/project --apply  # write proposals
+```
+
+Reads the journal, lesson store and graveyard; writes proposals to `dream-queue.md` and
+nothing else. Two of the five curation signals are countable (a token recurring in the
+journal with no lesson; a graveyard route resurfacing) and three need a person
+(contradiction, dead stock, staleness) — the script prints those three as a checklist every
+run rather than implying it found everything. It never edits `memory/` or `AGENTS.md`.
 
 ### Behavioral Policy Details
 
@@ -112,6 +125,7 @@ harness-creator/
 │   ├── create-harness.mjs
 │   ├── validate-harness.mjs
 │   ├── mutate-gate.mjs
+│   ├── curate-memory.mjs
 │   ├── enrich-harness.mjs
 │   ├── render-assessment-html.mjs
 │   ├── run-benchmark.mjs

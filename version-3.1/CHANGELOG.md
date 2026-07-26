@@ -132,13 +132,57 @@ denominator from 30 to 35.
   template; #17 requires that adding the file does not trip the memory link-integrity check.
   All three encode failure modes hit while building the clusters.
 
+### Both remaining gaps closed
+
+**1. The `init + agents` concatenation no longer lets a hollow gate score 5/5.**
+- New verification check `Entrypoint actually runs a command` (7 → **8 checks**). Parses
+  `init.sh` for at least one line that isn't a comment, blank, shebang, `set -*`, `echo`,
+  `exit`, or a bare shell control keyword. `exit` is excluded deliberately: exiting is not
+  verifying.
+- **The two existing checks were left alone.** They ask whether a test command is
+  *documented*, and documenting it in `AGENTS.md` is legitimate — narrowing them to `init`
+  would fail every harness that keeps its command list in prose. "Does the entrypoint run
+  anything" is a different question, so it got its own check rather than a redefinition of
+  theirs.
+- An `init.sh` of `set -e; exit 0` now scores `verification: 4/5`, `Overall: 97` **without
+  `--mutate`**. Previously 5/5 and 100.
+- **Consequence: `hollow-gate` and `strip-all-commands` became killable**, so their
+  exclusion from the kill rate is obsolete and has been removed. Both probe types are now
+  scored. `mutate-gate.mjs` still distinguishes them in output, because a surviving
+  *validator* mutant means fix a check while a surviving *runtime* mutant means fix the repo.
+
+**2. Curation has a script.** New **`scripts/curate-memory.mjs`**.
+- Reads `memory/journal.md`, `memory/index.md`, topic files and `memory/graveyard.md`;
+  writes to `dream-queue.md` and nothing else, and only with `--apply`.
+- **Two of the five signals are countable, three are not**, and the split is stated rather
+  than hidden. Countable: recurring-but-unrecorded (a backticked token in ≥2 dated journal
+  blocks with no lesson in the store) and reconsidered (a graveyard route resurfacing).
+  Judgement: contradiction, dead stock, staleness. The script prints those three as a
+  checklist on every run, because a pass reporting only what it counted reads as a pass that
+  found everything there was.
+- Only dated `## YYYY-MM-DD` blocks are mined, which excludes the template's own
+  instructional prose without needing a stoplist. HTML comments are stripped first — every
+  one of these templates documents its row format inside a comment, and matching there mines
+  the instructions for evidence, the same trap `memoryIndexLinks` had to avoid.
+- Respects the 5-proposal cap and reports what it withheld. Deduped against Open **and
+  Decided**, so a rejected proposal does not return next cycle — the loop the Decided table
+  exists to break.
+- **Two bugs found by testing and fixed before commit:** without queue dedupe, every pass
+  re-proposed the same tokens; and the insertion-point scan found the last table row *inside
+  the trailing HTML comment* and wrote proposals in there, where no later read would ever
+  see them. Insertion is now confined to the Open section and to the region before any
+  comment.
+- Verified by checksum that `memory/` and `AGENTS.md` are byte-identical across `--apply`.
+  That boundary is structural: the script opens nothing else for writing.
+
 ### Known gaps in this release
-- **The `init + agents` concatenation is unfixed.** It is what lets a hollow gate score 5/5,
-  and it is now *reported* by `--mutate` rather than repaired. Narrowing those two checks to
-  `init` alone would fail every harness that legitimately documents its commands in
-  `AGENTS.md`; the layered fix (a separate check that asks whether the gate works) is the
-  one that shipped.
-- Curation still has **no bundled script**. Unchanged from v0.3.1 and still deliberate.
+- **`scoreEvals` still has no structural subsystem → eval map.** It scores named coverage,
+  so a topic nobody adds a check for stays invisible. Cases now exist for all seven
+  subsystems and for both unscored tools' underlying ideas, but the mechanism remains a
+  checklist rather than a derivation.
+- **Curation's judgement signals remain manual**, by design. Automating "these two lessons
+  contradict" needs a model call, which breaks the zero-dependency rule the whole skill is
+  built on.
 
 ## 2026-07-25 (v0.3.1)
 
