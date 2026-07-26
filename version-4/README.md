@@ -1,25 +1,25 @@
-# harness-creator v3
+# harness-creator v4
 
 A compact skill for building and auditing harnesses around AI coding agents.
 
 It helps a repository provide everything agents need: instructions, state, verification, scope boundaries, lifecycle handoff, **and now embedded behavioral policies** — coding minimalism, surgical editing discipline, test-first verification, and safety carve-outs.
 
-**New in v3:** The generated AGENTS.md includes behavioral policies directly. No external skill dependency required. The Ponytail ladder (YAGNI → stdlib → native → dep → one-liner → minimum), surgical editing rules (Karpathy §3), test-first verification gates, proactive assumption surfacing, and safety carve-outs are all embedded in the template.
+**Since v0.3.0:** The generated AGENTS.md includes behavioral policies directly. No external skill dependency required. The Ponytail ladder (YAGNI → stdlib → native → dep → one-liner → minimum), surgical editing rules (Karpathy §3), test-first verification gates, proactive assumption surfacing, and safety carve-outs are all embedded in the template.
 
 ## Install
 
 ```bash
-npx skills add Charikshith/harness --skill harness-creator-v3
+npx skills add Charikshith/harness --skill harness-creator-v4
 ```
 
-Or copy `version-3/` into your skill path.
+Or copy `version-4/` into your skill path.
 
 ## Use
 
 ```bash
-node version-3/scripts/create-harness.mjs --target /path/to/project
-node version-3/scripts/validate-harness.mjs --target /path/to/project
-node version-3/scripts/run-benchmark.mjs --target /path/to/project --html /path/to/report.html
+node version-4/scripts/create-harness.mjs --target /path/to/project
+node version-4/scripts/validate-harness.mjs --target /path/to/project
+node version-4/scripts/run-benchmark.mjs --target /path/to/project --html /path/to/report.html
 ```
 
 The scripts use only Node.js built-in modules. They can be run after copying the skill directory into another repository.
@@ -69,8 +69,8 @@ of a single lesson).
 | Verification | Structural | init.sh, fail-fast, test/static commands, evidence recording, that the entrypoint actually runs a command, declared environment preconditions, and — with `--mutate` — whether the gate demonstrably catches breakage |
 | Scope | Structural | One-feature-at-a-time, dependencies, status fields, scope boundaries, recruitable open-work surface |
 | Lifecycle | Structural | Startup script, end-of-session, handoff, restart markers |
-| **Memory** | **v3.1 new** | Index exists, is initialised and within its cap; links intact (no dangling/orphaned lessons); curation input present; two-step save and curation cadence documented; graveyard rows carry a cause and an expiry |
-| **Behavioral** | **v3 new** | Coding ladder, coding standards, surgical editing, test-first gates, assumption surfacing, safety carve-outs |
+| **Memory** | **v0.3.1** | Index exists, is initialised and within its cap; links intact (no dangling/orphaned lessons); curation input present; two-step save and curation cadence documented; graveyard rows carry a cause and an expiry |
+| **Behavioral** | **v0.3.0** | Coding ladder, coding standards, surgical editing, test-first gates, assumption surfacing, safety carve-outs |
 
 The score is structural + memory + behavioral, as a percentage of 35. It tells you whether the harness is present and coherent; it does not replace real before/after agent-session testing.
 
@@ -92,8 +92,8 @@ Deliberate, and not a staging decision — these stay unscored:
 ### Curation
 
 ```bash
-node version-3/scripts/curate-memory.mjs --target /path/to/project          # dry run
-node version-3/scripts/curate-memory.mjs --target /path/to/project --apply  # write proposals
+node version-4/scripts/curate-memory.mjs --target /path/to/project          # dry run
+node version-4/scripts/curate-memory.mjs --target /path/to/project --apply  # write proposals
 ```
 
 Reads the journal, lesson store and graveyard; writes proposals to `harness/dream-queue.md` and
@@ -124,7 +124,7 @@ The behavioral checks validate that the AGENTS.md contains:
 - [x] 10 eval cases (v1)
 - [x] Generic verification detection (v1)
 - [x] OKF knowledge layer, tiered CI, enrich script, worked examples (v2)
-- [x] **Embedded behavioral policies** — coding ladder, surgical editing, test-first, safety (v3)
+- [x] **Embedded behavioral policies** — coding ladder, surgical editing, test-first, safety (v0.3.0)
 
 ## Files
 
@@ -146,8 +146,8 @@ harness-creator/
 │   ├── index.md
 │   └── lib/harness-utils.mjs
 ├── templates/
-│   ├── agents.md          ← v3: embedded behavioral policies
-│   ├── progress.md        ← v3: per-step verification + ponytail debt
+│   ├── agents.md          ← v0.3.0: embedded behavioral policies
+│   ├── progress.md        ← v0.3.0: per-step verification + ponytail debt
 │   ├── feature-list.json
 │   ├── feature-list.schema.json
 │   ├── init.sh
@@ -173,9 +173,14 @@ harness-creator/
 
 ## Version History
 
+Folder generations are the coarse product line; the precise version is the semver in
+`SKILL.md` and the headings in [CHANGELOG.md](CHANGELOG.md). Those are the only two places
+a version is authoritative.
+
 | Version | Folder | Key additions |
 |---|---|---|
-| v3 | `version-3/` | Embedded behavioral policies (Ponytail ladder, surgical editing, test-first, safety), 6-dimension scoring |
+| v4 (current, 0.4.0) | `version-4/` | `harness/` install layout — three files at the project root, all harness state under `harness/`; layout-aware resolvers with backward compatibility for the flat layout |
+| v3 (0.3.0–0.3.2) | `version-3/`, then `version-4/` | Embedded behavioral policies (Ponytail ladder, surgical editing, test-first, safety), 6-dimension scoring; memory subsystem and curation in 0.3.1; environment contract and verification adversary in 0.3.2 |
 | v2 | `version-2/` | OKF knowledge layer, enrich-harness.mjs, tiered CI, worked examples |
 | v1 | `version-1/` | Step-by-step instructions, state/progress files, per-subsystem docs |
 

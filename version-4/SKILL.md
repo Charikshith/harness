@@ -1,5 +1,5 @@
 ---
-name: harness-creator-v3
+name: harness-creator-v4
 version: "0.4.0"
 description: >-
   Build, audit, and improve harnesses that make AI coding agents reliable: AGENTS.md/CLAUDE.md
@@ -15,11 +15,11 @@ description: >-
 license: MIT
 ---
 
-# Harness Creator v3
+# Harness Creator v4
 
 Use this skill to make a repository easier for coding agents to start, stay in scope, verify work, and resume across sessions. Keep the harness small enough that agents actually follow it.
 
-**New in v3:** Embedded behavioral policies. The generated AGENTS.md now includes a
+**Since v0.3.0:** Embedded behavioral policies. The generated AGENTS.md now includes a
 Coding Policy (the Ponytail ladder), Coding Standards, Editing Discipline (surgical
 changes), test-first Definition of Done, proactive assumption surfacing, and safety
 carve-outs. Validation scores these behavioral subsystems alongside the five structural
@@ -107,9 +107,9 @@ node skills/harness-creator/scripts/validate-harness.mjs --target /path/to/proje
 
 Report the five structural subsystem scores, the memory score, the behavioral policy score, the lowest-scoring area (plus anything on the `Also low:` line), and the first 2-3 changes that would improve reliability. Treat the lowest score as a candidate bottleneck; confirm with failures, logs, or task outcomes before claiming causality.
 
-**v3 scoring:** In addition to structural scores (instructions, state, verification, scope, lifecycle), validation now checks for behavioral policy presence: coding minimalism (Ponytail ladder), surgical editing discipline, test-first verification gates, assumption surfacing, and safety carve-outs.
+**Scoring, since v0.3.0:** In addition to structural scores (instructions, state, verification, scope, lifecycle), validation now checks for behavioral policy presence: coding minimalism (Ponytail ladder), surgical editing discipline, test-first verification gates, assumption surfacing, and safety carve-outs.
 
-**v3.1 scoring:** A seventh subsystem, **memory**, is now scored: memory index present, memory routed from the instruction file, entry shape documented, two-step save invariant documented, and a curation cadence documented. The overall percentage is therefore out of 35 rather than 30 — **existing harnesses will score lower than they did under v3 until memory is added.** That drop is the finding, not a regression.
+**Scoring, since v0.3.1:** A seventh subsystem, **memory**, is now scored: memory index present, memory routed from the instruction file, entry shape documented, two-step save invariant documented, and a curation cadence documented. The overall percentage is therefore out of 35 rather than 30 — **existing harnesses will score lower than they did before v0.3.1 until memory is added.** That drop is the finding, not a regression.
 
 ### Produce a report
 
