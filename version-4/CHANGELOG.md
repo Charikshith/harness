@@ -10,6 +10,23 @@ updated: 2026-07-26
 
 ## 2026-07-26 (v0.4.0)
 
+### Enricher: snippets no longer land inside the anchored section
+`enrich-harness.mjs` spliced a new section in on the line right after the anchor heading,
+pushing that section's own content below it. On a real AGENTS.md the Memory section anchored
+on `## Working Rules` left all six Working Rules bullets under `## Memory`, reading as its
+content. Nothing failed; the file just said something other than what it meant.
+
+The inline loop is now `insertAtAnchor()` in `harness-utils.mjs`, fixing four bugs that
+shared that root: insertion point, inserting once instead of after every anchor match,
+fence-awareness (a `#` shell comment in a bash block is not an h1), and reading the
+in-progress buffer so Curation can anchor on the `## Memory` heading the previous fix just
+added. Single-line snippets insert flush, since those add a bullet to a list or a flag under
+a shebang.
+
+`scripts/insert-anchor.test.mjs` covers it — 7 assert-based checks, wired into `init.sh`.
+Every case is a bug that shipped. Regression-probed: reverting the insertion-point fix fails
+three checks and exits 1.
+
 ### One version scheme
 The skill was carrying two, and they disagreed. Folder and title said `v3`/`v3.1`, the
 `memory` pill said `v3.1`, `SKILL.md` said `0.3.1`, and this file said `v0.4.0`.
