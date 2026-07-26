@@ -480,7 +480,7 @@ Each validation check has a canonical fix:
   - Missing section → Inserts the canonical snippet into an existing file
   - Structural JSON → Requires human review (not auto-fixable)
 
-v3 adds behavioral policy enrichment: Coding Policy, Coding Standards, Editing
+Also enriches behavioral policy: Coding Policy, Coding Standards, Editing
 Discipline, Test-First gates, Safety carve-outs.`);
 
   process.exit(0);
