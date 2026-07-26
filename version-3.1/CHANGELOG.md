@@ -8,6 +8,125 @@ updated: 2025-07-17
 
 # Changelog
 
+## 2026-07-26 (v0.3.2)
+
+Five clusters from `research/missing-subsystems.md`, built in the dependency order set out
+in `research/implementation-plan.md`. **No new subsystem and no denominator change** — the
+scale stays a percentage of 35. Four of the six clusters extend an existing subsystem or
+ship unscored, applying the lesson v0.3.1 paid for when adding `memory` moved the
+denominator from 30 to 35.
+
+### Prerequisite fix (P0)
+- **Both bundled examples had a stale `AGENTS.md`.** They received the v0.3.1 memory *files*
+  but were never regenerated, so neither contained a `## Memory` section and both failed
+  `Two-step save invariant documented`. Fixed via the `GAP_FIXES` entry that already existed
+  for that message. 97 → **100** each.
+- **`CHANGELOG.md` recorded the wrong cause for it** — "the fifth point requires a non-empty
+  index" described a design ceiling that does not exist. Corrected in place, so the wrong
+  claim stays visible rather than being quietly rewritten.
+
+### Cluster F — Environment contract (`verification` 5 → 6 checks)
+- New optional **`templates/environment.md`**: preconditions as table rows whose Check cell
+  is a shell command. Exit code is the verdict; no output parsing.
+- `init.sh` runs the contract **first, under its own heading**, and exits 1 with an explicit
+  "this is the machine, not the code" message. The loop sits inside an `if` so `set -e`
+  doesn't abort on the first unmet requirement — four surfaced together beat four re-runs.
+- New check `Declared environment preconditions are checked by the entrypoint`, vacuously
+  true when the file is absent. Absence isn't a defect; declaring preconditions and never
+  checking them is, because the file reads as a guarantee.
+- **The block lives in both `templates/init.sh` and `initScriptFromCommands()`.**
+  `create-harness.mjs` generates `init.sh` and never copies that template, so editing only
+  the template would have made the check unsatisfiable by construction for every scaffolded
+  project. Found by testing a real scaffold rather than the template.
+
+### Cluster B — Graveyard (`memory` 6 → 7 checks)
+- New **`templates/memory-graveyard.md`** → `memory/graveyard.md`. Rows carry `Because`
+  (observed failure), `Blast` (what abandoning it cost), `Sessions`, and **`Recheck-if`**.
+- **`Recheck-if` is mandatory.** A row without one is folklore — obeyed forever or ignored
+  entirely, with no way to tell which from the file.
+- New check `Graveyard entries carry a cause and an expiry condition`; optional file, so
+  absence passes and only malformed rows fail.
+- **Ships with the regression fix it requires.** `memoryLinksIntact` treats every `.md`
+  under `memory/` that isn't `index.md` or `journal.md` as a lesson needing an index link.
+  The graveyard is neither, so scaffolding it without excluding it reported it as orphaned —
+  measured at `memory` 4/5 → 3/5, overall 97 → 94. The exclusion is in the same commit, not
+  a follow-up. Any future non-lesson artifact under `memory/` needs the same entry.
+- Fifth curation signal **"reconsidered"** documented: a graveyard route resurfacing means
+  either the prohibition went unread or its `Recheck-if` quietly came true.
+- Fifth journal question: *"What did I try and abandon, and why?"*
+
+### Cluster A — Verification adversary (`verification` 6 → 7 checks, opt-in)
+- New **`scripts/mutate-gate.mjs`**. Two probes: `runtime` mutates the project and runs
+  `init.sh`; `validator` mutates `init.sh` and re-scores.
+- New check `Gate demonstrably catches known breakage`, fed by `--mutate` on
+  `validate-harness.mjs`. **Vacuously true when unmeasured**, so every existing invocation
+  scores identically.
+- `scoreHarness` gains an optional second argument rather than becoming async — measuring
+  the rate copies the project and runs its gate, which shouldn't sit behind every `--json`.
+- **Phase 0 found the premise true and worse than assumed.** An `init.sh` reduced to
+  `set -e; exit 0`, running zero checks, scored `verification: 5/5` and `Overall: 100/100`.
+  Root cause: two verification checks read `init + agents`, so `AGENTS.md` prose satisfies
+  "Test command documented" whatever `init.sh` contains.
+- **Two design errors corrected by running it**, both recorded rather than quietly fixed:
+  1. Mutating `init.sh` then running `init.sh` is unkillable by construction — you cannot
+     catch a deleted gate by running the gate you deleted. Phase 0's `early-exit` reported
+     SURVIVED on every input, which is not a signal. Replaced by a positive control:
+     `inject-failing-test` writes an always-failing test in the project's own discovery
+     convention, so a gate that runs tests must go red.
+  2. `hollow-gate` and `strip-all-commands` survive on a well-tested project too. Counting
+     them would cap every project at 50%, under the 80% threshold, so the check could never
+     pass — and a check that cannot pass is not a signal. They now print under **Scorer
+     blindness** and are excluded from the rate: they measure this skill, not any project.
+- Kill rate is therefore scored over **runtime probes only**. A project with no test suite
+  reports "no applicable mutations" and passes — nothing to verify cannot be verified badly.
+
+### Cluster C — Longitudinal telemetry (unscored, permanently)
+- New `appendAuditEntry()` and `--log`: one JSON line per audit to
+  `memory/audit-log.jsonl` — timestamp, overall, bottleneck, per-subsystem scores.
+- **Never a gate.** A trend can say "this got worse"; it cannot say "this is unacceptable",
+  because acceptable is contextual. Wire it to an exit code and the cheapest way to go green
+  becomes "stop measuring honestly".
+- Append-only via `appendFile`, never read-modify-write, so a corrupted tail costs one line.
+- `.jsonl` not `.md` on purpose: `loadMemoryFiles` filters on `.md`, so the log is invisible
+  to the memory checks and cannot be reported as an orphaned lesson.
+
+### Cluster E — Recruitment signalling (`scope` 5 → 6 checks)
+- New **`templates/open-work.md`**: one line per declined item with a reason code
+  (`blocked-on`, `needs-review`, `cheap-parallel-win`, `flaky`) and the feature it was seen in.
+- The `AGENTS.md` change is a **redirect, not an addition** — the existing "mention them in
+  `progress.md`" line now names a structured file something can read.
+- Startup step 5 **extended, not renumbered**: inserting a step would renumber 6–8, and
+  renumbering is what produced the `5.5` workaround that `structuredText`'s list matcher
+  silently discarded in v0.3.1.
+
+### Cluster D — Context economics (unscored, advisory)
+- `--budget` reports always-on context in lines and estimated tokens. `chars / 4` on
+  purpose: budget awareness, not accounting, and a real tokeniser would be a dependency.
+- A `console.log`, not a check. A budget is a warning and there is no defensible universal
+  ceiling.
+
+### Deliberately not built
+- **Attention auction** — needs several competing request sources arriving often enough that
+  arbitration matters. With `dream-queue.md` and `open-work.md` only just created, it would
+  be a market with one seller. Revisit when both are in real use and a human reports feeling
+  flooded in one session.
+- **Cluster C phase 1** (delta, feature-status hash, dual-clock, "no trend yet" guard) —
+  should be designed against a log with real entries, not a guessed one.
+- The eight traps in `research/missing-subsystems.md` §7 remain unbuilt, each with a
+  documented revisit trigger.
+
+### Known gaps in this release
+- **`evals/evals.json` has no cases for the graveyard, the environment contract, or the
+  adversary.** Coverage still self-reports 13/13 because `scoreEvals` has no structural map
+  from subsystem to eval — it checks for named cases, and these three have no name to check.
+  The number is honest about what it measures and silent about what it doesn't.
+- **The `init + agents` concatenation is unfixed.** It is what lets a hollow gate score 5/5,
+  and it is now *reported* by `--mutate` rather than repaired. Narrowing those two checks to
+  `init` alone would fail every harness that legitimately documents its commands in
+  `AGENTS.md`; the layered fix (a separate check that asks whether the gate works) is the
+  one that shipped.
+- Curation still has **no bundled script**. Unchanged from v0.3.1 and still deliberate.
+
 ## 2026-07-25 (v0.3.1)
 
 ### Memory subsystem (major)

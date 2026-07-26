@@ -34,7 +34,13 @@ The scripts use only Node.js built-in modules. They can be run after copying the
 - `session-handoff.md` — Optional multi-session handoff
 - `memory/index.md` — Bounded, always-on index of agent-written lessons
 - `memory/journal.md` — Append-only session friction log; the input to curation
+- `memory/graveyard.md` — Routes tried and rejected, each with an expiry condition
 - `dream-queue.md` — Out-of-band curation proposals awaiting a human decision
+- `open-work.md` — Work seen but declined under scope discipline; recruitable
+
+Two further templates exist but are **not** scaffolded — created only when a project needs
+them: `environment.md` (declared external preconditions) and `memory-entry.md` (the shape
+of a single lesson).
 
 `create-harness.mjs` detects common project types and package managers. It supports Node/npm/pnpm/yarn/bun, Python, Go, Rust, Maven, Gradle, and .NET at a basic verification-command level.
 
@@ -46,10 +52,10 @@ The scripts use only Node.js built-in modules. They can be run after copying the
 |---|---|---|
 | Instructions | Structural | AGENTS.md exists, startup workflow, definition of done, verification commands, state routing |
 | State | Structural | feature_list.json, progress.md, handoff structure, restart support |
-| Verification | Structural | init.sh, fail-fast, test/static commands, evidence recording |
-| Scope | Structural | One-feature-at-a-time, dependencies, status fields, scope boundaries |
+| Verification | Structural | init.sh, fail-fast, test/static commands, evidence recording, declared environment preconditions, and — with `--mutate` — whether the gate demonstrably catches breakage |
+| Scope | Structural | One-feature-at-a-time, dependencies, status fields, scope boundaries, recruitable open-work surface |
 | Lifecycle | Structural | Startup script, end-of-session, handoff, restart markers |
-| **Memory** | **v3.1 new** | Index exists, is initialised and within its cap; links intact (no dangling/orphaned lessons); curation input present; two-step save and curation cadence documented |
+| **Memory** | **v3.1 new** | Index exists, is initialised and within its cap; links intact (no dangling/orphaned lessons); curation input present; two-step save and curation cadence documented; graveyard rows carry a cause and an expiry |
 | **Behavioral** | **v3 new** | Coding ladder, coding standards, surgical editing, test-first gates, assumption surfacing, safety carve-outs |
 
 The score is structural + memory + behavioral, as a percentage of 35. It tells you whether the harness is present and coherent; it does not replace real before/after agent-session testing.
@@ -58,6 +64,16 @@ Two notes on how the verdict is computed:
 
 - **The tier gates on the weakest subsystem.** A harness at ≥85 overall with any subsystem at ≤1/5 reports `usable`, not `production` — one subsystem is worth only ~14%, so total failure of one cannot drop the percentage out of the top band by itself.
 - **Bottleneck tie-breaks toward structural dimensions**, and an `Also low:` line names anything else at ≤2/5. Memory is new, so most existing harnesses score 1 on it and would otherwise mask a genuinely broken verification or lifecycle.
+
+### Three things that report but never gate
+
+Deliberate, and not a staging decision — these stay unscored:
+
+| Flag | Reports | Why never a check |
+|---|---|---|
+| `--mutate` | Kill rate over runtime mutations; separately, scorer blindness | The rate *is* scored. The blindness list is not: those mutants survive on every project, so counting them would cap everyone below the threshold and the check could never pass |
+| `--log` | Appends the audit to `memory/audit-log.jsonl` | A trend can say "this got worse", never "this is unacceptable" — acceptable is contextual. Gate it and the cheapest way to go green is to stop measuring honestly |
+| `--budget` | Always-on context in lines and estimated tokens | A budget is a warning; there is no defensible universal ceiling |
 
 ### Behavioral Policy Details
 
@@ -95,6 +111,7 @@ harness-creator/
 ├── scripts/
 │   ├── create-harness.mjs
 │   ├── validate-harness.mjs
+│   ├── mutate-gate.mjs
 │   ├── enrich-harness.mjs
 │   ├── render-assessment-html.mjs
 │   ├── run-benchmark.mjs
