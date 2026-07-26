@@ -21,5 +21,6 @@ Start here. Match artifact name to find the right template.
 | [memory-index.md](memory-index.md) | template | memory/index.md | memory, index, progressive-disclosure, learning | Bounded always-on index of agent-written lessons; one line per topic file |
 | [memory-journal.md](memory-journal.md) | template | memory/journal.md | memory, journal, append-only, curation, evidence | Append-only per-session friction log; the raw corpus curation reads |
 | [memory-entry.md](memory-entry.md) | template | memory/&lt;slug&gt;.md | memory, learning, lesson, entry | Shape of a single lesson: scope, source, the rule, Why, How to apply |
+| [memory-graveyard.md](memory-graveyard.md) | memory | memory/graveyard.md | memory, graveyard, negative-knowledge, recheck | Routes tried and rejected, each with a mandatory expiry condition. Not a lesson store, not index-linked |
 | [dream-queue.md](dream-queue.md) | template | dream-queue.md | memory, dreaming, curation, review, human-gate | Bounded queue of curation proposals with evidence and prevalence, awaiting human decision |
 | [environment.md](environment.md) | template | environment.md | verification, environment, preconditions, tools, contract | Declared external preconditions checked by init.sh separately from the project's own tests. Optional; not auto-scaffolded |

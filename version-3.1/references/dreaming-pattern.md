@@ -66,7 +66,7 @@ Dreaming curates the **agent-written** layer (`memory/`). It may *suggest* an ed
 `AGENTS.md`, but it never writes there. The human-curated instruction layer stays
 human-curated.
 
-## The four things a curation pass looks for
+## The five things a curation pass looks for
 
 | Signal | What it means | Proposal |
 |---|---|---|
@@ -74,6 +74,13 @@ human-curated.
 | Two lessons disagree | Two live authorities on one question | Demote or supersede one |
 | A lesson nothing has referenced | Dead stock | Delete it |
 | A lesson contradicted by current reality | Stale — confidently wrong | Correct or retire it |
+| A graveyard route resurfaces in the journal | **Reconsidered** — the prohibition isn't being read, or its `Recheck-if` has quietly come true | Raise the row's `Sessions` count, or retire the verdict if the condition now holds |
+
+The fifth signal is the only one that reads `memory/graveyard.md` rather than the lesson
+store. It catches two different failures with one observation: a rejection nobody consults
+(so the cost gets paid again), and a rejection that expired without anyone noticing (so a
+now-viable route stays closed). A rising `Sessions` count with no `Recheck-if` change is
+the first case; a `Recheck-if` condition that now holds is the second.
 
 ## When To Use
 

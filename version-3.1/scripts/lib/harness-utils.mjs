@@ -264,10 +264,15 @@ export function scoreHarness(files) {
   const environment = byPath.get('environment.md') || '';
   const memoryIndex = byPath.get('memory/index.md') || '';
   const memoryJournal = byPath.get('memory/journal.md') || '';
+  const memoryGraveyard = byPath.get('memory/graveyard.md') || '';
   const dreamQueue = byPath.get('dream-queue.md') || '';
+  // graveyard.md is not a lesson and is deliberately not linked from the index, so it
+  // must be excluded here or memoryLinksIntact reports it as orphaned. Measured before
+  // this line existed: scaffolding graveyard.md dropped memory 4/5 -> 3/5, overall
+  // 97 -> 94. Any future non-lesson artifact added under memory/ needs the same entry.
   const memoryTopics = files.filter((file) =>
     file.path.startsWith('memory/') &&
-    !['memory/index.md', 'memory/journal.md'].includes(file.path));
+    !['memory/index.md', 'memory/journal.md', 'memory/graveyard.md'].includes(file.path));
 
   const checks = {
     instructions: [
@@ -324,7 +329,8 @@ export function scoreHarness(files) {
         agents + '\n' + dreamQueue,
         ['curation cadence', 'every ~10 sessions', 'propose, never apply'],
         'Curation cadence and human gate documented'
-      )
+      ),
+      graveyardWellFormed(memoryGraveyard, 'Graveyard entries carry a cause and an expiry condition')
     ],
     behavioral: [
       structuredHas(agents, ['Coding Policy', 'ladder', 'YAGNI', 'standard library', 'one line'], 'Coding minimalism policy (Ponytail ladder) present'),
@@ -475,6 +481,32 @@ function memoryLinksIntact(indexText, topicFiles, message) {
     return { pass: false, message, detail: parts.join('; ') };
   }
   return { pass: true, message, detail: `${linked.size} linked, 0 dangling, 0 orphaned` };
+}
+
+// Optional artifact: absence is not penalised, only malformed rows are. A row without a
+// Recheck-if is unfalsifiable folklore — it will be obeyed forever or ignored entirely,
+// and there is no way to tell which from the file. Column indices are 1-based because
+// splitting a leading-pipe markdown row yields an empty cell at 0.
+function graveyardWellFormed(graveyardText, message) {
+  if (!graveyardText.trim()) {
+    return { pass: true, message, detail: 'no graveyard (optional)' };
+  }
+  const rows = graveyardText.split(/\r?\n/)
+    .map((line) => line.split('|').map((cell) => cell.trim()))
+    .filter((cells) => cells.length >= 8 && cells[1] && !/^-+$/.test(cells[1])
+      && cells[1].toLowerCase() !== 'route');
+  if (!rows.length) {
+    return { pass: false, message, detail: 'graveyard exists but has no parseable rows' };
+  }
+  const bad = rows.filter((cells) => !cells[3] || !cells[6]);
+  if (bad.length) {
+    return {
+      pass: false,
+      message,
+      detail: `${bad.length}/${rows.length} rows missing Because or Recheck-if: ${bad.slice(0, 3).map((cells) => cells[1]).join(', ')}`
+    };
+  }
+  return { pass: true, message, detail: `${rows.length} rows, all with cause and expiry` };
 }
 
 // --- Environment contract ---------------------------------------------------

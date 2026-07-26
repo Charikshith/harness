@@ -28,6 +28,7 @@ This is **not** a lesson store and **not** a progress log:
 - What did you have to look up?
 - What surprised you?
 - What correction did you receive?
+- What did you try and abandon, and why? (→ candidate `memory/graveyard.md` row)
 - What would you do differently?
 
 If a session produced nothing worth any of those lines, write the date and `nothing`.

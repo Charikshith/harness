@@ -26,6 +26,7 @@ Creates a minimal production harness:
   session-handoff.md
   memory/index.md (bounded index of agent-written lessons)
   memory/journal.md (append-only friction log; the input to curation)
+  memory/graveyard.md (rejected routes, each with an expiry condition)
   dream-queue.md (out-of-band curation proposals, human-gated)
   init.sh
 
@@ -69,6 +70,7 @@ results.push(await copyTemplate('progress.md', path.join(target, 'progress.md'),
 results.push(await copyTemplate('session-handoff.md', path.join(target, 'session-handoff.md'), {}, { force }));
 results.push(await copyTemplate('memory-index.md', path.join(target, 'memory', 'index.md'), {}, { force }));
 results.push(await copyTemplate('memory-journal.md', path.join(target, 'memory', 'journal.md'), {}, { force }));
+results.push(await copyTemplate('memory-graveyard.md', path.join(target, 'memory', 'graveyard.md'), {}, { force }));
 results.push(await copyTemplate('dream-queue.md', path.join(target, 'dream-queue.md'), {}, { force }));
 
 const initPath = path.join(target, 'init.sh');
