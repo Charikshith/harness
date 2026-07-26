@@ -33,7 +33,9 @@ Flags:
                  project and runs init.sh once per mutation). Without it, that check
                  reports "not measured" and passes.
   --log          Append this audit to memory/audit-log.jsonl. Never affects the score or
-                 the exit code — telemetry reports, it does not gate.`);
+                 the exit code — telemetry reports, it does not gate.
+  --budget       Report the always-on context cost in lines and estimated tokens.
+                 Advisory only; never affects the score or the exit code.`);
   process.exit(0);
 }
 
@@ -79,6 +81,26 @@ if (args.json) {
     console.log('   The harness has good structure but missing behavioral policies.');
     console.log('   Run enrich-harness.mjs to add Coding Policy, Editing Discipline, and Safety sections.');
   }
+}
+
+// Advisory only. Deliberately a console.log and not a check: a context budget is a
+// warning, not a pass/fail question, and there is no defensible universal ceiling. Adding
+// it to `checks` would make an arbitrary number gate a build.
+if (args.budget) {
+  const alwaysOn = ['AGENTS.md', 'CLAUDE.md', 'memory/index.md', 'open-work.md'];
+  console.log('\nAlways-on context (loaded every session):');
+  let totalTokens = 0;
+  for (const name of alwaysOn) {
+    const file = files.find((item) => item.path === name);
+    if (!file) continue;
+    // chars/4 is a crude approximation on purpose — this is budget awareness, not
+    // accounting. A precise tokeniser would be a dependency, and the ladder says no.
+    const tokens = Math.round(file.content.length / 4);
+    const lines = file.content.split('\n').length;
+    totalTokens += tokens;
+    console.log(`  ${name.padEnd(20)} ${String(lines).padStart(4)} lines  ~${String(tokens).padStart(6)} tokens`);
+  }
+  console.log(`  ${'total'.padEnd(20)} ${' '.repeat(4)}         ~${String(totalTokens).padStart(6)} tokens`);
 }
 
 if (noFail) {
