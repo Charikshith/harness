@@ -64,7 +64,9 @@ updated: 2025-07-17
 
 ### Gaps closed after initial release
 - **Memory curation eval added.** `evals/evals.json` gains case #16 "Memory Curation (Dreaming) Design", satisfying `scoreEvals`'s `curation|dreaming` check. Eval coverage: 12/13 → **13/13**. (The `memory` check was already met by case #5 "Memory Taxonomy Design".)
-- **Both examples now carry a memory store.** `examples/react-harness` and `examples/python-api-harness` gain `memory/index.md`, `memory/journal.md` and `dream-queue.md` (copied verbatim from `templates/`, identical to `create-harness.mjs` output). Both move from `memory: 1/5` / `89` / `usable` to `memory: 4/5` / `97` / **`production`**. 4/5 is the honest ceiling for a fresh harness — the fifth point requires a non-empty index, i.e. real recorded lessons.
+- **Both examples now carry a memory store.** `examples/react-harness` and `examples/python-api-harness` gain `memory/index.md`, `memory/journal.md` and `dream-queue.md` (copied verbatim from `templates/`, identical to `create-harness.mjs` output). Both move from `memory: 1/5` / `89` / `usable` to `memory: 4/5` / `97` / **`production`**.
+
+  **Corrected 2026-07-26:** the line above originally claimed 4/5 was "the honest ceiling for a fresh harness — the fifth point requires a non-empty index." That was wrong, and it pointed readers at a design limit that does not exist. The actual failing check was `Two-step save invariant documented`: both examples received the memory *files* but their `AGENTS.md` was never regenerated from the updated template, so neither contained a `## Memory` section (0 occurrences of `two-step save` in either). It was a stale artifact, not a ceiling — and auto-fixable by the `GAP_FIXES` entry that already existed for that exact message. After `enrich-harness.mjs --apply`, both examples score `memory: 5/5` / **`100`**. A fresh scaffold from the current template scores 5/5 on memory immediately.
 - **`README.md`'s dimension table** already carries a Memory row; the earlier note was stale.
 
 ## 2025-07-17 (v0.3.0)
