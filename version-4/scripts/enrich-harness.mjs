@@ -2,6 +2,7 @@
 import path from 'node:path';
 import { mkdir } from 'node:fs/promises';
 import {
+  insertAtAnchor,
   loadHarnessFiles,
   locateHarnessFile,
   parseArgs,
@@ -601,26 +602,21 @@ if (apply) {
       for (const fix of fixes) {
         if (!fix.snippet) continue;
 
-        // Skip if snippet already present (dedup)
+        // Dedup and anchor lookup both read `patched`, not `content`. Fixes in one run build
+        // on each other: the Curation section anchors on '## Memory', which the Memory fix
+        // adds moments earlier in this same loop. Reading the original content meant that
+        // anchor was never found, so Curation silently fell through to append-at-end instead
+        // of landing under Memory — and a section already inserted by an earlier fix did not
+        // count as present.
         const snippetLines = fix.snippet.trim().split('\n').filter(Boolean);
-        if (snippetLines.length > 0 && content.includes(snippetLines[0].trim())) {
+        if (snippetLines.length > 0 && patched.includes(snippetLines[0].trim())) {
           continue;
         }
 
-        const afterMarker = fix.insertAfter;
-        if (afterMarker && content.includes(afterMarker)) {
-          const lines = patched.split('\n');
-          const newLines = [];
-          for (const line of lines) {
-            newLines.push(line);
-            if (line.includes(afterMarker)) {
-              newLines.push(fix.snippet.trimEnd());
-            }
-          }
-          patched = newLines.join('\n');
-        } else {
-          patched = patched.trimEnd() + '\n' + fix.snippet.trim() + '\n';
-        }
+        const anchored = fix.insertAfter
+          ? insertAtAnchor(patched, fix.insertAfter, fix.snippet)
+          : null;
+        patched = anchored ?? `${patched.trimEnd()}\n\n${fix.snippet.trim()}\n`;
       }
 
       if (patched !== content) {

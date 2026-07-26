@@ -918,6 +918,79 @@ function escapeHtml(value) {
     .replaceAll("'", '&#39;');
 }
 
+// --- Markdown-aware snippet insertion --------------------------------------------------
+// Used by enrich-harness.mjs to splice a canonical section into an existing file.
+//
+// When the anchor is a HEADING, the snippet belongs after that section's prose, immediately
+// before the next heading — not on the line after the heading itself. Measured: anchoring the
+// Memory section on '## Working Rules' and inserting straight after it pushed Working Rules'
+// own bullets below the new heading, where they read as Memory's content. The bullets were
+// still in the file, so nothing failed; the file just silently said something else.
+//
+// Stopping at the next heading of ANY depth, rather than one of equal-or-shallower depth, is
+// deliberate. It keeps a new '## X' section directly under the anchor's prose instead of
+// pushing it past every subsection — so anchoring on a document's '# Title' still lands near
+// the top, which is the reason those anchors were written that way.
+//
+// A non-heading anchor (a bullet, a shebang, a sentence) inserts on the following line. That
+// is the intent there: those fixes add a bullet to a list or a flag to a script.
+const FENCE_RE = /^(```|~~~)/;
+
+function headingDepth(line) {
+  const match = /^(#{1,6})\s/.exec(line);
+  return match ? match[1].length : 0;
+}
+
+// Returns the patched text, or null when the anchor is absent — callers use null to decide
+// between "insert here" and "append at the end", so absence must be distinguishable from
+// a no-op patch.
+export function insertAtAnchor(text, anchor, snippet) {
+  const lines = text.split('\n');
+
+  // Fence map first. A line beginning '#' inside a fenced block is a shell comment, not a
+  // heading: the '# Full verification (recommended)' comment in the Verification Commands
+  // code block otherwise reads as an h1 and ends the section scan inside the fence, which
+  // splices the snippet into the middle of the code sample.
+  const fenced = [];
+  let inFence = false;
+  for (const line of lines) {
+    if (FENCE_RE.test(line.trim())) {
+      inFence = !inFence;
+      fenced.push(true);
+      continue;
+    }
+    fenced.push(inFence);
+  }
+
+  // First match only. The previous implementation appended after every line containing the
+  // anchor, so an anchor occurring twice produced two copies of the section.
+  const anchorIndex = lines.findIndex((line, index) => !fenced[index] && line.includes(anchor));
+  if (anchorIndex === -1) return null;
+
+  let insertAt = anchorIndex + 1;
+  if (headingDepth(lines[anchorIndex])) {
+    while (insertAt < lines.length && !(!fenced[insertAt] && headingDepth(lines[insertAt]))) {
+      insertAt += 1;
+    }
+    // Leave the blank lines that separated the previous section where they were, rather than
+    // stranding them above the insertion.
+    while (insertAt > anchorIndex + 1 && !lines[insertAt - 1].trim()) insertAt -= 1;
+  }
+
+  // A multi-line snippet or a new heading is a block and gets one blank line either side,
+  // without doubling what is already there. A single line is not: those fixes add a bullet to
+  // an existing list or a flag under a shebang, and padding them would split the list or put
+  // a blank line between '#!/bin/bash' and 'set -e'.
+  const block = snippet.trim().split('\n');
+  if (block.length > 1 || headingDepth(block[0])) {
+    if (lines[insertAt - 1] !== undefined && lines[insertAt - 1].trim()) block.unshift('');
+    if (lines[insertAt] !== undefined && lines[insertAt].trim()) block.push('');
+  }
+
+  lines.splice(insertAt, 0, ...block);
+  return lines.join('\n');
+}
+
 export async function copyFileSafe(source, target, { force = false } = {}) {
   if (!force && await exists(target)) {
     return { path: target, status: 'skipped', reason: 'exists' };
