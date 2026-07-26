@@ -2,7 +2,7 @@
 type: template
 title: "Memory Index Template"
 description: "Bounded always-on index of agent-written lessons; one line per topic file, loaded every session"
-artifact: "memory/index.md"
+artifact: "harness/memory/index.md"
 tags: [memory, index, progressive-disclosure, session-continuity, learning]
 ---
 
@@ -20,7 +20,7 @@ the cap. See [Memory Persistence](../references/memory-persistence-pattern.md) a
 
 ## What this file is not
 
-Not status. "Where the work stopped" belongs in `progress.md` and `feature_list.json`.
+Not status. "Where the work stopped" belongs in `harness/progress.md` and `harness/feature_list.json`.
 This file holds only what was **learned**.
 
 ## Lessons

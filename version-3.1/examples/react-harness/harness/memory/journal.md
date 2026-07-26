@@ -2,7 +2,7 @@
 type: template
 title: "Memory Journal Template"
 description: "Append-only per-session friction log; the raw corpus that out-of-band curation reads to find patterns"
-artifact: "memory/journal.md"
+artifact: "harness/memory/journal.md"
 tags: [memory, journal, append-only, curation, evidence, session-end]
 ---
 
@@ -13,8 +13,8 @@ earlier block** — this file is evidence, and curation counts how often things 
 
 This is **not** a lesson store and **not** a progress log:
 
-- `progress.md` = where the work stopped (status)
-- `memory/index.md` + topic files = distilled, durable lessons
+- `harness/progress.md` = where the work stopped (status)
+- `harness/memory/index.md` + topic files = distilled, durable lessons
 - **this file** = raw friction, unfiltered, so curation has something to count
 
 > **Why this template**: out-of-band curation needs a corpus. Without it, "find recurring
