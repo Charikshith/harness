@@ -227,7 +227,7 @@ Three properties make it work:
   sequential re-runs.
 
 **Optional by design.** Most projects don't need it — generic package-manager detection
-already covers them. `environment.md` is created only when a project depends on something
+already covers them. `harness/environment.md` is created only when a project depends on something
 the manifest cannot express. The corresponding validation check is vacuously true when the
 file is absent: absence is not a defect, but *declaring* preconditions and never checking
 them is — that file reads as a guarantee.

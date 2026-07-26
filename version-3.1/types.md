@@ -19,8 +19,8 @@ Every file in this skill carries a `type` field in its YAML frontmatter. When an
 | `instruction` | 📖 | Agent-facing procedural doc: the "how to use this skill" entry point | `SKILL.md` |
 | `reference` | 📚 | Supplementary factual material | `gotchas.md` |
 | `index` | 🗂️ | Table of contents for a directory | `references/index.md` |
-| `memory` | 🧠 | An agent-written durable lesson; one lesson per file | `memory/<slug>.md` |
-| `proposal` | 🔍 | Curation output awaiting a human accept/reject | `dream-queue.md` entry |
+| `memory` | 🧠 | An agent-written durable lesson; one lesson per file | `harness/memory/<slug>.md` |
+| `proposal` | 🔍 | Curation output awaiting a human accept/reject | `harness/dream-queue.md` entry |
 | `changelog` | 📝 | Reverse-chronological change history | `CHANGELOG.md` |
 
 ## Rules
