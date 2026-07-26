@@ -25,7 +25,7 @@ This guide covers the V3 harness — structural scaffolding plus embedded behavi
 ### 1. Install the skill
 
 ```bash
-npx skills add Charikshith/harness --skill harness-creator-v3
+npx skills add Charikshith/harness --skill harness-creator-v4
 ```
 
 This makes the harness-creator available to your coding agent. The agent now knows how to build and audit harnesses.
@@ -39,7 +39,7 @@ Ask your agent:
 Or run the script directly:
 
 ```bash
-node version-3/scripts/create-harness.mjs --target .
+node version-4/scripts/create-harness.mjs --target .
 ```
 
 Options:
@@ -54,7 +54,7 @@ Options:
 
 ### 3. Fill in the placeholders
 
-`feature_list.json` is created with a placeholder entry. Replace it with your actual features. This is the source of truth the agent reads at startup — garbage in, garbage out.
+`harness/feature_list.json` is created with a placeholder entry. Replace it with your actual features. This is the source of truth the agent reads at startup — garbage in, garbage out.
 
 ### 4. Verify it works
 
@@ -72,10 +72,10 @@ If `init.sh` passes, your harness is operational. The agent can now start, verif
 |---|---|---|
 | `AGENTS.md` | Startup workflow, coding policy, editing rules, safety, verification commands | At the beginning of every session |
 | `CLAUDE.md` | One-line pointer to AGENTS.md | If present, Claude reads this first |
-| `feature_list.json` | Feature state tracker — what's in progress, done, blocked | At startup (step 5) |
-| `progress.md` | Session continuity log — what was done, what's next, what's blocked | At startup and end of session |
+| `harness/feature_list.json` | Feature state tracker — what's in progress, done, blocked | At startup (step 5) |
+| `harness/progress.md` | Session continuity log — what was done, what's next, what's blocked | At startup and end of session |
 | `init.sh` | Verification entrypoint — runs tests, lint, build | At startup (step 4) and before claiming "done" |
-| `session-handoff.md` | Optional structured handoff for multi-session features | End of large sessions |
+| `harness/session-handoff.md` | Optional structured handoff for multi-session features | End of large sessions |
 
 ### What AGENTS.md contains
 
@@ -103,7 +103,7 @@ AGENTS.md
 Run validation any time:
 
 ```bash
-node version-3/scripts/validate-harness.mjs --target .
+node version-4/scripts/validate-harness.mjs --target .
 ```
 
 ### The six dimensions
@@ -111,7 +111,7 @@ node version-3/scripts/validate-harness.mjs --target .
 | Dimension | Max | What it checks |
 |---|---|---|
 | **instructions** | 5/5 | AGENTS.md exists, startup steps, DoD, verification commands routed, state artifacts referenced |
-| **state** | 5/5 | feature_list.json valid, progress.md supports restart, handoff captures blockers |
+| **state** | 5/5 | harness/feature_list.json valid, harness/progress.md supports restart, handoff captures blockers |
 | **verification** | 5/5 | init.sh exists, fails fast, test/lint commands documented, evidence recorded |
 | **scope** | 5/5 | One-feature-at-a-time, dependencies tracked, status explicit, completion gate |
 | **lifecycle** | 5/5 | Startup script, end-of-session procedure, handoff template, restart markers |
@@ -134,7 +134,7 @@ The lowest-scoring dimension is your bottleneck. An agent can have perfect instr
 
 ```bash
 # Auto-fix structural gaps
-node version-3/scripts/enrich-harness.mjs --target .
+node version-4/scripts/enrich-harness.mjs --target .
 ```
 
 `enrich-harness.mjs` patches missing sections without overwriting what's already correct. It won't touch files that are already at full score.
@@ -151,7 +151,7 @@ The agent follows these in order, every session:
 2. **Read this file completely** — AGENTS.md is the constitution.
 3. **Read project docs** — Architecture, product docs, README. Progressive disclosure.
 4. **Run init.sh** — Verify the environment is healthy before touching anything.
-5. **Read feature_list.json** — Know what's in progress, what's done.
+5. **Read harness/feature_list.json** — Know what's in progress, what's done.
 6. **Review recent commits** — `git log --oneline -5`. Don't redo work or break context.
 7. **State your understanding** — One line. If the task is ambiguous in a structural way (architecture, data model, security boundary), **stop and ask**. If cosmetic, name your assumption and proceed.
 8. **Check Ponytail mode** — lite, full, or ultra. Defaults to full. Governs how aggressively the ladder is applied.
@@ -199,9 +199,9 @@ The single most impactful behavioral rule: **touch only what the feature require
 - Don't "improve" adjacent code, comments, or formatting.
 - Match existing style. Consistency beats your preference.
 - Don't refactor things that aren't broken.
-- If you notice unrelated dead code, mention it in progress.md — don't delete it.
+- If you notice unrelated dead code, mention it in harness/progress.md — don't delete it.
 - Remove only the imports/variables YOUR changes made unused.
-- Every changed line must trace to the feature in feature_list.json.
+- Every changed line must trace to the feature in harness/feature_list.json.
 
 ### Before Multi-Step Work
 
@@ -228,7 +228,7 @@ A feature is done only when ALL are true:
 - [ ] Target behavior implemented
 - [ ] Bug: reproduction test written first, then passed. Feature: verification check written first.
 - [ ] Verification commands actually ran and passed
-- [ ] Evidence recorded in feature_list.json or progress.md
+- [ ] Evidence recorded in harness/feature_list.json or harness/progress.md
 - [ ] Repository restartable from standard path
 
 ### Safety (6 Carve-Outs)
@@ -284,12 +284,16 @@ Each package/subproject gets its own harness:
 packages/
 ├── api/
 │   ├── AGENTS.md
-│   ├── feature_list.json
-│   └── ...
+│   ├── init.sh
+│   └── harness/
+│       ├── feature_list.json
+│       └── ...
 └── web/
     ├── AGENTS.md
-    ├── feature_list.json
-    └── ...
+    ├── init.sh
+    └── harness/
+        ├── feature_list.json
+        └── ...
 ```
 
 Run `create-harness.mjs --target packages/api` and `--target packages/web` separately. Each has its own state, verification, and scope.
@@ -323,7 +327,7 @@ npx skills add Charikshith/ponytail --skill ponytail
 | Debt tracking | ❌ ponytail: comments (no ledger) | ✅ `/ponytail-debt` — hash-tracked shortcuts with ceilings |
 | Lazy-code review | ❌ None | ✅ `/ponytail-review` — diff audit for over-engineering |
 | Whole-repo audit | ❌ None | ✅ `/ponytail-audit` — scores the codebase for deletable code |
-| Ponytail Debt in progress.md | ✅ Section exists | ✅ Populated and tracked across sessions |
+| Ponytail Debt in harness/progress.md | ✅ Section exists | ✅ Populated and tracked across sessions |
 
 ### Do I need both?
 
@@ -343,32 +347,32 @@ Install the full Ponytail skill when:
 
 ```bash
 # 1. Generate harness
-node version-3/scripts/create-harness.mjs --target .
+node version-4/scripts/create-harness.mjs --target .
 
-# 2. Fill in feature_list.json with your first feature
-# Edit feature_list.json → replace placeholder
+# 2. Fill in harness/feature_list.json with your first feature
+# Edit harness/feature_list.json → replace placeholder
 
 # 3. Run init.sh to confirm everything works
 ./init.sh
 
 # 4. Validate
-node version-3/scripts/validate-harness.mjs --target .
+node version-4/scripts/validate-harness.mjs --target .
 ```
 
 ### Workflow 2: Audit an existing project
 
 ```bash
 # 1. Run validation
-node version-3/scripts/validate-harness.mjs --target .
+node version-4/scripts/validate-harness.mjs --target .
 
 # 2. Read the bottleneck score
 # Fix the lowest-scoring dimension first
 
 # 3. Auto-fix what can be auto-fixed
-node version-3/scripts/enrich-harness.mjs --target .
+node version-4/scripts/enrich-harness.mjs --target .
 
 # 4. Re-validate
-node version-3/scripts/validate-harness.mjs --target .
+node version-4/scripts/validate-harness.mjs --target .
 ```
 
 ### Workflow 3: Onboard a new team member
@@ -378,7 +382,7 @@ node version-3/scripts/validate-harness.mjs --target .
 # 2. They run init.sh
 ./init.sh
 
-# 3. The agent reads AGENTS.md → feature_list.json → progress.md
+# 3. The agent reads AGENTS.md → harness/feature_list.json → harness/progress.md
 # 4. The agent knows exactly what's in progress and what's next
 # No handoff meeting needed
 ```
@@ -387,11 +391,11 @@ node version-3/scripts/validate-harness.mjs --target .
 
 ```bash
 # 1. Generate benchmark report
-node version-3/scripts/run-benchmark.mjs --target . --html report.html
+node version-4/scripts/run-benchmark.mjs --target . --html report.html
 
 # 2. Run a representative agent session (fix a bug, add a feature)
 # 3. Re-run benchmark
-node version-3/scripts/run-benchmark.mjs --target . --html report-after.html
+node version-4/scripts/run-benchmark.mjs --target . --html report-after.html
 
 # Compare scores. The benchmark is structural — real effectiveness
 # needs agent-session evidence.
@@ -404,10 +408,10 @@ Add to your CI pipeline:
 ```yaml
 # GitHub Actions example
 - name: Validate harness
-  run: node version-3/scripts/validate-harness.mjs --target .
+  run: node version-4/scripts/validate-harness.mjs --target .
 ```
 
-If the score drops below a threshold (e.g., 80), fail the build. This catches drift — someone removed a section from AGENTS.md, feature_list.json is corrupt, init.sh was deleted.
+If the score drops below a threshold (e.g., 80), fail the build. This catches drift — someone removed a section from AGENTS.md, harness/feature_list.json is corrupt, init.sh was deleted.
 
 ---
 
@@ -415,7 +419,7 @@ If the score drops below a threshold (e.g., 80), fail the build. This catches dr
 
 ### Agent ignores AGENTS.md
 
-**Symptom:** Agent skips the startup workflow, doesn't read feature_list.json, over-builds.
+**Symptom:** Agent skips the startup workflow, doesn't read harness/feature_list.json, over-builds.
 
 **Check:**
 - Is AGENTS.md in the repo root?
@@ -454,9 +458,9 @@ If the score drops below a threshold (e.g., 80), fail the build. This catches dr
 **Symptom:** Agent works on features that aren't listed, or skips features that are.
 
 **Fix:**
-- This is the agent's fault — the End of Session rules say "update feature_list.json." If the agent isn't doing this, the harness isn't being followed.
-- Run `validate-harness.mjs` — it checks that feature_list.json has valid status fields.
-- Consider making feature_list.json updates part of the Definition of Done gate.
+- This is the agent's fault — the End of Session rules say "update harness/feature_list.json." If the agent isn't doing this, the harness isn't being followed.
+- Run `validate-harness.mjs` — it checks that harness/feature_list.json has valid status fields.
+- Consider making harness/feature_list.json updates part of the Definition of Done gate.
 
 ---
 
@@ -487,9 +491,9 @@ For the full architecture rationale, see [SEQUENTIAL-INTEGRATION.md](SEQUENTIAL-
 
 ## Summary
 
-1. **Install**: `npx skills add Charikshith/harness --skill harness-creator-v3`
-2. **Create**: `node version-3/scripts/create-harness.mjs --target .`
-3. **Fill**: Replace placeholder feature entries in feature_list.json
-4. **Verify**: `./init.sh` then `node version-3/scripts/validate-harness.mjs --target .`
+1. **Install**: `npx skills add Charikshith/harness --skill harness-creator-v4`
+2. **Create**: `node version-4/scripts/create-harness.mjs --target .`
+3. **Fill**: Replace placeholder feature entries in harness/feature_list.json
+4. **Verify**: `./init.sh` then `node version-4/scripts/validate-harness.mjs --target .`
 5. **Work**: The agent now starts clean, stays in scope, verifies, and hands off.
 6. **Optional**: Install Ponytail for debt tracking, review, and audit.
