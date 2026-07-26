@@ -3,7 +3,7 @@ type: pattern
 title: "Memory and Persistence Pattern"
 description: "Layered memory architecture: instruction memory vs auto-memory, two-step save invariant, local-override priority, bounded index with on-demand topics"
 tags: [memory, persistence, state, handoff, session-continuity]
-timestamp: 2026-07-15
+timestamp: 2026-07-26
 ---
 
 # Memory and Persistence Pattern

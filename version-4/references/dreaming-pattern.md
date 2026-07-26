@@ -3,7 +3,7 @@ type: pattern
 title: "Dreaming (Out-of-Band Memory Curation) Pattern"
 description: "Batch curation of the memory store between sessions: threshold-gated proposals with evidence, propose-never-apply, bounded review queue, and cadence sized to pattern emergence"
 tags: [memory, dreaming, curation, staleness, review, out-of-band, session-continuity]
-timestamp: 2026-07-25
+timestamp: 2026-07-26
 ---
 
 # Dreaming (Out-of-Band Memory Curation) Pattern

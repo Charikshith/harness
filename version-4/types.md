@@ -3,7 +3,7 @@ type: reference
 title: "Document Type Taxonomy"
 description: "Valid types for harness-creator documents and what they mean"
 tags: [types, taxonomy, metadata]
-updated: 2026-07-15
+updated: 2026-07-26
 ---
 
 # Document Types

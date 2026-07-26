@@ -3,7 +3,7 @@ type: index
 title: "Evals Index"
 description: "Table of contents for evals/ — test cases for measuring agent behavior against harness patterns"
 tags: [index, evals, tests]
-updated: 2026-07-26
+updated: 2026-07-27
 ---
 
 # Evals Index

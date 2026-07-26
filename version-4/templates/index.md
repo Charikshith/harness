@@ -3,7 +3,7 @@ type: index
 title: "Templates Index"
 description: "Table of contents for templates/ — copyable artifacts that are instantiated into target projects"
 tags: [index, templates]
-updated: 2026-07-15
+updated: 2026-07-26
 ---
 
 # Templates Index

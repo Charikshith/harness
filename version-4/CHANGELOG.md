@@ -3,7 +3,7 @@ type: changelog
 title: "Changelog"
 description: "Reverse-chronological history of changes to the harness-creator skill"
 tags: [changelog, history, releases]
-updated: 2026-07-26
+updated: 2026-07-27
 ---
 
 # Changelog
