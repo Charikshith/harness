@@ -40,14 +40,14 @@ fi
 # the two things that can actually regress: the scripts must parse, and the bundled examples
 # must still score 100. Both are real: breaking either fails here.
 echo "=== node --check (all skill scripts) ==="
-for script in version-3.1/scripts/*.mjs version-3.1/scripts/lib/*.mjs; do
+for script in version-4/scripts/*.mjs version-4/scripts/lib/*.mjs; do
   node --check "$script"
   echo "  ok $script"
 done
 
 echo "=== bundled examples still score 100 ==="
-for example in version-3.1/examples/*/; do
-  node version-3.1/scripts/validate-harness.mjs --target "$example" --min-score 100 >/dev/null
+for example in version-4/examples/*/; do
+  node version-4/scripts/validate-harness.mjs --target "$example" --min-score 100 >/dev/null
   echo "  ok $example"
 done
 
