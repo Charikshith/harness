@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import path from 'node:path';
 import {
+  appendAuditEntry,
   formatScoreReport,
   htmlReport,
   loadHarnessFiles,
@@ -30,7 +31,9 @@ Flags:
   --min-score N  Custom threshold (default 60, the usable tier boundary)
   --mutate       Measure whether the gate actually catches breakage (slow: copies the
                  project and runs init.sh once per mutation). Without it, that check
-                 reports "not measured" and passes.`);
+                 reports "not measured" and passes.
+  --log          Append this audit to memory/audit-log.jsonl. Never affects the score or
+                 the exit code — telemetry reports, it does not gate.`);
   process.exit(0);
 }
 
@@ -50,6 +53,10 @@ if (args.mutate) {
 }
 
 const result = scoreHarness(files, { killRate });
+
+if (args.log) {
+  console.log(`Audit appended to ${await appendAuditEntry(target, result)}`);
+}
 
 if (args.html) {
   const htmlPath = path.resolve(args.html);

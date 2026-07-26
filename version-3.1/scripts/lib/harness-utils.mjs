@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { access, chmod, copyFile, mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
+import { access, appendFile, chmod, copyFile, mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -651,6 +651,32 @@ export async function loadMemoryFiles(root) {
     return files;
   }
   return [];
+}
+
+// --- Longitudinal telemetry -------------------------------------------------
+// Deliberately NOT wired into any check, and it must stay that way. A trend can say "this
+// got worse"; it cannot say "this is unacceptable", because acceptable is contextual — a
+// prototype decaying is fine, a production repo decaying is not. Wire a trend to an exit
+// code and the cheapest way to go green becomes "stop measuring honestly".
+//
+// Append-only, never read-modify-write: a corrupted tail must cost one line, not the whole
+// history. The reader (phase 1) parses defensively and skips unparseable lines.
+//
+// .jsonl and not .md on purpose — loadMemoryFiles filters on .md, so this file is invisible
+// to the memory checks and cannot be mistaken for a lesson or reported as orphaned.
+export async function appendAuditEntry(root, result) {
+  const line = JSON.stringify({
+    at: new Date().toISOString(),
+    overall: result.overall,
+    bottleneck: result.bottleneck,
+    subsystems: Object.fromEntries(
+      Object.entries(result.subsystems).map(([name, item]) => [name, item.score])
+    )
+  }) + '\n';
+  const logPath = path.join(root, 'memory', 'audit-log.jsonl');
+  await mkdir(path.dirname(logPath), { recursive: true });
+  await appendFile(logPath, line, 'utf8');
+  return logPath;
 }
 
 export function formatScoreReport(result, root = '.') {
