@@ -16,6 +16,32 @@ set -e
 
 echo "=== Harness Initialization ==="
 
+# Environment contract runs before anything else and reports separately from test output:
+# a missing tool is not a failing test, and conflating the two sends the next session
+# debugging code that was never broken. The eval sits inside an `if` so `set -e` does not
+# abort on the first unmet requirement — reporting all of them at once beats surfacing
+# them one re-run at a time.
+if [ -f environment.md ]; then
+  echo "=== Environment contract ==="
+  ENV_FAILED=0
+  while IFS='|' read -r _ requirement check _; do
+    requirement="$(echo "$requirement" | sed 's/^ *//;s/ *$//')"
+    check="$(echo "$check" | sed 's/^ *//;s/ *$//;s/^`//;s/`$//')"
+    case "$requirement" in ''|Requirement|---*) continue ;; esac
+    [ -z "$check" ] && continue
+    if eval "$check" >/dev/null 2>&1; then
+      echo "  PASS  $requirement"
+    else
+      echo "  FAIL  $requirement   (check: $check)"
+      ENV_FAILED=$((ENV_FAILED + 1))
+    fi
+  done < environment.md
+  if [ "$ENV_FAILED" -gt 0 ]; then
+    echo "Environment contract failed ($ENV_FAILED unmet). This is the machine, not the code."
+    exit 1
+  fi
+fi
+
 if [ -f package.json ]; then
   if [ -f pnpm-lock.yaml ]; then
     PM="pnpm"

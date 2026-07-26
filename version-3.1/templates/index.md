@@ -22,3 +22,4 @@ Start here. Match artifact name to find the right template.
 | [memory-journal.md](memory-journal.md) | template | memory/journal.md | memory, journal, append-only, curation, evidence | Append-only per-session friction log; the raw corpus curation reads |
 | [memory-entry.md](memory-entry.md) | template | memory/&lt;slug&gt;.md | memory, learning, lesson, entry | Shape of a single lesson: scope, source, the rule, Why, How to apply |
 | [dream-queue.md](dream-queue.md) | template | dream-queue.md | memory, dreaming, curation, review, human-gate | Bounded queue of curation proposals with evidence and prevalence, awaiting human decision |
+| [environment.md](environment.md) | template | environment.md | verification, environment, preconditions, tools, contract | Declared external preconditions checked by init.sh separately from the project's own tests. Optional; not auto-scaffolded |

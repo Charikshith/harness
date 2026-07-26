@@ -190,12 +190,42 @@ export function verificationCommands(project, explicitPackageManager) {
   return [install, ...dedupe(candidates)];
 }
 
+// Kept in sync with the same block in templates/init.sh. create-harness.mjs writes a
+// generated init.sh via initScriptFromCommands() and never copies that template, so a
+// change made only there would never reach a scaffolded project — the environment check
+// would then be unsatisfiable by construction for every project the scaffolder creates.
+const ENV_CONTRACT_BLOCK = `# Environment contract runs before anything else and reports separately from test output:
+# a missing tool is not a failing test, and conflating the two sends the next session
+# debugging code that was never broken.
+if [ -f environment.md ]; then
+  echo "=== Environment contract ==="
+  ENV_FAILED=0
+  while IFS='|' read -r _ requirement check _; do
+    requirement="$(echo "$requirement" | sed 's/^ *//;s/ *$//')"
+    check="$(echo "$check" | sed 's/^ *//;s/ *$//;s/^\`//;s/\`$//')"
+    case "$requirement" in ''|Requirement|---*) continue ;; esac
+    [ -z "$check" ] && continue
+    if eval "$check" >/dev/null 2>&1; then
+      echo "  PASS  $requirement"
+    else
+      echo "  FAIL  $requirement   (check: $check)"
+      ENV_FAILED=$((ENV_FAILED + 1))
+    fi
+  done < environment.md
+  if [ "$ENV_FAILED" -gt 0 ]; then
+    echo "Environment contract failed ($ENV_FAILED unmet). This is the machine, not the code."
+    exit 1
+  fi
+fi`;
+
 export function initScriptFromCommands(commands) {
   const body = commands.map((command) => `echo "=== ${escapeForEcho(command)} ==="\n${command}`).join('\n\n');
   return `#!/bin/bash
 set -e
 
 echo "=== Harness Initialization ==="
+
+${ENV_CONTRACT_BLOCK}
 
 ${body}
 
@@ -231,6 +261,7 @@ export function scoreHarness(files) {
   const progress = byPath.get('progress.md') || '';
   const init = byPath.get('init.sh') || '';
   const handoff = byPath.get('session-handoff.md') || '';
+  const environment = byPath.get('environment.md') || '';
   const memoryIndex = byPath.get('memory/index.md') || '';
   const memoryJournal = byPath.get('memory/journal.md') || '';
   const dreamQueue = byPath.get('dream-queue.md') || '';
@@ -258,7 +289,8 @@ export function scoreHarness(files) {
       textHas(init, ['set -e'], 'Verification fails fast'),
       textHas(init + agents, ['test', 'pytest', 'vitest', 'cargo test', 'go test', 'dotnet test'], 'Test command documented'),
       textHas(init + agents, ['build', 'type', 'lint', 'compile'], 'Static/build check documented'),
-      textHas(allText, ['Evidence', 'Verification Evidence', 'command and output'], 'Verification evidence is recorded')
+      textHas(allText, ['Evidence', 'Verification Evidence', 'command and output'], 'Verification evidence is recorded'),
+      environmentContractHonoured(environment, init, 'Declared environment preconditions are checked by the entrypoint')
     ],
     scope: [
       structuredHas(agents, ['One feature at a time', 'one-feature-at-a-time'], 'One-feature-at-a-time rule exists'),
@@ -445,6 +477,29 @@ function memoryLinksIntact(indexText, topicFiles, message) {
   return { pass: true, message, detail: `${linked.size} linked, 0 dangling, 0 orphaned` };
 }
 
+// --- Environment contract ---------------------------------------------------
+// Vacuously true when environment.md is absent: the file is optional, so its absence is
+// not a defect. Only a declared-but-unchecked contract is — a project that writes down
+// its preconditions and then never checks them is worse off than one that never wrote
+// them down, because the file reads as a guarantee.
+function environmentContractHonoured(environmentText, initText, message) {
+  if (!environmentText.trim()) {
+    return { pass: true, message, detail: 'no environment.md declared' };
+  }
+  const rows = environmentText.split(/\r?\n/).filter((line) => {
+    const cells = line.split('|').map((cell) => cell.trim());
+    return cells.length >= 4 && cells[1] && cells[2]
+      && cells[1] !== 'Requirement' && !/^-+$/.test(cells[1]);
+  });
+  if (!rows.length) {
+    return { pass: false, message, detail: 'environment.md has no parseable requirement rows' };
+  }
+  if (!initText.includes('environment.md')) {
+    return { pass: false, message, detail: `${rows.length} requirements declared but init.sh never reads environment.md` };
+  }
+  return { pass: true, message, detail: `${rows.length} requirements checked by init.sh` };
+}
+
 function jsonFeatureList(text, message) {
   try {
     const parsed = JSON.parse(text);
@@ -469,7 +524,12 @@ export async function loadHarnessFiles(root) {
     'progress.md',
     'session-handoff.md',
     'init.sh',
-    'dream-queue.md'
+    'dream-queue.md',
+    // hasFile() reads byPath, which is built only from what this list returned. A check
+    // for a file missing from here fails 100% of the time regardless of whether the file
+    // exists on disk.
+    'environment.md',
+    'open-work.md'
   ];
   const files = [];
   for (const candidate of candidates) {

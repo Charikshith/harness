@@ -198,6 +198,46 @@ Before enabling a new tool:
 - [ ] Tested error handling (failures logged, state consistent)
 ```
 
+## Environment Contract
+
+A verification gate that assumes its tools exist cannot tell "the world changed" from
+"the code broke". When `ffmpeg` disappears from PATH, a gate that shells out to it reports
+a failing test — and the next session spends its budget debugging code that was never
+broken. The failure is real; the attribution is wrong, and wrong attribution costs more
+than no signal.
+
+**The pattern**: declare preconditions as data, check them before anything else, report
+them in their own labelled block.
+
+| Requirement | Check |
+|---|---|
+| node >= 20 | `node --version` |
+| ffmpeg on PATH | `command -v ffmpeg` |
+| DATABASE_URL set | `test -n "$DATABASE_URL"` |
+
+Three properties make it work:
+
+- **Exit code is the verdict.** No output parsing — versions and formats drift, exit codes
+  don't.
+- **Runs first, reports separately.** The contract block prints before install or test
+  output, under its own heading, and exits 1 with an explicit "this is the machine, not the
+  code" message.
+- **Report all failures, not the first.** The check loop runs inside an `if` so `set -e`
+  doesn't abort on requirement one. Four unmet preconditions surfaced together beat four
+  sequential re-runs.
+
+**Optional by design.** Most projects don't need it — generic package-manager detection
+already covers them. `environment.md` is created only when a project depends on something
+the manifest cannot express. The corresponding validation check is vacuously true when the
+file is absent: absence is not a defect, but *declaring* preconditions and never checking
+them is — that file reads as a guarantee.
+
+**Implementation note.** The check block must live in both `templates/init.sh` and
+`initScriptFromCommands()` in `harness-utils.mjs`. `create-harness.mjs` generates `init.sh`
+programmatically and never copies the template, so a change made only to the template never
+reaches a scaffolded project — the check would be unsatisfiable by construction for every
+project the scaffolder creates.
+
 ## Evidence
 
 Tool registry and safety patterns are observed in production agent runtimes including:
