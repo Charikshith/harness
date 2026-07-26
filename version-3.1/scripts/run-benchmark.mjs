@@ -7,6 +7,7 @@ import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import {
   formatScoreReport,
+  harnessPath,
   htmlReport,
   loadHarnessFiles,
   parseArgs,
@@ -36,7 +37,7 @@ This is a structural benchmark, not an LLM judge. Use it before/after real agent
 }
 
 const target = path.resolve(args.target || args._[0] || process.cwd());
-const output = path.resolve(args.output || path.join(target, 'harness-benchmark.json'));
+const output = path.resolve(args.output || path.join(target, harnessPath('harness-benchmark.json')));
 const evalPath = path.resolve(args.evals || path.join(skillRoot, 'evals', 'evals.json'));
 
 const harnessResult = scoreHarness(await loadHarnessFiles(target));

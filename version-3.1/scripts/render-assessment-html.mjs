@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import path from 'node:path';
 import {
+  harnessPath,
   htmlReport,
   loadHarnessFiles,
   parseArgs,
@@ -18,7 +19,7 @@ Renders the five-subsystem harness assessment as a standalone HTML file.`);
 }
 
 const target = path.resolve(args.target || args._[0] || process.cwd());
-const output = path.resolve(args.output || path.join(target, 'harness-assessment.html'));
+const output = path.resolve(args.output || path.join(target, harnessPath('harness-assessment.html')));
 const result = scoreHarness(await loadHarnessFiles(target));
 
 await writeText(output, htmlReport(result, `Harness Assessment: ${path.basename(target)}`));
