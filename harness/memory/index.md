@@ -35,7 +35,8 @@ This file holds only what was **learned**.
      root, so this is easy to get wrong — the validator accepts both, but sibling links
      keep this file readable on its own. -->
 
-_No lessons recorded yet. The first correction you receive belongs here._
+- [A synchronous runner silently passes every async check](async-check-cannot-fail.md) — a check that cannot fail is worse than no check; probe it by breaking what it watches
+- [A keyword check is satisfied by a comment mentioning the keyword](keyword-checks-satisfied-by-comments.md) — never write the literal a check greps for into a comment in the same file
 
 ## Retired
 
