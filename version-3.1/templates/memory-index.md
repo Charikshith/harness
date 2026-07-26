@@ -2,7 +2,7 @@
 type: template
 title: "Memory Index Template"
 description: "Bounded always-on index of agent-written lessons; one line per topic file, loaded every session"
-artifact: "memory/index.md"
+artifact: "harness/memory/index.md"
 tags: [memory, index, progressive-disclosure, session-continuity, learning]
 ---
 
@@ -20,14 +20,20 @@ the cap. See [Memory Persistence](../references/memory-persistence-pattern.md) a
 
 ## What this file is not
 
-Not status. "Where the work stopped" belongs in `progress.md` and `feature_list.json`.
+Not status. "Where the work stopped" belongs in `harness/progress.md` and `harness/feature_list.json`.
 This file holds only what was **learned**.
 
 ## Lessons
 
 <!-- Format:  - [title](file.md) — one-line hook, enough to decide whether to open it
      Add newest at the bottom. Never edit someone else's line to mean something new;
-     retire it and add a new one. -->
+     retire it and add a new one.
+
+     Link targets here are the ONE exception to this harness's repo-root-relative path
+     convention: write them sibling-relative (`lesson.md`, or `topics/lesson.md`), not
+     `harness/memory/lesson.md`. Everything else in the harness is anchored at the repo
+     root, so this is easy to get wrong — the validator accepts both, but sibling links
+     keep this file readable on its own. -->
 
 _No lessons recorded yet. The first correction you receive belongs here._
 

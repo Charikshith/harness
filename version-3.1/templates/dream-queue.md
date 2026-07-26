@@ -2,7 +2,7 @@
 type: template
 title: "Dream Queue Template"
 description: "Bounded queue of out-of-band memory curation proposals, each with evidence and prevalence, awaiting human accept or reject"
-artifact: "dream-queue.md"
+artifact: "harness/dream-queue.md"
 tags: [memory, dreaming, curation, review, proposals, human-gate]
 ---
 
@@ -22,7 +22,7 @@ is a suggestion awaiting a human decision.
 - **Cap: 5 open proposals.** A curation pass that found more must merge or drop its own
   before adding. Volume is the proposer's problem, not the reviewer's.
 - Every proposal states **claim**, **evidence**, and **prevalence**. No citation, no entry.
-- Curation may propose changes to `memory/` only. It may *suggest* an instruction change
+- Curation may propose changes to `harness/memory/` only. It may *suggest* an instruction change
   but never edits `AGENTS.md` itself.
 - Record rejections in **Decided** below. Without that record the same proposal returns
   every cycle.
@@ -37,7 +37,7 @@ _No open proposals._
 |---|---|---|---|---|
 
 | 1 | Add lesson: deploy via `make ship`, not ./deploy.sh | journal 07-14, 07-19, 07-22 | 3x | pending |
-| 2 | Retire memory/build-cache.md — contradicts memory/ci-flow.md | both files | 1x | pending |
+| 2 | Retire harness/memory/build-cache.md — contradicts harness/memory/ci-flow.md | both files | 1x | pending |
 -->
 
 ## Decided

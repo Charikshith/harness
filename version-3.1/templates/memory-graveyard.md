@@ -2,7 +2,7 @@
 type: memory
 title: "Memory Graveyard Template"
 description: "Verdicts on abandoned routes: what was tried, why it failed, and the condition under which the verdict expires"
-artifact: "memory/graveyard.md"
+artifact: "harness/memory/graveyard.md"
 tags: [memory, graveyard, negative-knowledge, abandoned, recheck]
 ---
 
@@ -33,7 +33,7 @@ does not belong here.
 
 ## Not a lesson store
 
-This file is deliberately **not** linked from `memory/index.md` and is not a topic file.
+This file is deliberately **not** linked from `harness/memory/index.md` and is not a topic file.
 Lessons say "do this"; graveyard rows say "this was tried and here is what it cost". It is
 consulted directly, before proposing a library, a refactor, or a rewrite — not browsed via
 the index.
