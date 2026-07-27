@@ -159,6 +159,65 @@ check('every shipped init.sh reads the environment contract', () => {
   }
 });
 
+// templates/agents.md tells an agent which artifacts are required. If that list disagrees
+// with what scoreHarness() actually enforces, the instruction file is lying in whichever
+// direction it drifted. Three such mismatches existed before this check:
+//   graveyard.md      listed unqualified (reads required), optional in code
+//   dream-queue.md    listed unqualified (reads required), not scored at all
+//   session-handoff.md  listed "Optional", yet hasFile-checked — following the doc and
+//                       deleting it silently cost a lifecycle check
+// Covers the bundled examples too, not just the template. They score 100 either way, since
+// these labels do not affect scoring — which is exactly why both examples kept the wrong list
+// through several passes. A reference example teaching the wrong thing is still wrong.
+const AGENT_FILES = [
+  path.join('templates', 'agents.md'),
+  ...fs.readdirSync(path.join(SKILL_ROOT, 'examples'), { withFileTypes: true })
+    .filter((d) => d.isDirectory())
+    .map((d) => path.join('examples', d.name, 'AGENTS.md'))
+].filter((p) => fs.existsSync(path.join(SKILL_ROOT, p)));
+
+for (const relative of AGENT_FILES) {
+check(`${relative.replace(/\\/g, '/')} required/optional groups match what the scorer enforces`, () => {
+  const lib = fs.readFileSync(path.join(SKILL_ROOT, 'scripts', 'lib', 'harness-utils.mjs'), 'utf8');
+  const agents = fs.readFileSync(path.join(SKILL_ROOT, relative), 'utf8');
+
+  // Artifacts the scorer requires, from every hasFile() candidate list.
+  const enforced = new Set();
+  for (const m of lib.matchAll(/hasFile\(byPath, \[([^\]]+)\]/g)) {
+    for (const raw of m[1].split(',')) enforced.add(raw.trim().replace(/^'|'$/g, ''));
+  }
+
+  const section = agents.slice(agents.indexOf('## Required Artifacts'));
+  const body = section.slice(0, section.indexOf('\n## ', 4));
+  const requiredBlock = body.slice(body.indexOf('**Required**'), body.indexOf('**Optional**'));
+  const optionalBlock = body.slice(body.indexOf('**Optional**'));
+  assert.ok(requiredBlock && optionalBlock, 'Required/Optional groups not found');
+
+  // Only the artifact each bullet is ABOUT — the backticked path at the start of the line.
+  // Matching every backticked filename in the block picks up incidental prose mentions
+  // ("checked by `init.sh`" inside the environment.md bullet) and reports them as declared.
+  // Compare on bare filenames, since the doc writes harness/-prefixed paths.
+  const named = (block) => new Set([...block.matchAll(/^- `(?:harness\/)?([A-Za-z0-9._/-]+\.(?:md|json|sh|jsonl))`/gm)]
+    .map((m) => m[1]));
+  const inRequired = named(requiredBlock);
+  const inOptional = named(optionalBlock);
+
+  // Anything the doc calls optional must not be one the scorer demands.
+  const wronglyOptional = [...inOptional].filter((f) => enforced.has(f));
+  assert.deepEqual(wronglyOptional, [],
+    `listed Optional but hasFile-checked: ${wronglyOptional.join(', ')}`);
+
+  // And every scored artifact must appear in the required group, so nothing enforced is
+  // either missing from the list or quietly sitting in the optional one. CLAUDE.md is the
+  // documented alternative to AGENTS.md, so either satisfies the instruction-file slot.
+  const alternatives = new Set(['CLAUDE.md', 'feature-list.json']);
+  const missing = [...enforced]
+    .filter((f) => !alternatives.has(f))
+    .filter((f) => !inRequired.has(f));
+  assert.deepEqual(missing, [], `scored but not in the Required group: ${missing.join(', ')}`);
+});
+}
+
 if (process.exitCode) {
   console.error(`\n${run} checks run, failures above.`);
 } else {
