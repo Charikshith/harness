@@ -110,6 +110,55 @@ check('documented score denominator matches SUBSYSTEMS', () => {
   }
 });
 
+// A .json template that does not parse cannot be used for the thing its extension promises.
+// templates/feature-list.schema.json carried YAML frontmatter and so was never a usable JSON
+// Schema; metadata now lives in a `_meta` key, matching feature-list.json.
+check('every .json template parses as JSON', () => {
+  const dir = path.join(SKILL_ROOT, 'templates');
+  for (const file of fs.readdirSync(dir).filter((f) => f.endsWith('.json'))) {
+    try {
+      JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
+    } catch (err) {
+      assert.fail(`templates/${file} is not valid JSON: ${err.message}`);
+    }
+  }
+});
+
+// The validator greps init.sh for the fail-fast flag, so any second occurrence — a comment
+// explaining it, most naturally — keeps that check green after the real line is deleted.
+// Measured: the mutation gate's drop-fail-fast mutant survived exactly this way, twice.
+check('no shipped init.sh mentions the fail-fast flag more than once', () => {
+  const candidates = [
+    path.join(SKILL_ROOT, 'templates', 'init.sh'),
+    ...fs.readdirSync(path.join(SKILL_ROOT, 'examples'), { withFileTypes: true })
+      .filter((d) => d.isDirectory())
+      .map((d) => path.join(SKILL_ROOT, 'examples', d.name, 'init.sh'))
+  ].filter((p) => fs.existsSync(p));
+
+  for (const file of candidates) {
+    const hits = (fs.readFileSync(file, 'utf8').match(/set -e/g) || []).length;
+    assert.equal(hits, 1,
+      `${path.relative(SKILL_ROOT, file)} contains the flag ${hits} times; only the real line may`);
+  }
+});
+
+// The block lives in both templates/init.sh and initScriptFromCommands(). create-harness
+// generates init.sh and never copies the template, so drift between them means scaffolded
+// projects and template users get different behaviour.
+check('every shipped init.sh reads the environment contract', () => {
+  const files = [
+    path.join(SKILL_ROOT, 'templates', 'init.sh'),
+    ...fs.readdirSync(path.join(SKILL_ROOT, 'examples'), { withFileTypes: true })
+      .filter((d) => d.isDirectory())
+      .map((d) => path.join(SKILL_ROOT, 'examples', d.name, 'init.sh'))
+  ].filter((p) => fs.existsSync(p));
+
+  for (const file of files) {
+    assert.ok(fs.readFileSync(file, 'utf8').includes('harness/environment.md'),
+      `${path.relative(SKILL_ROOT, file)} never reads harness/environment.md`);
+  }
+});
+
 if (process.exitCode) {
   console.error(`\n${run} checks run, failures above.`);
 } else {
