@@ -3,7 +3,7 @@
     "type": "template",
     "title": "Feature List Template",
     "description": "Feature state tracker: id, name, description, dependencies, status, and evidence for agent-driven development",
-    "artifact": "feature_list.json",
+    "artifact": "harness/feature_list.json",
     "tags": ["state", "features", "tracking", "dependencies"]
   },
   "features": [
