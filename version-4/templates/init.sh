@@ -18,9 +18,13 @@ echo "=== Harness Initialization ==="
 
 # Environment contract runs before anything else and reports separately from test output:
 # a missing tool is not a failing test, and conflating the two sends the next session
-# debugging code that was never broken. The eval sits inside an `if` so `set -e` does not
-# abort on the first unmet requirement — reporting all of them at once beats surfacing
+# debugging code that was never broken. The eval sits inside an `if` so fail-fast does
+# not abort on the first unmet requirement — reporting all of them at once beats surfacing
 # them one re-run at a time.
+#
+# Do not write the fail-fast flag literally in these comments. The validator greps this file
+# for it, so a mention in a comment keeps that check passing after the real line is gone —
+# measured: the mutation gate's drop-fail-fast mutant survived exactly this way.
 # Path is harness/environment.md, not environment.md: init.sh stays at the project root
 # because it is invoked as ./init.sh, but the contract it reads is harness state.
 ENV_CONTRACT="harness/environment.md"
