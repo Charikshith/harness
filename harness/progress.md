@@ -3,7 +3,7 @@
 ## Current State
 
 **Last Updated:** 2026-07-27
-**Active Feature:** feat-011 - Close the two remaining known defects
+**Active Feature:** none — all 11 features done
 
 ## Status
 
@@ -19,15 +19,25 @@
       scripts, runs the unit checks, and requires both examples to score 100
 - [x] Enricher heading-insertion bug fixed, plus three more in the same code path
 - [x] Feature audit: 18/18 capabilities exercised and passing
+- [x] **feat-011** — environment contract added to both examples; the schema template parses
+      as JSON and was used to validate all four feature lists; a third defect found on the way
+      (`templates/init.sh` named the fail-fast flag in a comment, defeating that check)
 
 ### What's In Progress
 
-- [ ] Nothing active. feat-011 is the next unstarted item.
+- [ ] Nothing active. All 11 features are done.
 
 ### What's Next (with verification per step)
 
-1. Add the environment-contract block to both examples' `init.sh` → verify: `grep -c environment.md version-4/examples/*/init.sh` returns 1 each, and both still score 100
-2. Decide `templates/feature-list.schema.json` — either strip the YAML frontmatter so it parses as JSON, or rename it `.md` to stop implying it is JSON → verify: `node -e "JSON.parse(...)"` succeeds, or the file no longer claims a `.json` extension
+No open features. Candidates, none urgent:
+
+1. `enrich-harness.mjs` has no `GAP_FIXES` entry for `dream-queue.md`, so a harness missing it
+   is not repaired by `--apply` → verify: delete `harness/dream-queue.md`, run `--apply`, the
+   file returns and the curation check still passes
+2. Keyword-based checks remain vocabulary-sensitive by design and are documented as such. If
+   that ever misleads someone, replace one with a structural check the way
+   `entrypointExecutesSomething()` reads command lines instead of grepping prose → verify: the
+   mutation gate kills a mutant the keyword version let survive
 
 ## Blockers / Risks
 
@@ -65,14 +75,16 @@
 - [x] Harness score: `node version-4/scripts/validate-harness.mjs --target . --no-fail --mutate`
       → 100/100, 3/3 mutants killed
 - [x] Both examples: 100/100 at `--min-score 100`
-- [x] Unit checks: 7 + 9 passing, both wired into `./init.sh`
+- [x] Unit checks: 7 + 12 passing, both wired into `./init.sh`
 - [x] Regression-probed: reverting the insertion fix, removing an index row, breaking a script,
       regressing an example, and an unmet environment contract each exit non-zero
 
 ## Notes for Next Session
 
-Start with feat-011 — both items are small and neither fails a check today, which is exactly
-why they are tracked rather than trusted to memory.
+All 11 features are done. The two candidates listed above are optional; neither fails a check.
+
+The lesson that keeps paying: every check added this session was probed by breaking the thing
+it watches. Two of them were decorative until that probe — see harness/memory/index.md.
 
 Two audit scripts used this session live in the scratchpad, not the repo: a documented-flag
 audit and a claims audit. The reusable parts became `scripts/index-coverage.test.mjs`. If you

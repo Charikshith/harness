@@ -83,10 +83,10 @@
     {
       "id": "feat-011",
       "name": "Close the two remaining known defects",
-      "description": "Both examples' init.sh predate the environment contract block and do not contain it, so they are no longer byte-identical to a fresh scaffold. templates/feature-list.schema.json carries YAML frontmatter and has therefore never been parseable as JSON. Neither fails a check today, which is exactly why they need tracking rather than trusting memory",
+      "description": "Both examples' init.sh lacked the environment contract block, so neither demonstrated a feature the skill ships. templates/feature-list.schema.json carried YAML frontmatter and so was never parseable as the JSON Schema its extension promises. Found a third while fixing them: templates/init.sh named the fail-fast flag in a comment, which keeps that check green after the real line is deleted",
       "dependencies": ["feat-007"],
-      "status": "not-started",
-      "evidence": ""
+      "status": "done",
+      "evidence": "Contract block inserted into both examples from initScriptFromCommands() output rather than transcribed, so it cannot drift from what create-harness generates. All three paths verified per example: passing requirement reports PASS, unmet exits 1, absent file does not block. Both still 100/100 and react-harness now kills 3/3 mutants. Schema metadata moved to a _meta key: valid JSON, and used to validate all four feature lists in the repo plus a negative control. Three new checks in index-coverage.test.mjs guard the class, each probed to fail."
     }
   ]
 }
