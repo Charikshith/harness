@@ -291,6 +291,22 @@ export function scoreHarness(files, { killRate } = {}) {
   const memoryIndex = byPath.get('memory/index.md') || '';
   const memoryJournal = byPath.get('memory/journal.md') || '';
   const memoryGraveyard = byPath.get('memory/graveyard.md') || '';
+  // Read for its content only — there is deliberately no hasFile() check that the dream
+  // queue exists. A queue is the OUTPUT of a curation pass, and curation runs every ~10
+  // sessions, so a young harness legitimately has none. Requiring the file would penalise
+  // a harness for not yet having had anything worth proposing.
+  //
+  // Two consequences worth knowing before changing this:
+  //   - Because enrich-harness.mjs acts only on FAILING checks, a GAP_FIXES entry for this
+  //     file would be unreachable. An existence check has to come first or the entry is
+  //     dead code.
+  //   - The curation check below reads `agents + dreamQueue`, so this file's content can
+  //     satisfy it on its own. In a harness whose AGENTS.md has no Curation section, the
+  //     queue is load-bearing for that check — delete it and the check fails, and enrich
+  //     then repairs it by writing the section into AGENTS.md rather than restoring the
+  //     file. The check goes green with the artifact still missing. That is acceptable
+  //     because the check asks whether curation is *documented*, not whether a queue
+  //     exists; it is recorded here so the next reader does not mistake it for a bug.
   const dreamQueue = byPath.get('dream-queue.md') || '';
   // graveyard.md is not a lesson and is deliberately not linked from the index, so it
   // must be excluded here or memoryLinksIntact reports it as orphaned. Measured before
