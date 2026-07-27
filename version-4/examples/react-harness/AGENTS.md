@@ -88,10 +88,27 @@ Before writing any code, stop at the first rung that holds:
 
 ## Required Artifacts
 
+**Required** — each of these is scored, and its absence costs a check:
+
+- `AGENTS.md` — this file (or `CLAUDE.md`)
+- `init.sh` — Standard startup and verification path
 - `harness/feature_list.json` — Feature state tracker (source of truth)
 - `harness/progress.md` — Session continuity log
-- `init.sh` — Standard startup and verification path
-- `harness/session-handoff.md` — Optional, for larger sessions
+- `harness/memory/index.md` — Bounded index of lessons learned; topic files alongside it
+- `harness/memory/journal.md` — Append-only session friction log; the input to curation
+- `harness/open-work.md` — Work seen but declined under scope discipline; recruitable
+- `harness/session-handoff.md` — Must exist; *filling it in* is what's optional, and only
+  worth it for larger sessions. The file being present is scored, so deleting it because a
+  session was small costs a lifecycle check.
+
+**Optional** — absent is not a defect, and no check penalises it:
+
+- `harness/memory/graveyard.md` — Routes tried and rejected, each with an expiry condition
+- `harness/dream-queue.md` — Curation proposals awaiting human decision; a harness whose
+  curation pass has never run legitimately has no queue
+- `harness/environment.md` — Declared external preconditions, checked first by the entrypoint
+- `harness/memory/audit-log.jsonl` — Append-only audit history, written only by
+  `validate-harness.mjs --log`. Never rewrite or prune it; it is evidence
 
 ## Before Multi-Step Work
 
