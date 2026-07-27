@@ -5,815 +5,911 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Harness Components — harness-creator v4</title>
 <style>
+  /* ---- theme tokens ------------------------------------------------------ */
   :root {
-    --bg: #fbfaf8; --panel: #ffffff; --ink: #1a1a1a; --ink-soft: #5c5a57;
-    --line: #e3e0da; --accent: #7b5cff; --accent-soft: #f0ecff;
-    --mem: #0d8a6a; --mem-soft: #e6f5f0;
-    --warn: #b25a00; --warn-soft: #fdf1e3;
-    --code-bg: #f4f2ee;
+    color-scheme: light dark;
+    --bg:        #f7f8fa;
+    --panel:     #ffffff;
+    --panel-2:   #f1f3f7;
+    --ink:       #14171f;
+    --ink-soft:  #5a6172;
+    --ink-faint: #8b91a1;
+    --line:      #e2e5ec;
+    --line-soft: #eef0f4;
+
+    --accent:      #4f46e5;
+    --accent-soft: #eeecfe;
+    --mem:         #0e7c66;
+    --mem-soft:    #e2f4ef;
+    --warn:        #a2560a;
+    --warn-soft:   #fcf0e0;
+    --danger:      #b3261e;
+    --danger-soft: #fdecea;
+
+    --code-bg:   #f2f3f7;
+    --shadow:    0 1px 2px rgba(16,20,30,.04), 0 8px 24px rgba(16,20,30,.05);
     --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --nav-w: 288px;
   }
   @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #16171a; --panel: #1e2024; --ink: #eceded; --ink-soft: #a2a6ad;
-      --line: #2f3238; --accent: #a690ff; --accent-soft: #262138;
-      --mem: #4fd1a8; --mem-soft: #14312a;
-      --warn: #f0a860; --warn-soft: #33240f;
-      --code-bg: #24262b;
+    :root:not([data-theme="light"]) {
+      --bg:        #0f1116;
+      --panel:     #161922;
+      --panel-2:   #1c2029;
+      --ink:       #e8eaef;
+      --ink-soft:  #a0a7b8;
+      --ink-faint: #737b8d;
+      --line:      #262b36;
+      --line-soft: #1e222c;
+      --accent:      #8f88ff;
+      --accent-soft: #221f3d;
+      --mem:         #4fd3ac;
+      --mem-soft:    #10302a;
+      --warn:        #e3a35f;
+      --warn-soft:   #2e2312;
+      --danger:      #f08a80;
+      --danger-soft: #331a18;
+      --code-bg:   #1b1f28;
+      --shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.28);
     }
   }
   :root[data-theme="dark"] {
-    --bg: #16171a; --panel: #1e2024; --ink: #eceded; --ink-soft: #a2a6ad;
-    --line: #2f3238; --accent: #a690ff; --accent-soft: #262138;
-    --mem: #4fd1a8; --mem-soft: #14312a;
-    --warn: #f0a860; --warn-soft: #33240f;
-    --code-bg: #24262b;
-  }
-  :root[data-theme="light"] {
-    --bg: #fbfaf8; --panel: #ffffff; --ink: #1a1a1a; --ink-soft: #5c5a57;
-    --line: #e3e0da; --accent: #7b5cff; --accent-soft: #f0ecff;
-    --mem: #0d8a6a; --mem-soft: #e6f5f0;
-    --warn: #b25a00; --warn-soft: #fdf1e3;
-    --code-bg: #f4f2ee;
+    --bg:        #0f1116;
+    --panel:     #161922;
+    --panel-2:   #1c2029;
+    --ink:       #e8eaef;
+    --ink-soft:  #a0a7b8;
+    --ink-faint: #737b8d;
+    --line:      #262b36;
+    --line-soft: #1e222c;
+    --accent:      #8f88ff;
+    --accent-soft: #221f3d;
+    --mem:         #4fd3ac;
+    --mem-soft:    #10302a;
+    --warn:        #e3a35f;
+    --warn-soft:   #2e2312;
+    --danger:      #f08a80;
+    --danger-soft: #331a18;
+    --code-bg:   #1b1f28;
+    --shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.28);
   }
 
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 24px; }
   body {
     margin: 0; background: var(--bg); color: var(--ink);
-    font: 16px/1.65 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-    -webkit-font-smoothing: antialiased;
+    font: 16px/1.68 var(--sans); -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 40px 22px 90px; }
+  a { color: var(--accent); }
 
-  header.hero { border-bottom: 2px solid var(--line); padding-bottom: 26px; margin-bottom: 38px; }
-  .eyebrow {
-    font: 600 11px/1 var(--mono); letter-spacing: .13em; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 14px;
-  }
-  h1 { font-size: clamp(1.7rem, 4.4vw, 2.5rem); line-height: 1.15; margin: 0 0 12px; letter-spacing: -.02em; }
-  .sub { color: var(--ink-soft); font-size: 1.05rem; margin: 0; max-width: 70ch; }
+  /* ---- layout ------------------------------------------------------------ */
+  .shell { display: grid; grid-template-columns: var(--nav-w) minmax(0,1fr); }
 
-  h2 {
-    font-size: 1.42rem; margin: 52px 0 6px; letter-spacing: -.01em;
-    padding-top: 22px; border-top: 1px solid var(--line);
+  nav.side {
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    border-right: 1px solid var(--line); background: var(--panel);
+    padding: 22px 0 60px;
   }
-  h2:first-of-type { border-top: none; padding-top: 0; }
-  h2 .num { font: 600 .82rem/1 var(--mono); color: var(--accent); display: block; margin-bottom: 8px; }
-  h3 { font-size: 1.06rem; margin: 30px 0 8px; }
-  p { margin: 0 0 14px; }
-  .lede { color: var(--ink-soft); margin-bottom: 26px; max-width: 74ch; }
+  .brand { padding: 0 22px 16px; border-bottom: 1px solid var(--line-soft); margin-bottom: 14px; }
+  .brand b { display: block; font-size: 15px; letter-spacing: -.01em; }
+  .brand span { font: 600 10.5px/1.5 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .navlist { list-style: none; margin: 0; padding: 0 12px; }
+  .navlist a {
+    display: flex; gap: 10px; align-items: baseline;
+    padding: 7px 10px; border-radius: 7px; text-decoration: none;
+    color: var(--ink-soft); font-size: 13.5px; line-height: 1.4;
+  }
+  .navlist a .n { font: 600 10.5px var(--mono); color: var(--ink-faint); min-width: 18px; }
+  .navlist a:hover { background: var(--panel-2); color: var(--ink); }
+  .navlist a.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .navlist a.active .n { color: var(--accent); }
+  .navgroup { padding: 14px 22px 5px; font: 600 10px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); }
 
-  code {
-    font: 500 .875em var(--mono); background: var(--code-bg);
-    padding: .13em .4em; border-radius: 4px; word-break: break-word;
-  }
+  main { max-width: 940px; padding: 40px 40px 120px; }
 
-  .card {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 11px;
-    padding: 20px 22px; margin: 18px 0;
-  }
-  .card > h3 { margin-top: 0; }
-  .card.mem { border-left: 4px solid var(--mem); }
-  .card.core { border-left: 4px solid var(--accent); }
+  /* ---- header ------------------------------------------------------------ */
+  header.hero { padding-bottom: 26px; border-bottom: 2px solid var(--line); margin-bottom: 10px; }
+  .eyebrow { font: 600 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 13px; }
+  h1 { font-size: clamp(1.8rem,4vw,2.6rem); line-height: 1.12; margin: 0 0 14px; letter-spacing: -.025em; }
+  .sub { color: var(--ink-soft); font-size: 1.06rem; margin: 0; max-width: 68ch; }
 
-  .pill {
-    display: inline-block; font: 600 10px/1 var(--mono); letter-spacing: .08em;
-    text-transform: uppercase; padding: 5px 9px; border-radius: 20px; vertical-align: middle;
+  /* ---- chapters ---------------------------------------------------------- */
+  section.chapter { padding-top: 46px; scroll-margin-top: 20px; }
+  h2 { font-size: 1.5rem; margin: 0 0 6px; letter-spacing: -.015em; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  h2 .num {
+    font: 700 11px/1 var(--mono); color: var(--accent); background: var(--accent-soft);
+    padding: 6px 9px; border-radius: 6px; letter-spacing: .08em; flex: none;
   }
-  .pill.new { background: var(--mem-soft); color: var(--mem); }
-  .pill.chg { background: var(--warn-soft); color: var(--warn); }
+  h3 { font-size: 1.02rem; margin: 26px 0 8px; letter-spacing: -.005em; }
+  h4 { font-size: .82rem; margin: 0 0 8px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-faint); font-weight: 700; }
+  p { margin: 0 0 13px; }
+  .lede { color: var(--ink-soft); max-width: 74ch; margin-bottom: 22px; }
+
+  code { font: 500 .87em var(--mono); background: var(--code-bg); padding: .13em .4em; border-radius: 4px; word-break: break-word; }
+  pre { background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; overflow-x: auto; margin: 16px 0; }
+  pre code { background: none; padding: 0; font-size: .84rem; line-height: 1.6; }
+
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; margin: 16px 0; box-shadow: var(--shadow); }
+  .card > :first-child { margin-top: 0; }
+  .card > :last-child { margin-bottom: 0; }
+  .card.mem { border-left: 3px solid var(--mem); }
+
+  .meta { display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap: 14px; margin: 18px 0; }
+  .meta .box { background: var(--panel-2); border: 1px solid var(--line-soft); border-radius: 10px; padding: 14px 16px; }
+  .meta .box p { margin: 0; font-size: .92rem; color: var(--ink-soft); }
+  .meta .box strong { color: var(--ink); }
+
+  .pill { display: inline-block; font: 600 10px/1 var(--mono); letter-spacing: .07em; text-transform: uppercase; padding: 5px 8px; border-radius: 20px; vertical-align: middle; }
   .pill.core { background: var(--accent-soft); color: var(--accent); }
+  .pill.mem  { background: var(--mem-soft);   color: var(--mem); }
+  .pill.opt  { background: var(--warn-soft);  color: var(--warn); }
+  .pill.req  { background: var(--danger-soft);color: var(--danger); }
 
-  .tw { overflow-x: auto; margin: 16px 0; border: 1px solid var(--line); border-radius: 9px; }
-  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: .9rem; }
-  th, td { text-align: left; padding: 10px 13px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  th { background: var(--code-bg); font-weight: 650; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); }
+  .tw { overflow-x: auto; margin: 16px 0; border: 1px solid var(--line); border-radius: 11px; background: var(--panel); }
+  table { border-collapse: collapse; width: 100%; min-width: 540px; font-size: .89rem; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  th { background: var(--panel-2); font-weight: 650; font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-faint); }
   tbody tr:last-child td { border-bottom: none; }
 
-  ul, ol { margin: 0 0 14px; padding-left: 22px; }
-  li { margin-bottom: 7px; }
+  ul, ol { margin: 0 0 13px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  ul.tight li { margin-bottom: 3px; }
 
-  .files { list-style: none; padding: 0; margin: 12px 0 0; }
-  .files li {
-    font: 500 .84rem var(--mono); padding: 7px 11px; background: var(--code-bg);
-    border-radius: 6px; margin-bottom: 5px; word-break: break-all;
-  }
-  .files li b { color: var(--accent); font-weight: 700; }
-
-  .note {
-    background: var(--warn-soft); border-left: 4px solid var(--warn);
-    padding: 15px 18px; border-radius: 0 9px 9px 0; margin: 20px 0;
-    font-size: .93rem;
-  }
+  .note { background: var(--warn-soft); border-left: 3px solid var(--warn); padding: 14px 18px; border-radius: 0 9px 9px 0; margin: 18px 0; font-size: .93rem; }
   .note strong { color: var(--warn); }
 
-  figure { margin: 26px 0; }
-  figure svg { width: 100%; height: auto; display: block; }
-  figcaption { color: var(--ink-soft); font-size: .84rem; margin-top: 10px; text-align: center; }
-  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 11px; padding: 18px; overflow-x: auto; }
+  .flow { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
+  .flow .step { flex: 1 1 150px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: .85rem; }
+  .flow .step b { display: block; font: 600 10px/1.6 var(--mono); color: var(--accent); text-transform: uppercase; letter-spacing: .08em; }
 
-  .kv { display: grid; grid-template-columns: minmax(120px, 160px) 1fr; gap: 4px 16px; font-size: .92rem; margin: 14px 0; }
-  .kv dt { font-weight: 650; color: var(--ink-soft); }
-  .kv dd { margin: 0; }
-  @media (max-width: 560px) { .kv { grid-template-columns: 1fr; gap: 2px; } .kv dd { margin-bottom: 10px; } }
+  .toolbar { position: fixed; top: 14px; right: 18px; display: flex; gap: 8px; z-index: 30; }
+  .toolbar button {
+    font: 600 11px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase;
+    background: var(--panel); color: var(--ink-soft); border: 1px solid var(--line);
+    padding: 9px 12px; border-radius: 8px; cursor: pointer; box-shadow: var(--shadow);
+  }
+  .toolbar button:hover { color: var(--accent); border-color: var(--accent); }
+  #navToggle { display: none; }
 
-  .toc { background: var(--panel); border: 1px solid var(--line); border-radius: 11px; padding: 18px 22px; margin-bottom: 34px; }
-  .toc ol { margin: 0; padding-left: 20px; columns: 2; column-gap: 30px; }
-  .toc li { margin-bottom: 5px; }
-  .toc a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); }
-  .toc a:hover { border-color: var(--accent); color: var(--accent); }
-  @media (max-width: 620px) { .toc ol { columns: 1; } }
+  footer { margin-top: 70px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--ink-faint); font-size: .85rem; }
 
-  svg text { font-family: ui-sans-serif, system-ui, sans-serif; }
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; }
+    nav.side {
+      position: fixed; inset: 0 auto 0 0; width: 84vw; max-width: var(--nav-w);
+      transform: translateX(-100%); transition: transform .22s ease; z-index: 40;
+    }
+    nav.side.open { transform: none; }
+    main { padding: 76px 20px 90px; }
+    #navToggle { display: block; }
+  }
+  @media print {
+    nav.side, .toolbar { display: none; }
+    .shell { display: block; }
+    main { max-width: none; padding: 0; }
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-<header class="hero">
-  <div class="eyebrow">harness-creator · version 4 (0.4.0)</div>
-  <h1>Harness Components</h1>
-  <p class="sub">What every part of the harness is, what it changes when it runs, and which files it touches — plus how the memory and curation loop fits into a session.</p>
-</header>
+<div class="toolbar">
+  <button id="navToggle" aria-label="Toggle navigation">&#9776; Menu</button>
+  <button id="themeToggle" aria-label="Toggle colour theme">&#9680; Theme</button>
+</div>
 
-<nav class="toc">
-  <strong style="display:block;margin-bottom:10px;font-size:.9rem">Contents</strong>
-  <ol>
-    <li><a href="#what">What a harness is</a></li>
-    <li><a href="#flow1">Session flow diagram</a></li>
-    <li><a href="#subsystems">The seven subsystems</a></li>
-    <li><a href="#instr">Instruction layer</a></li>
-    <li><a href="#state">State layer</a></li>
-    <li><a href="#verif">Verification layer</a></li>
-    <li><a href="#memory">Memory layer</a></li>
-    <li><a href="#flow2">Memory &amp; curation diagram</a></li>
-    <li><a href="#curation">Curation (dreaming)</a></li>
-    <li><a href="#scripts">The scripts</a></li>
-    <li><a href="#scoring">How scoring works</a></li>
-    <li><a href="#map">Template → file map</a></li>
-  </ol>
+<div class="shell">
+
+<nav class="side" id="sidenav">
+  <div class="brand">
+    <span>harness-creator</span>
+    <b>Components &middot; v4 (0.4.0)</b>
+  </div>
+  <div class="navgroup">Orientation</div>
+  <ul class="navlist">
+    <li><a href="#ch0"><span class="n">00</span><span>What a harness is</span></a></li>
+    <li><a href="#ch1"><span class="n">01</span><span>Install layout &amp; directory structure</span></a></li>
+    <li><a href="#ch2"><span class="n">02</span><span>The systems at a glance</span></a></li>
+    <li><a href="#ch3"><span class="n">03</span><span>Session flow</span></a></li>
+  </ul>
+  <div class="navgroup">Structural systems</div>
+  <ul class="navlist">
+    <li><a href="#ch4"><span class="n">04</span><span>Instructions</span></a></li>
+    <li><a href="#ch5"><span class="n">05</span><span>State</span></a></li>
+    <li><a href="#ch6"><span class="n">06</span><span>Verification</span></a></li>
+    <li><a href="#ch7"><span class="n">07</span><span>Scope</span></a></li>
+    <li><a href="#ch8"><span class="n">08</span><span>Lifecycle</span></a></li>
+  </ul>
+  <div class="navgroup">Learning systems</div>
+  <ul class="navlist">
+    <li><a href="#ch9"><span class="n">09</span><span>Memory</span></a></li>
+    <li><a href="#ch10"><span class="n">10</span><span>Curation (dreaming)</span></a></li>
+  </ul>
+  <div class="navgroup">Policy</div>
+  <ul class="navlist">
+    <li><a href="#ch11"><span class="n">11</span><span>Behavioral</span></a></li>
+  </ul>
+  <div class="navgroup">Machinery</div>
+  <ul class="navlist">
+    <li><a href="#ch12"><span class="n">12</span><span>Tooling &mdash; the scripts</span></a></li>
+    <li><a href="#ch13"><span class="n">13</span><span>Scoring model</span></a></li>
+    <li><a href="#ch14"><span class="n">14</span><span>Templates &rarr; artifact map</span></a></li>
+    <li><a href="#ch15"><span class="n">15</span><span>Reference patterns</span></a></li>
+    <li><a href="#ch16"><span class="n">16</span><span>Self-checks &amp; known limits</span></a></li>
+  </ul>
 </nav>
 
-<h2 id="what"><span class="num">01</span>What a harness is</h2>
-<p class="lede">A harness is the set of files that let a coding agent start consistently, stay in scope, verify its own work, and resume after the context window is gone. It is not a framework and runs no code of its own — it is markdown plus one shell entrypoint, sitting in the target repository.</p>
+<main>
 
-<p>The skill that generates it does three things: <strong>scaffold</strong> a harness into a project, <strong>score</strong> an existing one, and <strong>retrofit</strong> missing pieces into one that already exists. Everything it writes is a plain file a human can read and edit.</p>
+<header class="hero">
+  <div class="eyebrow">harness-creator &middot; version 4 (0.4.0)</div>
+  <h1>Harness Components</h1>
+  <p class="sub">Every system in the harness: what it is for, which files it owns, what it reads and writes, what changing it affects, and how it is scored. One system per chapter.</p>
+</header>
+
+<!-- ===================================================== 00 -->
+<section class="chapter" id="ch0">
+<h2><span class="num">00</span>What a harness is</h2>
+<p class="lede">A harness is the set of files that let a coding agent start consistently, stay in scope, verify its own work, and resume after the context window is gone. It is not a framework and runs no code of its own &mdash; it is markdown plus one shell entrypoint, sitting in the target repository.</p>
+
+<p>The skill that generates it does three things: <strong>scaffold</strong> a harness into a project, <strong>score</strong> an existing one, and <strong>retrofit</strong> what is missing. Everything it writes is a plain file a human can read and edit.</p>
 
 <div class="note">
-  <strong>The core distinction introduced in v0.3.1.</strong> Earlier versions tracked <em>state</em> — where the work stopped — very well, and recorded no <em>learning</em> at all. State is a bookmark; a lesson is knowledge. A harness could score full marks and never get better at anything. Memory is now its own subsystem for exactly that reason.
+<strong>The organising idea.</strong> Every check asks one question: <em>would a fresh agent, with no memory of the last session, do the right thing?</em> A harness scores well when the answer is yes without a human in the loop.
 </div>
+</section>
 
-<h2 id="flow1"><span class="num">02</span>Session flow</h2>
-<p class="lede">What actually happens, in order, when an agent opens a session in a harnessed repository.</p>
+<!-- ===================================================== 01 -->
+<section class="chapter" id="ch1">
+<h2><span class="num">01</span>Install layout &amp; directory structure</h2>
+<p class="lede">A scaffold puts three files in the project root and everything else under <code>harness/</code>. The three at the root are not a style choice &mdash; each is read from there by something outside this harness.</p>
 
-<figure>
-  <div class="svgbox">
-  <svg viewBox="0 0 940 420" role="img" aria-label="Session flow from startup through work to end of session">
-    <defs>
-      <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-        <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
-      </marker>
-    </defs>
-    <g color="var(--ink-soft)">
+<h3>What a scaffolded project looks like</h3>
+<pre><code>your-project/
+├── AGENTS.md          ← instruction file; the cross-tool convention
+├── CLAUDE.md          ← one line, points at AGENTS.md
+├── init.sh            ← verification entrypoint, invoked as ./init.sh
+└── harness/
+    ├── feature_list.json      state · source of truth for features
+    ├── progress.md            state · session continuity log
+    ├── session-handoff.md     lifecycle · structured end-of-session handoff
+    ├── open-work.md           scope · seen but declined, recruitable
+    ├── dream-queue.md         curation · proposals awaiting a human   (optional)
+    ├── environment.md         verification · declared preconditions   (optional)
+    └── memory/
+        ├── index.md           bounded always-on index of lessons
+        ├── journal.md         append-only friction log; curation input
+        ├── graveyard.md       rejected routes + expiry conditions     (optional)
+        ├── &lt;slug&gt;.md          one lesson per file
+        └── audit-log.jsonl    append-only score history               (optional)</code></pre>
 
-    <text x="12" y="22" font-size="12" font-weight="700" fill="var(--accent)">STARTUP</text>
-    <rect x="12" y="34" width="176" height="52" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
-    <text x="100" y="56" font-size="13" font-weight="650" text-anchor="middle" fill="var(--ink)">./init.sh</text>
-    <text x="100" y="73" font-size="11" text-anchor="middle" fill="var(--ink-soft)">environment healthy?</text>
-
-    <rect x="12" y="100" width="176" height="52" rx="8" fill="var(--panel)" stroke="var(--line)"/>
-    <text x="100" y="122" font-size="13" font-weight="650" text-anchor="middle" fill="var(--ink)">AGENTS.md</text>
-    <text x="100" y="139" font-size="11" text-anchor="middle" fill="var(--ink-soft)">rules + invariants</text>
-
-    <rect x="12" y="166" width="176" height="60" rx="8" fill="var(--panel)" stroke="var(--line)"/>
-    <text x="100" y="186" font-size="12" font-weight="650" text-anchor="middle" fill="var(--ink)">State</text>
-    <text x="100" y="202" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">feature_list · progress</text>
-    <text x="100" y="216" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">session-handoff</text>
-
-    <rect x="12" y="240" width="176" height="60" rx="8" fill="var(--mem-soft)" stroke="var(--mem)"/>
-    <text x="100" y="260" font-size="12" font-weight="650" text-anchor="middle" fill="var(--ink)">Memory index</text>
-    <text x="100" y="276" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">lessons from past</text>
-    <text x="100" y="290" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">sessions</text>
-
-    <rect x="12" y="314" width="176" height="56" rx="8" fill="var(--panel)" stroke="var(--mem)" stroke-dasharray="4 3"/>
-    <text x="100" y="334" font-size="12" font-weight="650" text-anchor="middle" fill="var(--ink)">dream-queue.md</text>
-    <text x="100" y="350" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">surface, never apply</text>
-    <text x="100" y="363" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">→ human decides</text>
-
-    <path d="M100,86 L100,98" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
-    <path d="M100,152 L100,164" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
-    <path d="M100,226 L100,238" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
-    <path d="M100,300 L100,312" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
-
-    <text x="330" y="22" font-size="12" font-weight="700" fill="var(--accent)">SCOPE GATE</text>
-    <rect x="250" y="34" width="200" height="86" rx="8" fill="var(--panel)" stroke="var(--line)"/>
-    <text x="350" y="56" font-size="12" font-weight="650" text-anchor="middle" fill="var(--ink)">State understanding</text>
-    <text x="350" y="74" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">ambiguous? stop and ask</text>
-    <text x="350" y="94" font-size="12" font-weight="650" text-anchor="middle" fill="var(--ink)">Write scope boundary</text>
-    <text x="350" y="110" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">in scope / out of scope</text>
-
-    <rect x="250" y="140" width="200" height="72" rx="8" fill="var(--panel)" stroke="var(--line)"/>
-    <text x="350" y="163" font-size="12" font-weight="650" text-anchor="middle" fill="var(--ink)">Pick ONE feature</text>
-    <text x="350" y="181" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">from feature_list.json</text>
-    <text x="350" y="198" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">write plan if multi-step</text>
-
-    <rect x="250" y="232" width="200" height="76" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
-    <text x="350" y="256" font-size="14" font-weight="700" text-anchor="middle" fill="var(--ink)">DO THE WORK</text>
-    <text x="350" y="275" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">coding ladder · surgical edits</text>
-    <text x="350" y="291" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">verification check written first</text>
-
-    <path d="M188,60 L248,60" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
-    <path d="M350,120 L350,138" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
-    <path d="M350,212 L350,230" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
-
-    <text x="620" y="22" font-size="12" font-weight="700" fill="var(--accent)">DEFINITION OF DONE</text>
-    <rect x="512" y="34" width="200" height="86" rx="8" fill="var(--panel)" stroke="var(--line)"/>
-    <text x="612" y="57" font-size="12" font-weight="650" text-anchor="middle" fill="var(--ink)">./init.sh exits 0</text>
-    <text x="612" y="76" font-size="12" font-weight="650" text-anchor="middle" fill="var(--ink)">Evidence recorded</text>
-    <text x="612" y="95" font-size="12" font-weight="650" text-anchor="middle" fill="var(--ink)">Scope trace passed</text>
-    <text x="612" y="112" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">no bonus surface added</text>
-
-    <text x="620" y="150" font-size="12" font-weight="700" fill="var(--accent)">END OF SESSION</text>
-    <rect x="512" y="162" width="200" height="66" rx="8" fill="var(--panel)" stroke="var(--line)"/>
-    <text x="612" y="184" font-size="12" font-weight="650" text-anchor="middle" fill="var(--ink)">Update state</text>
-    <text x="612" y="201" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">progress · feature_list</text>
-    <text x="612" y="217" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">session-handoff</text>
-
-    <rect x="512" y="246" width="200" height="62" rx="8" fill="var(--mem-soft)" stroke="var(--mem)"/>
-    <text x="612" y="268" font-size="12" font-weight="650" text-anchor="middle" fill="var(--ink)">Append journal block</text>
-    <text x="612" y="285" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">looked up · surprised</text>
-    <text x="612" y="300" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">corrected · differently</text>
-
-    <rect x="512" y="326" width="200" height="58" rx="8" fill="var(--mem-soft)" stroke="var(--mem)"/>
-    <text x="612" y="348" font-size="12" font-weight="650" text-anchor="middle" fill="var(--ink)">Durable lesson?</text>
-    <text x="612" y="365" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">two-step save now</text>
-    <text x="612" y="378" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">else leave to curation</text>
-
-    <path d="M450,72 L510,72" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
-    <path d="M612,120 L612,160" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
-    <path d="M612,228 L612,244" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
-    <path d="M612,308 L612,324" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
-
-    <rect x="760" y="240" width="166" height="90" rx="8" fill="var(--panel)" stroke="var(--mem)" stroke-width="1.6"/>
-    <text x="843" y="264" font-size="12" font-weight="700" text-anchor="middle" fill="var(--mem)">NEXT SESSION</text>
-    <text x="843" y="284" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">starts already</text>
-    <text x="843" y="299" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">knowing what this</text>
-    <text x="843" y="314" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">one learned</text>
-    <path d="M712,284 L758,284" stroke="var(--mem)" stroke-width="1.8" marker-end="url(#ar)" color="var(--mem)"/>
-
-    </g>
-  </svg>
-  </div>
-  <figcaption>Green = memory layer, new in v0.3.1. Dashed = read but never acted on by the agent.</figcaption>
-</figure>
-
-<h2 id="subsystems"><span class="num">03</span>The seven subsystems</h2>
-<p class="lede">Each is scored 0–5. Overall is a percentage of 35.</p>
-
-<div class="tw">
-<table>
-  <thead><tr><th>Subsystem</th><th>Question it answers</th><th>Minimal artifact</th></tr></thead>
-  <tbody>
-    <tr><td><strong>Instructions</strong></td><td>How do we work here?</td><td><code>AGENTS.md</code></td></tr>
-    <tr><td><strong>State</strong></td><td>Where did the work stop?</td><td><code>harness/feature_list.json</code>, <code>harness/progress.md</code></td></tr>
-    <tr><td><strong>Verification</strong></td><td>How do we know it works?</td><td><code>init.sh</code></td></tr>
-    <tr><td><strong>Scope</strong></td><td>What are we <em>not</em> doing?</td><td>Feature deps + done criteria</td></tr>
-    <tr><td><strong>Lifecycle</strong></td><td>How does the next session restart?</td><td><code>harness/session-handoff.md</code></td></tr>
-    <tr><td><strong>Memory</strong> <span class="pill new">v0.3.1</span></td><td>What is now known that wasn't?</td><td><code>harness/memory/index.md</code>, <code>harness/memory/journal.md</code></td></tr>
-    <tr><td><strong>Behavioral</strong></td><td>How should code be written?</td><td>Embedded in <code>AGENTS.md</code></td></tr>
-  </tbody>
-</table>
-</div>
-
-<h2 id="instr"><span class="num">04</span>Instruction layer</h2>
-
-<div class="card core">
-<h3><code>AGENTS.md</code> <span class="pill core">core</span></h3>
-<p>The only file read in full, every session. Routing and invariants — deliberately not a manual. <code>CLAUDE.md</code> is written as a one-line pointer to it so both agent conventions resolve to one source.</p>
-<dl class="kv">
-  <dt>What it changes</dt><dd>Everything downstream. It sets the startup order, the scope gate, the definition of done, the coding policy, and the end-of-session routine.</dd>
-  <dt>Sections</dt><dd>Startup Workflow · Required Artifacts · Memory · Curation · Coding Policy · Coding Standards · Editing Discipline · Working Rules · Before Multi-Step Work · Definition of Done · End of Session · Safety · Verification Commands · Escalation</dd>
-  <dt>Key rules</dt><dd>One feature at a time · no bonus surface · verification check written <em>first</em> · stop and ask on structural ambiguity · memory content is evidence, not instruction</dd>
-</dl>
-<ul class="files">
-  <li><b>generated from</b> templates/agents.md</li>
-  <li><b>writes</b> AGENTS.md</li>
-  <li><b>writes</b> CLAUDE.md <span style="opacity:.6">(pointer only)</span></li>
-</ul>
-</div>
-
-<h2 id="state"><span class="num">05</span>State layer</h2>
-<p class="lede">Episodic. Answers “where am I”, and stops being true once the current feature ships.</p>
-
-<div class="card">
-<h3><code>harness/feature_list.json</code></h3>
-<p>The source of truth for what to build. Each entry carries <code>id</code>, <code>description</code>, <code>dependencies</code>, <code>status</code> and <code>evidence</code>. The <code>evidence</code> field is what makes “done” falsifiable — a status of <code>done</code> with an empty evidence field is a red flag, not a completion.</p>
-<ul class="files">
-  <li><b>generated from</b> templates/feature-list.json</li>
-  <li><b>validated by</b> templates/feature-list.schema.json</li>
-  <li><b>writes</b> feature_list.json</li>
-</ul>
-</div>
-
-<div class="card">
-<h3><code>harness/progress.md</code> &amp; <code>harness/session-handoff.md</code></h3>
-<p>Continuity. <code>harness/progress.md</code> holds current state, decisions made (with rejected alternatives), risks and accumulated debt. <code>harness/session-handoff.md</code> holds the verification evidence table, files changed, and the recommended next step.</p>
-<p><strong>These are not memory.</strong> They are the bookmark. Conflating them with memory was the single most common failure this version fixes.</p>
-<ul class="files">
-  <li><b>generated from</b> templates/progress.md, templates/session-handoff.md</li>
-  <li><b>writes</b> progress.md, session-handoff.md</li>
-</ul>
-</div>
-
-<h2 id="verif"><span class="num">06</span>Verification layer</h2>
-
-<div class="card core">
-<h3><code>init.sh</code> <span class="pill core">the only gate</span></h3>
-<p>One entrypoint, run at startup and again before any claim of completion. Its exit code is the number of failed checks, so it composes with CI without extra glue. It must <code>set -e</code> and it must print a clean-restart path.</p>
-<p>In a codebase it wraps tests, build and lint. In a documents-only project there is nothing to compile, so it verifies tool availability and artifact integrity instead — the harness does not require that a project have code.</p>
-<ul class="files">
-  <li><b>generated from</b> templates/init.sh</li>
-  <li><b>writes</b> init.sh <span style="opacity:.6">(mode 0755)</span></li>
-</ul>
-</div>
-
-<h2 id="memory"><span class="num">07</span>Memory layer <span class="pill new">new in v0.3.1</span></h2>
-<p class="lede">Durable. Answers “what do I now know that I didn't before”, and outlives the feature that taught it.</p>
-
-<div class="card mem">
-<h3><code>harness/memory/index.md</code></h3>
-<p>The always-on index: one pointer row per lesson, read every session. Topic files are opened only when a row looks relevant — progressive disclosure, so depth stays available without paying context for it.</p>
-<dl class="kv">
-  <dt>Hard cap</dt><dd>~200 lines / 25KB. Overflow is a signal to merge or delete lessons, never to raise the cap.</dd>
-  <dt>Two-step save</dt><dd>Write <code>harness/memory/&lt;slug&gt;.md</code> <em>first</em>, then append the index row. Topic-file-first is deliberate: a crash between the two leaves an orphan, never a broken index.</dd>
-  <dt>Retired, not deleted</dt><dd>A wrong lesson is the record of how far it propagated. It moves to a Retired section with a reason.</dd>
-</dl>
-<ul class="files">
-  <li><b>generated from</b> templates/memory-index.md</li>
-  <li><b>writes</b> harness/memory/index.md</li>
-  <li><b>shape defined by</b> templates/memory-entry.md <span style="opacity:.6">(not scaffolded; consulted)</span></li>
-</ul>
-</div>
-
-<div class="card mem">
-<h3><code>harness/memory/journal.md</code></h3>
-<p>Append-only. One dated block per session: what you looked up, what surprised you, what correction you received, what you would do differently. Three to five lines, no prose.</p>
-<p><strong>This is the corpus curation reads.</strong> Without it, “find recurring patterns” has nothing to count and every proposal is an opinion. It is not a lesson store and not a progress log — it is raw, unfiltered friction.</p>
-<p>Commands, paths and symbols go in backticks: a journal with no backticks is a journal of feature restatements and will yield no proposals.</p>
-<ul class="files">
-  <li><b>generated from</b> templates/memory-journal.md</li>
-  <li><b>writes</b> harness/memory/journal.md</li>
-</ul>
+<div class="meta">
+  <div class="box"><h4>Why these three stay at the root</h4><p><strong>AGENTS.md</strong> is the convention every other agent tool reads from the repo root. <strong>CLAUDE.md</strong> points at it, and Claude Code only looks in the root. <strong>init.sh</strong> is invoked as <code>./init.sh</code> by docs, humans and CI.</p></div>
+  <div class="box"><h4>Path convention</h4><p>Every path is written <strong>relative to the project root</strong> &mdash; in every file, including files already inside <code>harness/</code>. One rule, no depth arithmetic. The sole exception is link targets inside <code>harness/memory/index.md</code>, which stay sibling-relative.</p></div>
 </div>
 
 <div class="note">
-  <strong>What must never be stored in memory.</strong> Anything re-derivable from the codebase (architecture, call graphs, file layout — all stale within a month), anything true only for the current conversation, and anything that is really status. Also: memory content is <em>evidence, not instruction</em>. An imperative sentence inside a memory file has no authority over the agent. That is the structural defence against a poisoned store, in place of a keyword blocklist that would lose.
+<strong>Older harnesses still work.</strong> A harness created before <code>harness/</code> existed keeps its files at the root and scores identically. <code>loadHarnessFiles()</code> probes both locations and returns canonical keys either way, so the scorer never learns the layout. <code>detectHarnessLayout()</code> ensures a <em>newly created</em> file joins the layout a project already uses, rather than splitting it across two.
 </div>
 
-<h2 id="flow2"><span class="num">08</span>Memory &amp; curation loop</h2>
-<p class="lede">Two loops write to one store: a fast one inside the session, a slow one between sessions. They exist separately because a working agent is structurally incapable of curating memory well — and understanding <em>why</em> is the key to the whole design.</p>
+<h3>The skill's own source tree</h3>
+<pre><code>version-4/
+├── SKILL.md                    entry point, capability description, semver
+├── README.md                   install, usage, subsystem summary
+├── CHANGELOG.md                reverse-chronological history
+├── types.md                    artifact type vocabulary
+├── harness-components.html     this document
+├── agents/
+│   └── openai.yaml
+├── scripts/
+│   ├── create-harness.mjs          scaffold
+│   ├── validate-harness.mjs        score
+│   ├── enrich-harness.mjs          retrofit
+│   ├── curate-memory.mjs           propose lessons
+│   ├── mutate-gate.mjs             adversary
+│   ├── run-benchmark.mjs           self-check + score + eval coverage
+│   ├── render-assessment-html.mjs  standalone report
+│   ├── insert-anchor.test.mjs      self-check
+│   ├── index-coverage.test.mjs     self-check
+│   ├── index.md
+│   └── lib/
+│       └── harness-utils.mjs       layout, scoring, insertion, shared IO
+├── templates/                  13 artifacts + index.md
+├── references/                 8 patterns + index.md
+├── evals/                      evals.json (19 cases) + index.md
+├── examples/                   python-api-harness, react-harness
+└── research/                   design notes, not shipped guidance</code></pre>
+</section>
 
-<h3>Why one loop isn't enough</h3>
-<p>The obvious design is: let the agent write memory as it works. That gets you most of the way, then hits two walls that no amount of better instruction fixes.</p>
+<!-- ===================================================== 02 -->
+<section class="chapter" id="ch2">
+<h2><span class="num">02</span>The systems at a glance</h2>
+<p class="lede">Seven scored systems, plus curation &mdash; machinery attached to memory rather than a scored system of its own. One line each; a chapter each after this.</p>
 
 <div class="tw">
 <table>
-  <thead><tr><th>Wall</th><th>What it means</th><th>Why instruction can't fix it</th></tr></thead>
+  <thead><tr><th>System</th><th>In one line</th><th>Owns</th><th>Checks</th></tr></thead>
   <tbody>
-    <tr>
-      <td><strong>Split focus</strong></td>
-      <td>The agent is asked to finish the task <em>and</em> invest in memory that only helps a future run.</td>
-      <td>It's an unresolvable trade-off mid-task. How much of a budget meant for the job should go to helping later versions of itself? Any answer is arbitrary, and under pressure memory always loses.</td>
-    </tr>
-    <tr>
-      <td><strong>Single-session visibility</strong></td>
-      <td>The agent sees only its own session.</td>
-      <td>It <em>cannot</em> know the same correction has now been made four times. Each session starts with a fresh context window. The pattern exists only in the aggregate, which no single session can see.</td>
-    </tr>
+    <tr><td><strong>Instructions</strong> <span class="pill core">structural</span></td><td>Tells the agent how to start, what the rules are, and when it may say "done".</td><td><code>AGENTS.md</code> / <code>CLAUDE.md</code></td><td>5</td></tr>
+    <tr><td><strong>State</strong> <span class="pill core">structural</span></td><td>Records what exists, what is in flight, and what evidence was produced.</td><td><code>feature_list.json</code>, <code>progress.md</code></td><td>5</td></tr>
+    <tr><td><strong>Verification</strong> <span class="pill core">structural</span></td><td>Makes "done" falsifiable by running something that can fail.</td><td><code>init.sh</code>, <code>environment.md</code></td><td>8</td></tr>
+    <tr><td><strong>Scope</strong> <span class="pill core">structural</span></td><td>Stops one task becoming five, and gives declined work somewhere to live.</td><td><code>open-work.md</code>, feature fields</td><td>6</td></tr>
+    <tr><td><strong>Lifecycle</strong> <span class="pill core">structural</span></td><td>Makes the next session restartable without asking a human what happened.</td><td><code>session-handoff.md</code>, <code>init.sh</code></td><td>5</td></tr>
+    <tr><td><strong>Memory</strong> <span class="pill mem">learning</span></td><td>Keeps what was <em>learned</em>, as distinct from where the work stopped.</td><td><code>memory/</code></td><td>7</td></tr>
+    <tr><td><strong>Behavioral</strong> <span class="pill core">policy</span></td><td>Governs how code gets written: minimal, surgical, test-first, safe.</td><td>sections in <code>AGENTS.md</code></td><td>8</td></tr>
+    <tr><td><strong>Curation</strong> <span class="pill opt">unscored</span></td><td>Between sessions, proposes what memory should gain, merge or retire &mdash; never applies it.</td><td><code>dream-queue.md</code></td><td>&mdash;</td></tr>
   </tbody>
 </table>
 </div>
 
-<p>The consequence is a store that grows but doesn't improve: duplicates that disagree, lessons nobody used, entries that were true in session three and misleading by session forty. So the work is split. The session <strong>captures</strong>; a separate pass <strong>curates</strong>.</p>
-
-<figure>
-  <div class="svgbox">
-  <svg viewBox="0 0 940 400" role="img" aria-label="In-band memory writes and out-of-band curation loop">
-    <defs>
-      <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-        <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
-      </marker>
-    </defs>
-    <g color="var(--ink-soft)">
-
-    <rect x="10" y="10" width="420" height="380" rx="12" fill="none" stroke="var(--line)" stroke-dasharray="6 4"/>
-    <text x="24" y="34" font-size="12" font-weight="700" fill="var(--accent)">IN BAND — during a session</text>
-    <text x="24" y="50" font-size="10.5" fill="var(--ink-soft)">shares the task's budget · sees one session only</text>
-
-    <rect x="500" y="10" width="430" height="380" rx="12" fill="none" stroke="var(--mem)" stroke-dasharray="6 4"/>
-    <text x="514" y="34" font-size="12" font-weight="700" fill="var(--mem)">OUT OF BAND — between sessions</text>
-    <text x="514" y="50" font-size="10.5" fill="var(--ink-soft)">own budget · sees every session</text>
-
-    <rect x="34" y="70" width="170" height="56" rx="8" fill="var(--panel)" stroke="var(--line)"/>
-    <text x="119" y="93" font-size="12" font-weight="650" text-anchor="middle" fill="var(--ink)">Agent works</text>
-    <text x="119" y="110" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">reads index at startup</text>
-
-    <rect x="34" y="150" width="170" height="56" rx="8" fill="var(--mem-soft)" stroke="var(--mem)"/>
-    <text x="119" y="173" font-size="12" font-weight="650" text-anchor="middle" fill="var(--ink)">Appends journal</text>
-    <text x="119" y="190" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">at end of session</text>
-
-    <rect x="34" y="230" width="170" height="56" rx="8" fill="var(--mem-soft)" stroke="var(--mem)"/>
-    <text x="119" y="253" font-size="12" font-weight="650" text-anchor="middle" fill="var(--ink)">Two-step save</text>
-    <text x="119" y="270" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">only if clearly durable</text>
-
-    <rect x="255" y="140" width="150" height="120" rx="10" fill="var(--panel)" stroke="var(--mem)" stroke-width="2"/>
-    <text x="330" y="166" font-size="12.5" font-weight="700" text-anchor="middle" fill="var(--mem)">THE STORE</text>
-    <text x="330" y="188" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">harness/memory/index.md</text>
-    <text x="330" y="205" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">memory/&lt;slug&gt;.md</text>
-    <text x="330" y="222" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">harness/memory/journal.md</text>
-    <text x="330" y="245" font-size="10" text-anchor="middle" fill="var(--ink-soft)">markdown · bash + grep</text>
-
-    <path d="M204,98 L253,155" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
-    <path d="M204,178 L253,190" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
-    <path d="M204,258 L253,232" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
-
-    <rect x="530" y="70" width="180" height="58" rx="8" fill="var(--panel)" stroke="var(--line)"/>
-    <text x="620" y="93" font-size="12" font-weight="650" text-anchor="middle" fill="var(--ink)">Read journal</text>
-    <text x="620" y="110" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">against the store</text>
-
-    <rect x="530" y="150" width="180" height="94" rx="8" fill="var(--panel)" stroke="var(--line)"/>
-    <text x="620" y="172" font-size="11.5" font-weight="650" text-anchor="middle" fill="var(--ink)">Look for four things</text>
-    <text x="620" y="190" font-size="10" text-anchor="middle" fill="var(--ink-soft)">recurs but missing</text>
-    <text x="620" y="205" font-size="10" text-anchor="middle" fill="var(--ink-soft)">two that contradict</text>
-    <text x="620" y="220" font-size="10" text-anchor="middle" fill="var(--ink-soft)">never referenced</text>
-    <text x="620" y="235" font-size="10" text-anchor="middle" fill="var(--ink-soft)">now contradicted</text>
-
-    <rect x="530" y="266" width="180" height="62" rx="8" fill="var(--panel)" stroke="var(--warn)"/>
-    <text x="620" y="288" font-size="11.5" font-weight="650" text-anchor="middle" fill="var(--ink)">dream-queue.md</text>
-    <text x="620" y="305" font-size="10" text-anchor="middle" fill="var(--ink-soft)">claim + evidence + count</text>
-    <text x="620" y="320" font-size="10" text-anchor="middle" fill="var(--ink-soft)">max 5 open</text>
-
-    <rect x="762" y="266" width="150" height="62" rx="8" fill="var(--warn-soft)" stroke="var(--warn)" stroke-width="2"/>
-    <text x="837" y="290" font-size="12" font-weight="700" text-anchor="middle" fill="var(--warn)">HUMAN GATE</text>
-    <text x="837" y="309" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">accept / reject</text>
-
-    <path d="M620,128 L620,148" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
-    <path d="M620,244 L620,264" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
-    <path d="M710,297 L760,297" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
-
-    <path d="M405,180 C465,180 470,99 528,99" stroke="var(--mem)" stroke-width="1.8" fill="none" marker-end="url(#ar2)" color="var(--mem)"/>
-    <text x="455" y="130" font-size="10" fill="var(--mem)" font-weight="650">reads</text>
-
-    <path d="M837,266 C837,120 470,120 380,138" stroke="var(--warn)" stroke-width="1.8" fill="none" marker-end="url(#ar2)" color="var(--warn)" stroke-dasharray="5 4"/>
-    <text x="600" y="114" font-size="10" fill="var(--warn)" font-weight="650">only accepted changes are written</text>
-
-    <text x="24" y="330" font-size="10.5" fill="var(--ink-soft)">Curation may write memory/ only —</text>
-    <text x="24" y="346" font-size="10.5" fill="var(--ink-soft)">never AGENTS.md. A poisoned store</text>
-    <text x="24" y="362" font-size="10.5" fill="var(--ink-soft)">yields a bad note, never a new rule.</text>
-
-    </g>
-  </svg>
-  </div>
-  <figcaption>The dashed orange path is the only route by which curation changes anything — and it passes through a human.</figcaption>
-</figure>
-
-<h3>Loop 1 — in band, during the session</h3>
-<p>This loop is cheap and runs every single session. Its job is <strong>capture</strong>, not judgement.</p>
-
-<div class="card mem">
-<ol>
-  <li><strong>At startup, read <code>harness/memory/index.md</code>.</strong> One pointer row per lesson. The agent scans the rows and opens a topic file only when a row looks relevant to the task in hand. This is progressive disclosure: full depth stays available, but you pay context only for what you open.</li>
-  <li><strong>Do the work.</strong> Memory is not touched again mid-task. Nothing is appended opportunistically — that's what produces stores full of noise.</li>
-  <li><strong>At the end, append one dated block to <code>harness/memory/journal.md</code>.</strong> Three to five lines answering only: what did I have to look up, what surprised me, what correction did I receive, what would I do differently. Raw and unfiltered. If a session produced none of those, write <code>nothing</code> — that is a real signal, not a gap.</li>
-  <li><strong>Only if a lesson is already obviously durable</strong>, do the two-step save now. A direct user correction always qualifies. Everything else stays in the journal and waits for curation to decide whether it's a pattern.</li>
-</ol>
-</div>
-
-<p>Step 4 is the discipline that matters. The temptation is to promote every observation to a lesson immediately. Resisting that is what keeps the index under its cap — most journal lines are noise, and you can only tell which by seeing whether they recur.</p>
-
-<h3>The two-step save, and why the order is fixed</h3>
-<p>Writing a lesson is always: <strong>topic file first, then the index row.</strong> Never the reverse. This looks like pedantry until you consider what happens when a session dies between the two writes.</p>
-
-<div class="tw">
-<table>
-  <thead><tr><th>Order used</th><th>Crash between writes leaves</th><th>Consequence</th></tr></thead>
-  <tbody>
-    <tr>
-      <td><strong>Topic file → index</strong> <span class="pill new">correct</span></td>
-      <td>An <em>orphaned</em> topic file: real content, no pointer.</td>
-      <td>Recoverable and harmless. The index stays truthful — every row it holds resolves. The orphan is detected by the links check and can be indexed or deleted.</td>
-    </tr>
-    <tr>
-      <td>Index → topic file</td>
-      <td>A <em>dangling</em> row: a pointer to a file that doesn't exist.</td>
-      <td>The always-on file now lies. Every future session reads a row promising a lesson, follows it, and finds nothing.</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-<p>The rule picks the failure you can live with. And because both states are mechanically detectable, the scorer's <strong>links intact</strong> check enforces it — this is the one check that fails on a harness that drifted rather than one that used the wrong words.</p>
-
-<h3>Loop 2 — out of band, between sessions</h3>
-<p>This loop is expensive and runs rarely. Its job is <strong>judgement</strong>, and it has two advantages the session lacks: its own budget, and sight of every session at once.</p>
-
-<div class="card mem">
-<ol>
-  <li><strong>Read the journal against the store.</strong> Inputs are <code>harness/memory/journal.md</code> (the accumulated friction) plus <code>harness/memory/index.md</code> and its topic files (what's already known).</li>
-  <li><strong>Look for exactly four things.</strong> Not "anything interesting" — a bounded checklist, so the pass is repeatable and its output predictable. See the table below.</li>
-  <li><strong>Write proposals to <code>harness/dream-queue.md</code>.</strong> Each carries a <em>claim</em>, its <em>evidence</em> (which journal dates or files), and a <em>prevalence count</em>. No citation, no entry.</li>
-  <li><strong>Stop.</strong> Nothing is applied. The pass has no write access to anything except its own queue.</li>
-  <li><strong>A human accepts or rejects each proposal</strong>, typically at the start of the next session. Accepted changes are written into <code>harness/memory/</code>. Rejections go to the Decided table so the same idea can't quietly return next cycle.</li>
-</ol>
-</div>
-
-<h3>The four signals, concretely</h3>
-<p>A curation pass is only looking for these. Anything else it notices is out of scope.</p>
-
-<div class="tw">
-<table>
-  <thead><tr><th>Signal</th><th>What it looks like in the journal</th><th>What gets proposed</th></tr></thead>
-  <tbody>
-    <tr>
-      <td><strong>Recurs but missing</strong></td>
-      <td>The same lookup or correction appears across several dated blocks, and no lesson covers it.</td>
-      <td><em>Add</em> a lesson. Highest-value outcome of the whole loop.</td>
-    </tr>
-    <tr>
-      <td><strong>Two that contradict</strong></td>
-      <td>Two existing lessons give opposing guidance on one question.</td>
-      <td><em>Retire one.</em> Two live authorities on the same question is a bug — the agent will follow whichever it reads first.</td>
-    </tr>
-    <tr>
-      <td><strong>Never referenced</strong></td>
-      <td>A lesson exists, but nothing in the journal ever shows it being used or needed.</td>
-      <td><em>Delete</em> it. Dead entries consume index budget and dilute the rows that matter.</td>
-    </tr>
-    <tr>
-      <td><strong>Now contradicted</strong></td>
-      <td>A lesson's claim is refuted by recent journal evidence — the constraint changed.</td>
-      <td><em>Correct or retire</em>, keeping the old entry with a reason. Stale memory is worse than none: it is confidently wrong.</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-<h3>A worked example, end to end</h3>
-<p>Concrete trace of one lesson entering the store the intended way.</p>
-
-<div class="card">
-<dl class="kv">
-  <dt>Session 1</dt>
-  <dd>Agent runs <code>./deploy.sh</code>, the deploy half-fails, user corrects it. Journal gains: <code>corrected: use `make ship`, not `./deploy.sh`</code>. Not yet a lesson — one occurrence.</dd>
-  <dt>Session 4</dt>
-  <dd>Different feature, same mistake. Journal gains a near-identical line. The agent in session 4 <em>has no idea this happened before</em> — fresh context window.</dd>
-  <dt>Session 7</dt>
-  <dd>Third occurrence. Still invisible to any individual session.</dd>
-  <dt>Curation pass</dt>
-  <dd>Reads all journal blocks, finds the backticked token <code>make ship</code> recurring across three separate dates with no covering lesson. Signal 1 matched. Writes to the queue:<br>
-  <code style="display:inline-block;margin-top:6px">Add lesson: deploy via `make ship`, not ./deploy.sh — evidence: journal 07-14, 07-19, 07-22 — seen 3×</code></dd>
-  <dt>Human review</dt>
-  <dd>Reads one line with three citations and a count. Accepts.</dd>
-  <dt>Applied</dt>
-  <dd><code>harness/memory/deploy.md</code> written with the rule and a <code>**Why:**</code> line (the script skips migrations), then the pointer row appended to <code>harness/memory/index.md</code>. Two-step order.</dd>
-  <dt>Session 8 onward</dt>
-  <dd>Startup reads the index, sees the deploy row, opens it when deploying. Mistake stops recurring. Journal stops accumulating that line — which is itself the evidence the lesson worked.</dd>
-</dl>
-</div>
-
-<p>Note what did the work: <strong>counting</strong>. Nobody had to be clever. The pattern was mechanically visible the moment something looked across sessions instead of within one.</p>
-
-<h3>Why the human gate is non-negotiable</h3>
-<p>Curation proposes; a human decides. This is the load-bearing rule of the whole design, and it exists because of a specific attack rather than general caution.</p>
+<p><strong>44 checks across 7 systems</strong>, each system scored out of 5, totalling 35 and reported as a percentage.</p>
 
 <div class="note">
-  <strong>The attack.</strong> An unattended process with write access to the instruction layer can silently move the bar it is judged against. Consider a proposal that subtly weakens the definition of done. Applied automatically, every future session grades itself against the weaker bar, everything reports green, and the harness has become an elaborate way of agreeing with itself. Nothing detects it, because the thing that would detect it is what changed.
+<strong>Memory is not state.</strong> <code>progress.md</code> and <code>feature_list.json</code> record <em>where the work stopped</em> &mdash; a bookmark. Memory records <em>what is now known that wasn't before</em> &mdash; a lesson. A harness can track state perfectly and never learn anything. That distinction is why memory is its own system.
+</div>
+</section>
+
+<!-- ===================================================== 03 -->
+<section class="chapter" id="ch3">
+<h2><span class="num">03</span>Session flow</h2>
+<p class="lede">Where each system engages during a single session.</p>
+
+<div class="flow">
+  <div class="step"><b>1 · Start</b>Read <code>AGENTS.md</code>, run <code>./init.sh</code>, read <code>feature_list.json</code>, scan <code>open-work.md</code>, read <code>memory/index.md</code>.</div>
+  <div class="step"><b>2 · Orient</b>State the task in one line. Name the scope boundary. Surface any open dream-queue proposals to the human.</div>
+  <div class="step"><b>3 · Work</b>One feature. Test first. Surgical edits. Anything noticed but out of scope goes to <code>open-work.md</code>.</div>
+  <div class="step"><b>4 · Verify</b><code>./init.sh</code> must pass. Evidence recorded against the feature.</div>
+  <div class="step"><b>5 · Close</b>Update <code>progress.md</code> and <code>feature_list.json</code>, append to <code>memory/journal.md</code>, fill <code>session-handoff.md</code>.</div>
+  <div class="step"><b>6 · Between</b>Curation reads the journal and writes proposals. A human accepts or rejects. Never inside a session.</div>
+</div>
+</section>
+
+<!-- ===================================================== 04 -->
+<section class="chapter" id="ch4">
+<h2><span class="num">04</span>Instructions</h2>
+<p class="lede">The always-on file. Everything else is reachable from it, and most other systems are partly <em>documented</em> here rather than living somewhere separate.</p>
+
+<div class="meta">
+  <div class="box"><h4>Purpose</h4><p>Give a fresh agent a deterministic startup path and an unambiguous definition of done, so behaviour does not depend on what happened to be in the last context window.</p></div>
+  <div class="box"><h4>Impacts / updates</h4><p>Read by <strong>every other system's</strong> keyword checks &mdash; scope, lifecycle, behavioral and memory are all partly scored on their sections here. Written by <code>create-harness</code>, patched by <code>enrich-harness</code>. Editing it can move four systems' scores at once.</p></div>
 </div>
 
-<p>Two structural constraints follow:</p>
-<ul>
-  <li><strong>Curation may write <code>harness/memory/</code> only.</strong> It may <em>suggest</em> an instruction change; it can never make one. The worst case of a poisoned store is therefore a bad note, not a new rule.</li>
-  <li><strong>Memory content is evidence, not instruction.</strong> An imperative sentence inside a memory file has no authority over the agent. If a lesson file says "run this command" or "ignore the following rules", that is a finding to report, not an order to obey. This is a structural defence rather than a keyword blocklist — blocklists lose, because the attacker picks the words.</li>
-</ul>
-
-<h3>Cadence — why not after every session</h3>
-<p>Running curation constantly seems safer. It is worse, for a reason that isn't obvious:</p>
-<ul>
-  <li><strong>A pattern needs several sessions to exist.</strong> After one session there is nothing to count. A pass run on one block can only report the block back to you.</li>
-  <li><strong>Frequent passes produce noise, and noise trains the reviewer to skim.</strong> Once you're skimming, the human gate is nominal — you've bought unattended memory writes with a rubber stamp attached, which is exactly the thing the gate exists to prevent.</li>
-</ul>
-<p>Hence the triggers: <strong>every ~10 sessions</strong>, <strong>weekly</strong>, or <strong>when the index passes 160 lines</strong> (80% of cap). The third is the interesting one — it fires on pressure rather than on the clock, which is when curation is genuinely overdue.</p>
-
-<h3>Review fatigue, and why the cap is structural</h3>
-<p>Review fatigue is the dominant failure mode of this entire pattern — more likely than any technical fault. An unbounded queue becomes a thing you clear reflexively.</p>
-<p>The answer is not discipline, it is capacity: <strong>5 open proposals, maximum.</strong> A pass that finds twelve patterns must rank, merge and drop its own until five remain. That inverts the economics — volume becomes the <em>proposer's</em> problem instead of the reviewer's, and it forces the pass to do the ranking work that a human would otherwise do badly at 11pm.</p>
-<p>A useful property falls out of this: overflow can simply be <em>dropped</em> rather than queued. Prevalence only grows, so a real pattern resurfaces next cycle ranked higher. A backlog, by contrast, converts fatigue into permanent guilt.</p>
-
-<h3>The two loops side by side</h3>
-
+<h3>Components</h3>
 <div class="tw">
 <table>
-  <thead><tr><th>Dimension</th><th>In band (session)</th><th>Out of band (curation)</th></tr></thead>
+  <thead><tr><th>Section</th><th>Role</th><th>Scored by</th></tr></thead>
   <tbody>
-    <tr><td>When</td><td>Every session, at start and end</td><td>Every ~10 sessions, between them</td></tr>
-    <tr><td>Job</td><td>Capture</td><td>Judge</td></tr>
-    <tr><td>Budget</td><td>Shared with the task</td><td>Its own</td></tr>
-    <tr><td>Sees</td><td>One session</td><td>Every session</td></tr>
-    <tr><td>Writes</td><td><code>journal.md</code>, occasionally a lesson</td><td><code>harness/dream-queue.md</code> only</td></tr>
-    <tr><td>Can delete a lesson?</td><td>No</td><td>Only by proposing it</td></tr>
-    <tr><td>Time to benefit</td><td>Next session</td><td>Next cycle</td></tr>
-    <tr><td>Strength</td><td>Fast feedback; zero ceremony</td><td>Pattern detection; staleness control</td></tr>
-    <tr><td>Weakness</td><td>Blind to other sessions; competing priorities</td><td>Slower; needs a real corpus first</td></tr>
+    <tr><td>Startup Workflow</td><td>Ordered steps before any code is written</td><td>instructions</td></tr>
+    <tr><td>Required Artifacts</td><td>Which files exist, split into required and optional</td><td>instructions</td></tr>
+    <tr><td>Working Rules</td><td>One feature at a time, stay in scope, leave clean</td><td>scope</td></tr>
+    <tr><td>Definition of Done</td><td>The completion gate, test-first</td><td>instructions, scope</td></tr>
+    <tr><td>Verification Commands</td><td>What to run, and that <code>./init.sh</code> is the entry</td><td>instructions, verification</td></tr>
+    <tr><td>End of Session</td><td>Closing procedure</td><td>lifecycle</td></tr>
+    <tr><td>Memory &middot; Curation</td><td>Two-step save, cadence, propose-never-apply</td><td>memory</td></tr>
+    <tr><td>Coding Policy &middot; Standards &middot; Editing Discipline &middot; Safety</td><td>How code gets written</td><td>behavioral</td></tr>
   </tbody>
 </table>
 </div>
 
-<h3>Failure modes worth watching for</h3>
+<h3>Checks (5)</h3>
+<ul class="tight">
+  <li>Agent instruction file exists</li>
+  <li>Startup workflow documented</li>
+  <li>Definition of done documented</li>
+  <li>Verification commands discoverable</li>
+  <li>State artifacts routed from instructions</li>
+</ul>
+</section>
 
+<!-- ===================================================== 05 -->
+<section class="chapter" id="ch5">
+<h2><span class="num">05</span>State</h2>
+<p class="lede">What exists, what is in flight, what was proven. The bookmark a resuming session reads first.</p>
+
+<div class="meta">
+  <div class="box"><h4>Purpose</h4><p>Survive the context window. A session that ends abruptly should cost minutes to resume, not a re-investigation of the codebase.</p></div>
+  <div class="box"><h4>Impacts / updates</h4><p>Written by the agent every session and by <code>create-harness</code> / <code>enrich-harness</code>. <code>feature_list.json</code> is also read by <strong>scope</strong> for dependencies and status. <code>progress.md</code> doubles as the fallback for the lifecycle restart-marker check when no handoff exists.</p></div>
+</div>
+
+<h3>Components</h3>
 <div class="tw">
 <table>
-  <thead><tr><th>Failure</th><th>First symptom</th><th>Guard</th></tr></thead>
+  <thead><tr><th>Artifact</th><th>Holds</th><th>Written when</th></tr></thead>
   <tbody>
-    <tr>
-      <td><strong>The journal rots</strong> into feature restatements — the most likely failure of all, since it's written last, when budget is gone.</td>
-      <td>Not a complaint. A curation pass over 40+ blocks that yields <em>zero</em> proposals. The corpus grew, the signal didn't. Tell-tale: blocks with no backticked tokens.</td>
-      <td>The four fixed questions, and the instruction to write <code>nothing</code> rather than filler.</td>
-    </tr>
-    <tr>
-      <td><strong>Memory and <code>harness/progress.md</code> converge</strong>, and every lesson gets written twice.</td>
-      <td>The index crosses 160 lines within weeks, and its rows read like a changelog — feature names and dates rather than lessons.</td>
-      <td>The boundary test: if the note stops being true when the current feature ships, it is state, not memory.</td>
-    </tr>
-    <tr>
-      <td><strong>Rubber-stamping.</strong> The gate becomes ceremonial.</td>
-      <td>Invisible by construction — a drained queue and a considered queue look identical afterwards.</td>
-      <td>Keep the queue short. There is no mechanism that detects a stamp, which is exactly why the cap matters more than any check.</td>
-    </tr>
-    <tr>
-      <td><strong>Prevalence measures reporting, not reality.</strong></td>
-      <td>Known problems never generate proposals, because sessions silently work around them instead of journalling them.</td>
-      <td>Journalling is a fixed end-of-session step, not a judgement call about whether something was worth noting.</td>
-    </tr>
-    <tr>
-      <td><strong>Curating too early.</strong></td>
-      <td>The first pass finds nothing and feels like wasted effort, which discredits the practice.</td>
-      <td>Accumulate first. Let the store get messy on purpose — the mess tells you which rules you actually need.</td>
-    </tr>
+    <tr><td><code>harness/feature_list.json</code> <span class="pill req">required</span></td><td>id, name, description, dependencies, status, evidence</td><td>A feature starts, changes status, or completes</td></tr>
+    <tr><td><code>harness/progress.md</code> <span class="pill req">required</span></td><td>Current state, done / in progress / next with per-step verification, blockers, decisions</td><td>Continuously, and at session end</td></tr>
+    <tr><td><code>harness/feature_list.schema.json</code> <span class="pill opt">reference</span></td><td>JSON Schema for the tracker &mdash; id pattern, status enum, required fields</td><td>Not scaffolded; copy it to validate in CI</td></tr>
   </tbody>
 </table>
 </div>
+
+<h3>Checks (5)</h3>
+<ul class="tight">
+  <li>Feature tracker exists</li>
+  <li>Feature tracker is valid and has feature fields</li>
+  <li>Progress log exists</li>
+  <li>Progress log supports restart</li>
+  <li>Handoff captures blockers/files/next step</li>
+</ul>
+</section>
+
+<!-- ===================================================== 06 -->
+<section class="chapter" id="ch6">
+<h2><span class="num">06</span>Verification</h2>
+<p class="lede">The system that makes "done" mean something. The largest check count of any system, because it is the one most easily faked.</p>
+
+<div class="meta">
+  <div class="box"><h4>Purpose</h4><p>Give the agent something that <em>can fail</em>, and make running it the precondition for claiming completion.</p></div>
+  <div class="box"><h4>Impacts / updates</h4><p><code>init.sh</code> is also the <strong>lifecycle</strong> startup script, so it is scored twice. It reads <code>harness/environment.md</code> before anything else. <code>mutate-gate.mjs</code> deliberately breaks it to test whether the gate notices. Two checks read <code>init + agents</code>, so documenting commands in <code>AGENTS.md</code> satisfies them legitimately.</p></div>
+</div>
+
+<h3>Components</h3>
+<div class="tw">
+<table>
+  <thead><tr><th>Artifact</th><th>Role</th></tr></thead>
+  <tbody>
+    <tr><td><code>init.sh</code> <span class="pill req">required</span></td><td>Single entrypoint. Fails fast. Runs the environment contract first, then the project's own checks.</td></tr>
+    <tr><td><code>harness/environment.md</code> <span class="pill opt">optional</span></td><td>Preconditions as table rows whose Check cell is a shell command. Exit code is the verdict &mdash; no output parsing.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>The environment contract</h3>
+<p>A missing tool is not a failing test. Conflating the two sends the next session debugging code that was never broken, so the contract reports separately and exits with an explicit <em>this is the machine, not the code</em> message. The loop sits inside an <code>if</code> so a failing requirement does not abort the run &mdash; four unmet requirements surface together rather than one per re-run.</p>
 
 <div class="note">
-  <strong>Start manual.</strong> There is no bundled curation script, and that is deliberate. Open a session and ask it to read the recent journal plus the whole store and report what recurs, contradicts, and went unused. That pass <em>is</em> dreaming. Automate only after seeing what it finds — otherwise you encode thresholds for problems you don't have.
+<strong>The block lives in two places by necessity.</strong> <code>create-harness.mjs</code> <em>generates</em> <code>init.sh</code> and never copies <code>templates/init.sh</code>, so a change made only to the template would never reach a scaffolded project. A self-check now asserts every shipped <code>init.sh</code> reads <code>harness/environment.md</code>.
 </div>
 
-<h2 id="curation"><span class="num">09</span>Curation (dreaming)</h2>
-
-<div class="card mem">
-<h3><code>harness/dream-queue.md</code></h3>
-<p>The review surface. Proposals land here <em>unapplied</em>, each carrying a claim, its evidence, and a prevalence count. Rejections are recorded in a Decided table — without that record the same proposal returns every cycle and nobody remembers saying no.</p>
-<dl class="kv">
-  <dt>Cadence</dt><dd>Every ~10 sessions, weekly, or when the index passes 160 lines. Running it after every session produces noise and trains the reviewer to skim.</dd>
-  <dt>Cap</dt><dd>5 open proposals. A pass that finds more must merge or drop its own first — volume is the proposer's problem.</dd>
-  <dt>Propose, never apply</dt><dd>The load-bearing rule. An unattended process with write access to the instruction layer can silently move the bar it is judged against.</dd>
-  <dt>Today</dt><dd>Run by hand. There is no bundled curation script yet, deliberately: automate after a manual pass shows what it actually finds.</dd>
-</dl>
-<ul class="files">
-  <li><b>generated from</b> templates/dream-queue.md</li>
-  <li><b>writes</b> dream-queue.md</li>
-  <li><b>pattern</b> references/dreaming-pattern.md</li>
+<h3>Checks (8)</h3>
+<ul class="tight">
+  <li>Verification entrypoint exists</li>
+  <li>Verification fails fast</li>
+  <li>Test command documented</li>
+  <li>Static/build check documented</li>
+  <li>Verification evidence is recorded</li>
+  <li>Entrypoint actually runs a command</li>
+  <li>Declared environment preconditions are checked by the entrypoint</li>
+  <li>Gate demonstrably catches known breakage <span class="pill opt">--mutate only</span></li>
 </ul>
+</section>
+
+<!-- ===================================================== 07 -->
+<section class="chapter" id="ch7">
+<h2><span class="num">07</span>Scope</h2>
+<p class="lede">Keeps one task from becoming five, and gives everything the agent noticed-but-didn't-do a place to live instead of being silently dropped or silently built.</p>
+
+<div class="meta">
+  <div class="box"><h4>Purpose</h4><p>Bound the diff. An agent that fixes adjacent things while it is "in there" produces changes nobody asked for and nobody reviews properly.</p></div>
+  <div class="box"><h4>Impacts / updates</h4><p>Mostly documented in <code>AGENTS.md</code> Working Rules, and partly read from <code>feature_list.json</code> (dependencies, status). <code>open-work.md</code> is the only file it owns outright, and it is <strong>always-on context</strong> &mdash; bounded by attention, not disk.</p></div>
 </div>
 
-<h2 id="scripts"><span class="num">10</span>The scripts</h2>
+<h3>Components</h3>
+<div class="tw">
+<table>
+  <thead><tr><th>Artifact / rule</th><th>Role</th></tr></thead>
+  <tbody>
+    <tr><td><code>harness/open-work.md</code> <span class="pill req">required</span></td><td>One line per observation with a reason code. Recruitable &mdash; a later session can pick up a <code>cheap-parallel-win</code> that fits the task in front of it.</td></tr>
+    <tr><td><code>feature_list.json</code> dependencies</td><td>Makes ordering explicit, so "next" is derivable rather than guessed</td></tr>
+    <tr><td>Working Rules in <code>AGENTS.md</code></td><td>One feature at a time; stay in scope; no bonus surface</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Checks (6)</h3>
+<ul class="tight">
+  <li>One-feature-at-a-time rule exists</li>
+  <li>Feature dependencies are tracked</li>
+  <li>Feature status is explicit</li>
+  <li>Scope boundary documented</li>
+  <li>Completion gate limits scope closure</li>
+  <li>Recruitable open-work surface exists</li>
+</ul>
+</section>
+
+<!-- ===================================================== 08 -->
+<section class="chapter" id="ch8">
+<h2><span class="num">08</span>Lifecycle</h2>
+<p class="lede">The bootstrap and shutdown procedure. Turns a repository into something a stranger can pick up cold.</p>
+
+<div class="meta">
+  <div class="box"><h4>Purpose</h4><p>Make every session start the same way and end in a state the next one can resume from without a handover conversation.</p></div>
+  <div class="box"><h4>Impacts / updates</h4><p>Shares <code>init.sh</code> with <strong>verification</strong> and <code>progress.md</code> with <strong>state</strong> &mdash; its restart-marker check reads <code>progress + handoff</code> together, so either can satisfy it. Its end-of-session procedure is what causes <code>memory/journal.md</code> to be appended, making it the trigger for the whole curation pipeline.</p></div>
+</div>
+
+<h3>Components</h3>
+<div class="tw">
+<table>
+  <thead><tr><th>Artifact</th><th>Role</th></tr></thead>
+  <tbody>
+    <tr><td><code>init.sh</code> <span class="pill req">required</span></td><td>The one documented way to start; also the verification gate</td></tr>
+    <tr><td><code>harness/session-handoff.md</code> <span class="pill req">required</span></td><td>Objective, evidence table, files changed, decisions, blockers, next step. The <em>file</em> must exist; filling it in is what is optional for small sessions.</td></tr>
+    <tr><td>End of Session in <code>AGENTS.md</code></td><td>The closing checklist itself</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Checks (5)</h3>
+<ul class="tight">
+  <li>Startup script exists</li>
+  <li>End-of-session procedure exists</li>
+  <li>Session handoff template exists</li>
+  <li>Session restart markers exist</li>
+  <li>Clean restart path documented</li>
+</ul>
+</section>
+
+<!-- ===================================================== 09 -->
+<section class="chapter" id="ch9">
+<h2><span class="num">09</span>Memory <span class="pill mem">since v0.3.1</span></h2>
+<p class="lede">What is now known that wasn't before. Earlier versions tracked state very well and recorded no learning at all &mdash; a harness could score full marks and never get better at anything.</p>
+
+<div class="meta">
+  <div class="box"><h4>Purpose</h4><p>Stop re-paying for the same discovery. A lesson that would have saved time on a <em>different</em> feature belongs here; anything that stops being true when the current feature ships belongs in <code>progress.md</code>.</p></div>
+  <div class="box"><h4>Impacts / updates</h4><p>Written by the agent at session end, read at session start. <code>memory/index.md</code> is <strong>always-on context</strong>, so its size is a budget question, not a storage one. Three checks inspect the store itself rather than prose about it, so they cannot be satisfied by vocabulary in <code>AGENTS.md</code>. Consumed by <strong>curation</strong>.</p></div>
+</div>
+
+<h3>Components</h3>
+<div class="card mem">
+<div class="tw">
+<table>
+  <thead><tr><th>Artifact</th><th>Role</th><th>Bound</th></tr></thead>
+  <tbody>
+    <tr><td><code>memory/index.md</code> <span class="pill req">required</span></td><td>One line per lesson, read every session; topic files opened only when a line looks relevant</td><td>~200 lines / 25KB</td></tr>
+    <tr><td><code>memory/journal.md</code> <span class="pill req">required</span></td><td>Append-only per-session friction log. <em>Not</em> a lesson store &mdash; it is the raw corpus curation reads</td><td>append-only</td></tr>
+    <tr><td><code>memory/&lt;slug&gt;.md</code></td><td>One lesson per file, each carrying a <code>Why:</code> line. A lesson without a reason gets deleted by the next curation pass</td><td>one lesson each</td></tr>
+    <tr><td><code>memory/graveyard.md</code> <span class="pill opt">optional</span></td><td>Routes tried and rejected, each with a mandatory expiry condition. Not a lesson, deliberately not index-linked</td><td>rows carry cause + expiry</td></tr>
+    <tr><td><code>memory/audit-log.jsonl</code> <span class="pill opt">optional</span></td><td>Append-only score history from <code>--log</code>. Evidence, never an instruction</td><td>never pruned</td></tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<h3>The two-step save</h3>
+<p>Write <code>memory/&lt;slug&gt;.md</code> first, <em>then</em> append the one-line pointer to <code>memory/index.md</code>. Topic-file-first is deliberate: a crash between the two leaves an orphan, never a broken index. Link integrity is checked in both directions &mdash; dangling pointers and orphaned files both fail.</p>
+
+<div class="note">
+<strong>Index links are the one exception to the path convention.</strong> Everywhere else, paths are written relative to the project root. Link targets inside <code>memory/index.md</code> stay sibling-relative so the file reads standalone. The validator accepts both spellings.
+</div>
+
+<h3>Checks (7)</h3>
+<ul class="tight">
+  <li>Memory index exists</li>
+  <li>Memory index is initialised and within its cap</li>
+  <li>Memory links intact (no dangling or orphaned entries)</li>
+  <li>Curation input exists (session journal)</li>
+  <li>Two-step save invariant documented</li>
+  <li>Curation cadence and human gate documented</li>
+  <li>Graveyard entries carry a cause and an expiry condition</li>
+</ul>
+</section>
+
+<!-- ===================================================== 10 -->
+<section class="chapter" id="ch10">
+<h2><span class="num">10</span>Curation &mdash; "dreaming"</h2>
+<p class="lede">Memory decays without maintenance. Curation runs <strong>between</strong> sessions, never during them, and proposes rather than applies.</p>
+
+<div class="meta">
+  <div class="box"><h4>Purpose</h4><p>Find what the store should gain, merge or retire, using the journal as evidence &mdash; without letting an agent silently rewrite the rules it operates under.</p></div>
+  <div class="box"><h4>Impacts / updates</h4><p>Reads <code>memory/journal.md</code>, <code>memory/index.md</code>, the topic files and <code>memory/graveyard.md</code>. Writes <strong>only</strong> <code>harness/dream-queue.md</code>. It never edits <code>memory/</code> and never touches <code>AGENTS.md</code>.</p></div>
+</div>
+
+<h3>Why propose-never-apply</h3>
+<p>An agent that can silently rewrite its own operating rules has no reviewable history, and a proposal nobody accepted is indistinguishable from one that was. The queue is capped at 5 open proposals &mdash; volume is the proposer's problem, not the reviewer's.</p>
+
+<h3>The five signals</h3>
+<div class="tw">
+<table>
+  <thead><tr><th>Signal</th><th>Countable?</th><th>What it means</th></tr></thead>
+  <tbody>
+    <tr><td>Recurring but unrecorded</td><td>yes</td><td>A token recurs across dated journal entries with no lesson in the store</td></tr>
+    <tr><td>Reconsidered</td><td>yes</td><td>A graveyard route reappears &mdash; either its prohibition went unread, or its expiry quietly came true</td></tr>
+    <tr><td>Contradiction</td><td>no</td><td>Two lessons disagree; one must be demoted or superseded</td></tr>
+    <tr><td>Dead stock</td><td>no</td><td>A lesson nothing has referenced. No read instrumentation exists, and building it is a documented non-goal</td></tr>
+    <tr><td>Stale</td><td>no</td><td>A lesson reality now contradicts &mdash; confidently wrong is worse than absent</td></tr>
+  </tbody>
+</table>
+</div>
+<p>The script counts the two countable signals and prints the other three as a checklist, rather than implying it found everything.</p>
+
+<div class="note">
+<strong>The dream queue's existence is deliberately unscored.</strong> A queue is the <em>output</em> of a curation pass, and curation runs every ~10 sessions &mdash; a young harness legitimately has none. Because <code>enrich-harness</code> acts only on failing checks, this also means a repair entry for the file would be unreachable code: an existence check would have to come first.
+</div>
+</section>
+
+<!-- ===================================================== 11 -->
+<section class="chapter" id="ch11">
+<h2><span class="num">11</span>Behavioral <span class="pill core">since v0.3.0</span></h2>
+<p class="lede">The structural systems say <em>what</em> to work on. This one governs <em>how</em> the code gets written. It owns no files &mdash; every check reads a section of <code>AGENTS.md</code>.</p>
+
+<div class="meta">
+  <div class="box"><h4>Purpose</h4><p>Prevent the failure modes that pass every structural check: over-building, padded diffs, "done" before verification, and silently dropped safety.</p></div>
+  <div class="box"><h4>Impacts / updates</h4><p>Entirely embedded in <code>AGENTS.md</code>, so it competes with every other system for the same always-on context budget. Adding a section here costs tokens in every session forever &mdash; the argument for keeping each one short.</p></div>
+</div>
+
+<h3>Components</h3>
+<div class="tw">
+<table>
+  <thead><tr><th>Policy</th><th>What it constrains</th></tr></thead>
+  <tbody>
+    <tr><td>Coding Policy &mdash; the ladder</td><td>YAGNI &rarr; stdlib &rarr; native &rarr; existing dep &rarr; one line &rarr; minimum code. Stop at the first rung that holds.</td></tr>
+    <tr><td>Coding Standards</td><td>No unrequested abstractions, no scaffolding for later, deletion over addition, mark deliberate shortcuts with a <code>ponytail:</code> comment</td></tr>
+    <tr><td>Editing Discipline</td><td>Touch only what the feature requires; match existing style; don't refactor what isn't broken</td></tr>
+    <tr><td>Definition of Done &mdash; test first</td><td>Bugs: reproduction test first. Features: verification check first.</td></tr>
+    <tr><td>Before Multi-Step Work</td><td>A one-line success criterion, and a verify step per numbered step</td></tr>
+    <tr><td>Assumption surfacing</td><td>State understanding in one line; stop and ask when the ambiguity is structural</td></tr>
+    <tr><td>Safety carve-outs</td><td>Never simplify away: input validation at trust boundaries, error handling that prevents data loss, security, accessibility, hardware calibration</td></tr>
+    <tr><td>Escalation</td><td>Question an over-specified spec rather than building it verbatim</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Checks (8)</h3>
+<ul class="tight">
+  <li>Coding minimalism policy (Ponytail ladder) present</li>
+  <li>Coding standards (no over-engineering) documented</li>
+  <li>Surgical editing discipline documented</li>
+  <li>Test-first verification gate present</li>
+  <li>Multi-step planning with verify-per-step documented</li>
+  <li>Proactive assumption surfacing documented</li>
+  <li>Safety carve-outs documented</li>
+  <li>Over-specified requirements escalation documented</li>
+</ul>
+</section>
+
+<!-- ===================================================== 12 -->
+<section class="chapter" id="ch12">
+<h2><span class="num">12</span>Tooling &mdash; the scripts</h2>
 <p class="lede">Node.js, standard library only, zero dependencies. None of them is copied into the target project.</p>
 
 <div class="tw">
 <table>
-  <thead><tr><th>Script</th><th>What it does</th><th>Files it touches</th></tr></thead>
+  <thead><tr><th>Script</th><th>Purpose</th><th>Touches</th></tr></thead>
   <tbody>
     <tr>
       <td><code>create-harness.mjs</code></td>
-      <td>Scaffolds a harness. Detects stack and package manager to build the verification commands. Skips existing files unless <code>--force</code>. Pre-flights the <code>harness/</code> and <code>harness/memory/</code> paths and exits before writing anything if it is not a directory.</td>
-      <td><b>writes</b> at the root: AGENTS.md · CLAUDE.md · init.sh — under harness/: feature_list.json · progress.md · session-handoff.md · memory/{index,journal,graveyard}.md · dream-queue.md · open-work.md</td>
+      <td>Scaffolds a harness. Detects stack and package manager to build the verification commands. Skips existing files unless <code>--force</code>.</td>
+      <td><b>writes</b> the three root files, then everything under <code>harness/</code>. Resolves each destination through the layout detector, so re-running over a flat harness skips rather than duplicating.</td>
     </tr>
     <tr>
       <td><code>validate-harness.mjs</code></td>
-      <td>Scores the seven subsystems and prints per-check PASS/FAIL, the bottleneck, an <code>Also low:</code> line, and a usability tier. Read-only.</td>
-      <td><b>reads only</b> — writes nothing</td>
+      <td>Scores the seven systems, names the bottleneck and anything else at or below 2.</td>
+      <td><b>reads only</b> &mdash; except <code>--log</code>, which appends to the audit log, and <code>--html</code></td>
     </tr>
     <tr>
       <td><code>enrich-harness.mjs</code></td>
-      <td>Retrofits missing pieces into an existing harness: creates absent files from templates and inserts absent <code>AGENTS.md</code> sections. Reports by default; writes on <code>--fix</code>. Integrity gaps report as manual on purpose — repairing them means writing or pruning real lessons.</td>
-      <td><b>may write</b> AGENTS.md sections · any missing scaffolded file</td>
+      <td>Retrofits a harness that already exists: creates missing files from templates, splices missing sections into files already present.</td>
+      <td><b>may write</b> <code>AGENTS.md</code> sections &middot; any missing scaffolded file. Acts only on <em>failing checks</em>.</td>
+    </tr>
+    <tr>
+      <td><code>curate-memory.mjs</code></td>
+      <td>The dreaming pass. Counts two signals, prints three, proposes.</td>
+      <td><b>writes</b> <code>harness/dream-queue.md</code> only, and only with <code>--apply</code></td>
+    </tr>
+    <tr>
+      <td><code>mutate-gate.mjs</code></td>
+      <td>The adversary. Breaks <code>init.sh</code> or the project in known ways and reports what went unnoticed.</td>
+      <td><b>writes</b> a scratch copy only. Always exits 0 &mdash; a surviving mutant is a gap in the gate, not an error here.</td>
     </tr>
     <tr>
       <td><code>run-benchmark.mjs</code></td>
-      <td>Self-check (scaffolds a throwaway harness and scores it, proving the scripts work end to end) → target score → eval coverage → recommendation.</td>
-      <td><b>writes</b> a temp harness · optional HTML report</td>
+      <td>Self-check (scaffold a throwaway harness and validate it), then score the target and eval coverage.</td>
+      <td><b>writes</b> <code>harness/harness-benchmark.json</code> &middot; optional HTML</td>
     </tr>
     <tr>
       <td><code>render-assessment-html.mjs</code></td>
       <td>Renders the assessment as a standalone HTML file.</td>
-      <td><b>writes</b> &lt;target&gt;/harness/harness-assessment.html</td>
+      <td><b>writes</b> <code>harness/harness-assessment.html</code></td>
+    </tr>
+    <tr>
+      <td><code>lib/harness-utils.mjs</code></td>
+      <td>Shared: layout resolution, scoring, markdown-aware insertion, file IO, reporting.</td>
+      <td>the single definition of the install layout</td>
     </tr>
   </tbody>
 </table>
 </div>
 
-<h2 id="scoring"><span class="num">11</span>How scoring works</h2>
+<h3>Thresholds that decide exit codes</h3>
+<p><code>run-benchmark.mjs</code> gates on three numbers with defaults of 60, 80 and 90 &mdash; <code>--min-score</code>, <code>--min-eval-score</code> and <code>--min-self-check-score</code>. Set them explicitly in CI rather than inheriting a default that may change.</p>
+</section>
 
-<p>Each subsystem runs a handful of checks. Score is <code>round(passed / total × 5)</code>, floored at 1. Overall is the sum over 35, as a percentage.</p>
+<!-- ===================================================== 13 -->
+<section class="chapter" id="ch13">
+<h2><span class="num">13</span>Scoring model</h2>
+<p class="lede">Each system scores out of 5 by proportion of checks passed; the total is a percentage of 35.</p>
 
-<h3>Two guards on the verdict</h3>
-<ul>
-  <li><strong>The tier gates on the weakest subsystem.</strong> ≥85 overall with any subsystem at ≤1/5 reports <code>usable</code>, not <code>production</code>. One subsystem is worth only ~14%, so total failure of one cannot drop the percentage out of the top band by itself — without this guard the tool could print <code>Bottleneck: memory</code>, <code>memory: 0/5</code> and <code>✅ production</code> together.</li>
-  <li><strong>Bottleneck tie-breaks toward structural subsystems</strong>, and <code>Also low:</code> names anything else at ≤2/5. Memory is new, so most existing harnesses score 1 on it and would otherwise mask a genuinely broken verification or lifecycle.</li>
-</ul>
-
-<h3>Why most checks are keyword checks — and why memory's are not</h3>
-<p>Most checks grep the structured parts of <code>AGENTS.md</code> for documented rules. That is reasonable for “is this rule written down”, but it measures <em>vocabulary</em>, not behaviour: a stub with the right nouns passes, and a well-run project using different nouns fails.</p>
-<p>The memory subsystem therefore includes <strong>computed assertions</strong> over the store itself:</p>
 <div class="tw">
 <table>
-  <thead><tr><th>Check</th><th>Kind</th><th>Can it fail on a real harness?</th></tr></thead>
+  <thead><tr><th>System</th><th>Checks</th><th>Weight</th></tr></thead>
   <tbody>
-    <tr><td>Memory index exists</td><td>file presence</td><td>Only if absent</td></tr>
-    <tr><td>Index initialised and within cap</td><td><strong>computed</strong></td><td>Yes — empty, or over 200 lines / 25KB</td></tr>
-    <tr><td>Links intact</td><td><strong>computed</strong></td><td><strong>Yes — dangling or orphaned lessons</strong></td></tr>
-    <tr><td>Curation input exists</td><td>file presence</td><td>Only if absent</td></tr>
-    <tr><td>Two-step save documented</td><td>keyword</td><td>Vocabulary-sensitive</td></tr>
-    <tr><td>Curation cadence + human gate</td><td>keyword</td><td>Vocabulary-sensitive</td></tr>
+    <tr><td>instructions</td><td>5</td><td>5 / 35</td></tr>
+    <tr><td>state</td><td>5</td><td>5 / 35</td></tr>
+    <tr><td>verification</td><td>8</td><td>5 / 35</td></tr>
+    <tr><td>scope</td><td>6</td><td>5 / 35</td></tr>
+    <tr><td>lifecycle</td><td>5</td><td>5 / 35</td></tr>
+    <tr><td>memory</td><td>7</td><td>5 / 35</td></tr>
+    <tr><td>behavioral</td><td>8</td><td>5 / 35</td></tr>
   </tbody>
 </table>
 </div>
-<p>The links check is the only assertion in the whole scorer that fails when a harness has <em>drifted</em> rather than when it used different words. It catches the exact failure the two-step save exists to prevent: a lesson file written but never indexed, or an index row pointing at a file that was never written.</p>
+
+<p><strong>Every system is worth the same</strong> regardless of how many checks it contains. A system with 8 checks does not outrank one with 5 &mdash; each is 5 points. That keeps a well-instrumented area from masking a missing one.</p>
+
+<h3>Tiers</h3>
+<div class="tw">
+<table>
+  <thead><tr><th>Score</th><th>Tier</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td>&ge; 85</td><td>production</td><td>Ready for multi-session agent work</td></tr>
+    <tr><td>&ge; 85, weakest system &le; 1</td><td>usable &#9888;</td><td>One system entirely absent &mdash; fix it before multi-session work</td></tr>
+    <tr><td>&ge; 60</td><td>usable</td><td>Works for single sessions; gaps in handoff and state</td></tr>
+    <tr><td>&ge; 30</td><td>degraded</td><td>Basic instructions, but the agent will drift across sessions</td></tr>
+    <tr><td>&lt; 30</td><td>insufficient</td><td>No reliable startup path</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>What the scoring deliberately does not do</h3>
+<ul>
+  <li><strong>The audit log is never wired to a check.</strong> A trend can say "this got worse"; it cannot say "this is unacceptable", because acceptable is contextual. Wire a trend to an exit code and the cheapest way to go green becomes "stop measuring honestly".</li>
+  <li><strong>The context budget is advisory.</strong> There is no defensible universal ceiling, so it prints and never gates.</li>
+  <li><strong>The mutation kill rate is opt-in.</strong> Measuring it copies the project and runs its gate once per mutation. Unmeasured, that check passes vacuously and the score is identical to what it was before the adversary existed.</li>
+</ul>
 
 <div class="note">
-  <strong>Memory is excluded from the corpus-wide text.</strong> Agent-written memory used to feed the checks that scan every file, so the word “Evidence” in a queue table header satisfied verification's “evidence is recorded” check for free. Memory content can no longer prove anything about other subsystems.
+<strong>Keyword checks are vocabulary-sensitive by design, and that has a sharp edge.</strong> A check that greps a file for a literal is satisfied by <em>any</em> occurrence &mdash; including a comment. Measured: a comment in <code>init.sh</code> explaining the fail-fast flag kept that check passing after the real line was deleted, so the mutation gate's <code>drop-fail-fast</code> probe survived. A self-check now forbids the literal appearing more than once in any shipped <code>init.sh</code>. Where possible, prefer a structural check &mdash; <code>entrypointExecutesSomething()</code> reads which lines are commands and cannot be satisfied by prose.
 </div>
+</section>
 
-<h2 id="map"><span class="num">12</span>Template → file map</h2>
+<!-- ===================================================== 14 -->
+<section class="chapter" id="ch14">
+<h2><span class="num">14</span>Templates &rarr; artifact map</h2>
+<p class="lede">Thirteen templates. Nine are scaffolded automatically; the rest are copied deliberately when a project needs them.</p>
 
 <div class="tw">
 <table>
-  <thead><tr><th>Template</th><th>Becomes</th><th>Scaffolded?</th></tr></thead>
+  <thead><tr><th>Template</th><th>Becomes</th><th>Scaffolded</th></tr></thead>
   <tbody>
-    <tr><td><code>templates/agents.md</code></td><td><code>AGENTS.md</code> + <code>CLAUDE.md</code> pointer</td><td>yes</td></tr>
+    <tr><td><code>templates/agents.md</code></td><td><code>AGENTS.md</code></td><td>yes</td></tr>
+    <tr><td><code>templates/init.sh</code></td><td><code>init.sh</code></td><td>no &mdash; generated instead, see ch. 06</td></tr>
     <tr><td><code>templates/feature-list.json</code></td><td><code>harness/feature_list.json</code></td><td>yes</td></tr>
-    <tr><td><code>templates/feature-list.schema.json</code></td><td>— validation only</td><td>no</td></tr>
     <tr><td><code>templates/progress.md</code></td><td><code>harness/progress.md</code></td><td>yes</td></tr>
     <tr><td><code>templates/session-handoff.md</code></td><td><code>harness/session-handoff.md</code></td><td>yes</td></tr>
-    <tr><td><code>templates/init.sh</code></td><td><code>init.sh</code></td><td>yes</td></tr>
-    <tr><td><code>templates/memory-index.md</code> <span class="pill new">v0.3.1</span></td><td><code>harness/memory/index.md</code></td><td>yes</td></tr>
-    <tr><td><code>templates/memory-journal.md</code> <span class="pill new">v0.3.1</span></td><td><code>harness/memory/journal.md</code></td><td>yes</td></tr>
-    <tr><td><code>templates/memory-entry.md</code> <span class="pill new">v0.3.1</span></td><td><code>harness/memory/&lt;slug&gt;.md</code></td><td>no — shape reference</td></tr>
-    <tr><td><code>templates/dream-queue.md</code> <span class="pill new">v0.3.1</span></td><td><code>harness/dream-queue.md</code></td><td>yes</td></tr>
+    <tr><td><code>templates/open-work.md</code></td><td><code>harness/open-work.md</code></td><td>yes</td></tr>
+    <tr><td><code>templates/dream-queue.md</code></td><td><code>harness/dream-queue.md</code></td><td>yes</td></tr>
+    <tr><td><code>templates/memory-index.md</code></td><td><code>harness/memory/index.md</code></td><td>yes</td></tr>
+    <tr><td><code>templates/memory-journal.md</code></td><td><code>harness/memory/journal.md</code></td><td>yes</td></tr>
+    <tr><td><code>templates/memory-graveyard.md</code></td><td><code>harness/memory/graveyard.md</code></td><td>yes</td></tr>
+    <tr><td><code>templates/memory-entry.md</code></td><td><code>harness/memory/&lt;slug&gt;.md</code></td><td>no &mdash; shape reference for a single lesson</td></tr>
+    <tr><td><code>templates/environment.md</code></td><td><code>harness/environment.md</code></td><td>no &mdash; only when a project has preconditions the manifest cannot express</td></tr>
+    <tr><td><code>templates/feature-list.schema.json</code></td><td><code>harness/feature_list.schema.json</code></td><td>no &mdash; copy it to validate the tracker in CI</td></tr>
   </tbody>
 </table>
 </div>
+<p><code>CLAUDE.md</code> has no template &mdash; it is written as a single line pointing at <code>AGENTS.md</code>.</p>
+</section>
 
-<h3>Reference patterns</h3>
-<p>Loaded on demand, never copied into a target. <code>references/index.md</code> routes between them by type and tags.</p>
-<ul>
-  <li><code>memory-persistence-pattern.md</code> — the store: layers, two-step save, bounded index, local-override priority</li>
-  <li><code>dreaming-pattern.md</code> <span class="pill new">v0.3.1</span> — curation: cadence, propose-never-apply, bounded queue, six gotchas</li>
-  <li><code>context-engineering-pattern.md</code> — progressive disclosure and context budget</li>
-  <li><code>lifecycle-bootstrap-pattern.md</code> — hooks, startup, long-running work</li>
-  <li><code>tool-registry-pattern.md</code> — permissions, tools, concurrency</li>
-  <li><code>multi-agent-pattern.md</code> — delegation and parallel agents</li>
-  <li><code>gotchas.md</code> — non-obvious failure modes</li>
-</ul>
+<!-- ===================================================== 15 -->
+<section class="chapter" id="ch15">
+<h2><span class="num">15</span>Reference patterns</h2>
+<p class="lede">Eight pattern documents in <code>references/</code>. These describe layout-agnostic patterns any harness could instantiate &mdash; the reasoning behind the templates, not instructions to an agent.</p>
+
+<div class="tw">
+<table>
+  <thead><tr><th>Document</th><th>Covers</th></tr></thead>
+  <tbody>
+    <tr><td><code>lifecycle-bootstrap-pattern.md</code></td><td>Startup workflow, end-of-session routine, trust gates</td></tr>
+    <tr><td><code>memory-persistence-pattern.md</code></td><td>Store layering, bounded index, two-step save, recognised directory locations</td></tr>
+    <tr><td><code>dreaming-pattern.md</code></td><td>Curation cadence, propose-never-apply, bounded queue, the five signals</td></tr>
+    <tr><td><code>context-engineering-pattern.md</code></td><td>Progressive disclosure &mdash; what is always-on versus opened on demand</td></tr>
+    <tr><td><code>tool-registry-pattern.md</code></td><td>Verification as a safety gate; the environment contract's rationale</td></tr>
+    <tr><td><code>multi-agent-pattern.md</code></td><td>Delegation and parallel agents</td></tr>
+    <tr><td><code>skill-runtime-pattern.md</code></td><td>How the skill itself is loaded and run</td></tr>
+    <tr><td><code>gotchas.md</code></td><td>Non-obvious failure modes worth designing against</td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<!-- ===================================================== 16 -->
+<section class="chapter" id="ch16">
+<h2><span class="num">16</span>Self-checks &amp; known limits</h2>
+<p class="lede">The skill checks itself, because several defects here were invisible precisely because nothing failed.</p>
+
+<h3>Self-checks</h3>
+<div class="tw">
+<table>
+  <thead><tr><th>File</th><th>Guards</th></tr></thead>
+  <tbody>
+    <tr><td><code>scripts/insert-anchor.test.mjs</code></td><td>Markdown-aware section insertion: heading anchors insert after the section body, fenced code is not mistaken for headings, insertion happens once, a missing anchor is distinguishable from a no-op</td></tr>
+    <tr><td><code>scripts/index-coverage.test.mjs</code></td><td>Every <code>index.md</code> lists every file beside it; no links to missing files; the eval index matches <code>evals.json</code>; the documented score denominator matches <code>SUBSYSTEMS</code>; every <code>.json</code> template parses; no <code>init.sh</code> names the fail-fast flag twice; every <code>init.sh</code> reads the environment contract; the Required/Optional artifact groups match what the scorer enforces</td></tr>
+  </tbody>
+</table>
+</div>
 
 <h3>Closed since v0.3.1</h3>
 <ul>
-  <li><code>enrich-harness.mjs</code> inserted snippets immediately after the matched
-      <em>heading</em> line rather than after the section body, so anchoring on an existing
-      heading pushed that section's own content below the inserted one. Fixed: insertion is
-      now markdown- and fence-aware, inserts once, and reads the in-progress buffer so fixes
-      in one run can anchor on sections added by earlier fixes.</li>
-  <li>Memory and curation cases now exist in <code>evals/evals.json</code> — 19 evals, and
-      <code>run-benchmark.mjs</code> reports eval coverage 100/100.</li>
-  <li>Both bundled examples were regenerated and migrated; each now scores
-      <code>100/100</code> with <code>memory: 5/5</code> and reports <code>production</code>.</li>
-  <li><code>scripts/curate-memory.mjs</code> ships — the two countable curation signals are
-      automated, the three that need judgement are printed as a checklist.</li>
+  <li>Memory and curation cases now exist in <code>evals/evals.json</code> &mdash; 19 evals, coverage 100/100.</li>
+  <li>Both bundled examples score <code>100/100</code> with <code>memory: 5/5</code> and report <code>production</code>.</li>
+  <li><code>scripts/curate-memory.mjs</code> ships &mdash; the two countable signals are automated, the three needing judgement print as a checklist.</li>
+  <li><code>enrich-harness.mjs</code> inserted snippets immediately after the matched <em>heading</em> line rather than after the section body, pushing that section's own content below the inserted one. Insertion is now markdown- and fence-aware, inserts once, and reads the in-progress buffer so fixes in one run can anchor on sections added by earlier fixes.</li>
+  <li>Both examples' <code>init.sh</code> now read the environment contract, and <code>templates/feature-list.schema.json</code> parses as the JSON Schema its extension promises.</li>
 </ul>
 
 <h3>Still open</h3>
 <ul>
-  <li>Both examples' <code>init.sh</code> predate the environment contract block and do not
-      contain it. Harmless — the check is vacuously true without the file — but they are no
-      longer byte-identical to a fresh scaffold.</li>
-  <li><code>templates/feature-list.schema.json</code> carries YAML frontmatter and so has
-      never been parseable as JSON.</li>
+  <li>Keyword-based checks remain vocabulary-sensitive by design. Where a structural alternative exists it is preferred, but several checks still grep for prose.</li>
+  <li>Frontmatter <code>timestamp</code> / <code>updated</code> dates are hand-maintained and drift silently. A git-based check was considered and rejected: a directory rename touches every file without changing content, so the honest version costs more than the drift.</li>
+  <li><code>enrich-harness.mjs</code> has no repair entry for <code>harness/dream-queue.md</code> &mdash; and cannot usefully have one until something scores the file's existence. See ch. 10.</li>
 </ul>
 
-<p style="margin-top:44px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:.86rem">
-harness-creator v4 (0.4.0) · updated 2026-07-27 · seven subsystems, scored out of 35 ·
+<footer>
+harness-creator v4 (0.4.0) &middot; updated 2026-07-27 &middot; seven scored systems, 44 checks, scored out of 35 &middot;
 harness state under <code>harness/</code>, three files at the project root
-</p>
+</footer>
+</section>
 
+</main>
 </div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+
+  // Theme: auto -> light -> dark -> auto, remembered.
+  var saved = null;
+  try { saved = localStorage.getItem('harness-theme'); } catch (e) {}
+  if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+
+  document.getElementById('themeToggle').addEventListener('click', function () {
+    var now = root.getAttribute('data-theme');
+    var next = now === 'light' ? 'dark' : now === 'dark' ? null : 'light';
+    if (next) root.setAttribute('data-theme', next); else root.removeAttribute('data-theme');
+    try {
+      if (next) localStorage.setItem('harness-theme', next);
+      else localStorage.removeItem('harness-theme');
+    } catch (e) {}
+  });
+
+  // Mobile drawer.
+  var nav = document.getElementById('sidenav');
+  document.getElementById('navToggle').addEventListener('click', function () {
+    nav.classList.toggle('open');
+  });
+  nav.addEventListener('click', function (e) {
+    if (e.target.closest('a')) nav.classList.remove('open');
+  });
+
+  // Active chapter highlighting. Tracks the chapter nearest the top of the viewport
+  // rather than the first intersecting one, so short chapters at the end still activate.
+  var links = Array.prototype.slice.call(document.querySelectorAll('.navlist a'));
+  var byId = {};
+  links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+  var sections = Array.prototype.slice.call(document.querySelectorAll('section.chapter'));
+
+  function sync() {
+    var best = null, bestTop = -Infinity;
+    sections.forEach(function (s) {
+      var top = s.getBoundingClientRect().top - 90;
+      if (top <= 0 && top > bestTop) { bestTop = top; best = s; }
+    });
+    if (!best) best = sections[0];
+    links.forEach(function (a) { a.classList.remove('active'); });
+    var active = byId[best.id];
+    if (active) active.classList.add('active');
+  }
+
+  var ticking = false;
+  window.addEventListener('scroll', function () {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { sync(); ticking = false; });
+  }, { passive: true });
+  window.addEventListener('resize', sync, { passive: true });
+  sync();
+})();
+</script>
+
 </body>
 </html>
