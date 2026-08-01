@@ -2,6 +2,13 @@
 
 Build and audit harnesses that make AI coding agents reliable.
 
+## Prerequisites
+
+- **Node.js 18+** — runs the `.mjs` scripts. They use only built-in `node:` modules, so there is no `npm install` step.
+- **npm / npx** — for the `npx skills add …` install path.
+- **Git** — the harness startup workflow runs `git log`.
+- **Bash** — `init.sh` runs under bash. On Windows use Git Bash or WSL.
+
 ## Install
 
 ```bash
