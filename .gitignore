@@ -54,3 +54,7 @@ desktop.ini
 tmp/
 temp/
 *.tmp
+
+# Media analysis artifacts (generated, not source)
+video/
+frames/

@@ -90,3 +90,38 @@ Two audit scripts used this session live in the scratchpad, not the repo: a docu
 audit and a claims audit. The reusable parts became `scripts/index-coverage.test.mjs`. If you
 want the flag audit permanently, note it has one known false positive — `mutate-gate.mjs`
 mentions `validate-harness.mjs --mutate` in its help as a cross-reference, not its own flag.
+
+
+---
+
+## 2026-08-09 - Video analysis session (not a harness feature)
+
+**Task:** Analyze https://youtu.be/PxuMqeIqCEo ("The Agent Memory Stack") from both its
+transcript (transcript/raw1.txt) and frame captures; produce structured notes.
+
+**Deliverable:** The_Agent_Memory_Stack_Notes.md at the repo root.
+
+**Work done:**
+- Downloaded 720p video to video/video.mp4 (yt-dlp; installed as python -m yt_dlp)
+- Extracted 328 frames at 5 s intervals to frames/f_00001..00328.jpg (ffmpeg -vf fps=1/5;
+  note: in cmd.exe a single %05d is needed, %%05d is not expanded). Re-extracted at full
+  1280x720 later when reviewing clarity (initial pass was 640px)
+- Built 14 contact sheets (5x5 tile grids) at frames/sheets/ via ffmpeg tile filter
+- OCR'd every frame with Tesseract (frames/ocr_all.csv); probed +/-1-2 s around transitions
+  to pin exact slide boundaries and capture clean slide text
+- Ran clarity analysis on all 328 frames (frames/clarity_analysis.csv): Laplacian variance
+  (0 blurry) + neighbor diff (20 static frames, all verified as stable slide repeats by OCR)
+- Notes contain: slide timeline table (13 slides with time ranges + frames), the four memory
+  types, the durable-stores -> context-builder -> model architecture map, memory failures /
+  forgetting strategies, and the five-question checklist
+
+**Lessons from this session (candidates for memory):**
+- Windows cmd.exe: ffmpeg output template needs single %05d, not %%05d
+- ffmpeg drawtext breaks on colons inside option values (e.g. timestamps); the tile filter
+  is simpler for contact sheets
+- Tesseract on Windows emits non-UTF8 bytes on stdout; capture bytes and decode with
+  errors=replace instead of text=True
+- This model's context omitted attached images; vision analysis was done via OCR of slides
+  instead, which works for a text-heavy slide deck
+
+**Unresolved:** none. Video, frames, sheets, OCR CSV, and slides folder kept for reference.
