@@ -2,8 +2,8 @@
 
 ## Current State
 
-**Last Updated:** 2026-07-27
-**Active Feature:** none — all 11 features done
+**Last Updated:** 2026-08-09
+**Active Feature:** feat-012 Episodic session search (not-started; P1 of the memory-retrieval plan in harness/open-work.md)
 
 ## Status
 
@@ -125,3 +125,18 @@ transcript (transcript/raw1.txt) and frame captures; produce structured notes.
   instead, which works for a text-heavy slide deck
 
 **Unresolved:** none. Video, frames, sheets, OCR CSV, and slides folder kept for reference.
+
+## 2026-08-09 - Memory-retrieval gap: design decision + feat-012 registered
+
+**Task:** Plan (no code) for closing the retrieval gaps in docs/carbon_gap_memory.md; write the plan and register the first feature.
+
+**Work done:**
+- Reviewed carbon_gap_memory.md; confirmed curation signal shape in curate-memory.mjs (dated-block parser, backticked tokens, recurring-unrecorded/reconsidered signals, 5-proposal cap)
+- Chose hybrid-runtime-leverage strategy (build search + conflict signal; delegate context assembly to runtime; document decay as debt)
+- Wrote the phased plan (P0-P4) into harness/open-work.md under a Design decision section
+- Added feat-012 Episodic session search (status not-started, depends feat-005) to harness/feature_list.json; rebuilt from git HEAD to undo a malformed first attempt, validated JSON
+- ./init.sh passes after edits
+
+**Not done (deliberately):** no code. P1 starts in a future session per open-work.md.
+
+**Note:** the read tool returned stale content for harness/open-work.md and feature_list.json during this session (shown as clean — nothing to commit); verified ground truth via shell instead.

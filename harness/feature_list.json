@@ -87,6 +87,13 @@
       "dependencies": ["feat-007"],
       "status": "done",
       "evidence": "Contract block inserted into both examples from initScriptFromCommands() output rather than transcribed, so it cannot drift from what create-harness generates. All three paths verified per example: passing requirement reports PASS, unmet exits 1, absent file does not block. Both still 100/100 and react-harness now kills 3/3 mutants. Schema metadata moved to a _meta key: valid JSON, and used to validate all four feature lists in the repo plus a negative control. Three new checks in index-coverage.test.mjs guard the class, each probed to fail."
+    },
+    {
+      "id": "feat-012",
+      "name": "Episodic session search",
+      "description": "scripts/search-journal.mjs: parse dated journal blocks (reuse journalBlocks from curate-memory.mjs), score by keyword hits, print top blocks with dates and context. Options: <keywords> [--since DATE] [--count N]. Verification first: a .test.mjs fixture with two matching blocks (recency wins) written before the script; wired into init.sh and the eval suite. Closes the episodic-recall gap from docs/carbon_gap_memory.md (design decision in harness/open-work.md, P1).",
+      "dependencies": ["feat-005"],
+      "status": "not-started"
     }
   ]
 }
