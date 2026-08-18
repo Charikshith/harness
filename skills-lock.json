@@ -6,6 +6,12 @@
       "sourceType": "github",
       "skillPath": "skills/harness-creator/SKILL.md",
       "computedHash": "ea0db2614fb8443846acf53dd929e247d39da4d65d13b991205c5c80343edfa1"
+    },
+    "watch": {
+      "source": "bradautomates/claude-video",
+      "sourceType": "github",
+      "skillPath": "skills/watch/SKILL.md",
+      "computedHash": "05675ba6e016ce393579e492c033e813e965ad75e21b869cb9e1afbf24fc5e95"
     }
   }
 }
