@@ -8,6 +8,16 @@ updated: 2026-07-27
 
 # Changelog
 
+## 2026-08-22 (unreleased)
+
+### `session-handoff.md` folded into `progress.md`
+Handoff was a second home for state the progress log already carried: objective, completed
+work, blockers, files changed and next step. Two artifacts holding the same state drift, and
+the doc's "must exist" list and its own "never write both" rule disagreed. The file is no
+longer scaffolded, scored, or repaired. `progress.md` now carries a `Recommended Next Step`
+marker in its Current State block; the two checks that read the handoff read `progress.md`
+instead, and lifecycle drops its existence check.
+
 ## 2026-07-26 (v0.4.0)
 
 ### Enricher: snippets no longer land inside the anchored section

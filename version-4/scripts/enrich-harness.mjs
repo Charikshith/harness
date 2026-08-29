@@ -161,9 +161,8 @@ Required checks:
 ## Required Artifacts
 
 - \`harness/feature_list.json\` — Feature state tracker (source of truth)
-- \`harness/progress.md\` — Session continuity log
+- \`harness/progress.md\` — Session continuity log with blockers, decisions, files changed and recommended next step
 - \`init.sh\` — Standard startup and verification path
-- \`harness/session-handoff.md\` — Optional, for larger sessions
 `
   },
 
@@ -207,48 +206,22 @@ Required checks:
 `
   },
   'Handoff captures blockers/files/next step': {
-    targetFile: 'session-handoff.md',
-    insertAfter: '# Session Handoff',
-    sectionName: 'Handoff sections',
+    targetFile: 'progress.md',
+    insertAfter: '## Status',
+    sectionName: 'Progress sections',
     snippet: `
-
-## Current Objective
-
-- Goal:
-- Current status:
-- Branch / commit:
-
-## Completed This Session
-
-- [ ]
-
-## Verification Evidence
-
-| Check | Command | Result | Notes |
-|---|---|---|---|
-
-## Files Changed
-
--
-
-## Decisions Made
-
--
 
 ## Blockers / Risks
 
--
+- [ ] [Blocker 1]: [description, impact]
 
-## Next Session Startup
+## Files Modified This Session
 
-1. Read \`AGENTS.md\`.
-2. Read \`harness/feature_list.json\` and \`harness/progress.md\`.
-3. Review this handoff.
-4. Run \`./init.sh\` before editing.
+- \`path/to/file\` - [brief description of change]
 
-## Recommended Next Step
+## Notes for Next Session
 
--
+[Free-form notes that will help the next session pick up context]
 `
   },
 
@@ -326,17 +299,15 @@ Before ending a session:
 5. Leave repo clean enough for next session to run \`./init.sh\` immediately
 `
   },
-  'Session handoff template exists': {
-    template: 'session-handoff.md',
-    defaultPath: 'session-handoff.md',
-    sectionName: 'session-handoff.md'
-  },
   'Session restart markers exist': {
     targetFile: 'progress.md',
     insertAfter: '## Notes for Next Session',
-    sectionName: 'Notes for Next Session',
+    sectionName: 'Recommended Next Step',
     snippet: `
-[Free-form notes that will help the next session pick up context]
+
+## Recommended Next Step
+
+- [ ] [Next action] → verify: [specific check]
 `
   },
   'Clean restart path documented': {

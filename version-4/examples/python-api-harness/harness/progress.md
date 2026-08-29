@@ -6,6 +6,10 @@
 **Session ID:** sess-017
 **Active Feature:** feat-003 - Rate Limiting Middleware
 
+## Recommended Next Step
+
+- [ ] Finalize YAML schema and implement config parser → verify: `python3 -m pytest tests/middleware/`
+
 ## Status
 
 ### What's Done

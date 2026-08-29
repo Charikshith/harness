@@ -6,6 +6,10 @@
 **Session ID:** sess-042
 **Active Feature:** feat-003 - Q&A with Citations
 
+## Recommended Next Step
+
+- [ ] Decide citation format (inline [doc:chunk] vs footnotes) → verify: product sign-off recorded in Decisions Made
+
 ## Status
 
 ### What's Done

@@ -16,8 +16,7 @@ Start here. Match artifact name to find the right template.
 | [feature-list.json](feature-list.json) | template | harness/feature_list.json | state, features, tracking, dependencies | Feature state tracker with id, name, description, status, and evidence fields |
 | [feature-list.schema.json](feature-list.schema.json) | template | harness/feature_list.schema.json | state, schema, validation, features | JSON Schema for validating feature_list.json structure |
 | [init.sh](init.sh) | template | init.sh | verification, init, bootstrap, startup, ci | Auto-detecting verification entrypoint for Node/Python/Go/Rust/Java/.NET |
-| [progress.md](progress.md) | template | harness/progress.md | state, progress, continuity, session, tracking | Session log: current state, done/in-progress/next, blockers, decisions |
-| [session-handoff.md](session-handoff.md) | template | harness/session-handoff.md | handoff, lifecycle, continuity, session-end | End-of-session handoff: objective, evidence, files changed, next step |
+| [progress.md](progress.md) | template | harness/progress.md | state, progress, continuity, session, tracking, handoff | Session log: current state, done/in-progress/next, blockers, decisions, files changed, recommended next step |
 | [memory-index.md](memory-index.md) | template | harness/memory/index.md | memory, index, progressive-disclosure, learning | Bounded always-on index of agent-written lessons; one line per topic file |
 | [memory-journal.md](memory-journal.md) | template | harness/memory/journal.md | memory, journal, append-only, curation, evidence | Append-only per-session friction log; the raw corpus curation reads |
 | [memory-entry.md](memory-entry.md) | template | harness/memory/&lt;slug&gt;.md | memory, learning, lesson, entry | Shape of a single lesson: scope, source, the rule, Why, How to apply |

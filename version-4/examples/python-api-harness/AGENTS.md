@@ -91,13 +91,10 @@ Before writing any code, stop at the first rung that holds:
 - `AGENTS.md` — this file (or `CLAUDE.md`)
 - `init.sh` — Standard startup and verification path
 - `harness/feature_list.json` — Feature state tracker (source of truth)
-- `harness/progress.md` — Session continuity log
+- `harness/progress.md` — Session continuity log; carries the end-of-session handoff (blockers, decisions, files changed, recommended next step)
 - `harness/memory/index.md` — Bounded index of lessons learned; topic files alongside it
 - `harness/memory/journal.md` — Append-only session friction log; the input to curation
 - `harness/open-work.md` — Work seen but declined under scope discipline; recruitable
-- `harness/session-handoff.md` — Must exist; *filling it in* is what's optional, and only
-  worth it for larger sessions. The file being present is scored, so deleting it because a
-  session was small costs a lifecycle check.
 
 **Optional** — absent is not a defect, and no check penalises it:
 

@@ -1,7 +1,7 @@
 ---
 type: template
 title: "Progress Log Template"
-description: "Session progress log for agent continuity: current state, done/in-progress/next with per-step verification, blockers, decisions, files modified, evidence"
+description: "Session progress log for agent continuity: current state, done/in-progress/next with per-step verification, blockers, decisions, files modified, evidence, recommended next step"
 artifact: "harness/progress.md"
 tags: [state, progress, continuity, session, tracking, verification-plan]
 ---
@@ -20,6 +20,10 @@ tags: [state, progress, continuity, session, tracking, verification-plan]
 **Last Updated:** YYYY-MM-DD HH:MM
 **Session ID:** [optional]
 **Active Feature:** [feat-XXX - Feature Name]
+
+## Recommended Next Step
+
+- [ ] [Next action] → verify: [specific check]
 
 ## Status
 

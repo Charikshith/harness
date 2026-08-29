@@ -3,15 +3,15 @@ name: harness-creator-v4
 version: "0.4.0"
 description: >-
   Build, audit, and improve harnesses that make AI coding agents reliable: AGENTS.md/CLAUDE.md
-  instruction files, feature/state tracking, verification gates, scope boundaries, session
-  handoff, memory persistence, context budgets, tool-permission safety, and multi-agent
+  instruction files, feature/state tracking, verification gates, scope boundaries,
+  progress-log continuity (session handoff), memory persistence, context budgets, tool-permission safety, and multi-agent
   coordination. Now includes embedded behavioral policies: Ponytail ladder (simplicity-first
   coding), surgical editing discipline, test-first verification, proactive assumption
   surfacing, and safety carve-outs. Use this whenever a coding agent is unreliable across
   sessions — forgets context, drifts out of scope, claims "done" before tests pass, pads diffs
   with unrelated changes, over-builds features, or starts each session inconsistently —
-  or when creating or assessing AGENTS.md, CLAUDE.md, init.sh, harness/feature_list.json, harness/progress.md,
-  or session-handoff files. Reach for it even if the user never says the word "harness."
+  or when creating or assessing AGENTS.md, CLAUDE.md, init.sh, harness/feature_list.json, or harness/progress.md.
+  Reach for it even if the user never says the word "harness."
 license: MIT
 ---
 
@@ -37,7 +37,7 @@ Every useful coding-agent harness has five structural subsystems, a memory layer
 | State | `harness/feature_list.json`, `harness/progress.md` | Current feature, status, evidence, next step |
 | Verification | `init.sh` or documented commands | Tests/checks the agent must run before claiming done |
 | Scope | Feature dependencies and done criteria | Prevents overreach and half-finished work |
-| Lifecycle | `harness/session-handoff.md`, end-of-session routine | Makes the next session restartable |
+| Lifecycle | `harness/progress.md` restart markers, end-of-session routine | Makes the next session restartable |
 | **Memory** | `harness/memory/index.md`, `harness/dream-queue.md` | What was *learned*, and how it stays curated |
 | **Behavioral** | Embedded in AGENTS.md | Coding policy, surgical editing, test-first, safety |
 
@@ -163,11 +163,10 @@ project root, in every file, including files that already live inside `harness/`
 
 - [ ] `AGENTS.md` or `CLAUDE.md` (includes behavioral policies + memory rules)
 - [ ] `harness/feature_list.json`
-- [ ] `harness/progress.md`
+- [ ] `harness/progress.md` (carries the end-of-session handoff: blockers, decisions, files, recommended next step)
 - [ ] `harness/memory/index.md` (bounded index; empty is fine, absent is not)
 - [ ] `harness/dream-queue.md`
 - [ ] `init.sh`
-- [ ] Optional `harness/session-handoff.md` for multi-session work
 - [ ] Documented verification evidence or next action
 
 If you cannot create files, provide exact file contents and commands instead.

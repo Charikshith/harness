@@ -29,7 +29,6 @@ harness state lives under ${HARNESS_DIR}/.
 
   ${HARNESS_DIR}/feature_list.json
   ${HARNESS_DIR}/progress.md
-  ${HARNESS_DIR}/session-handoff.md
   ${HARNESS_DIR}/memory/index.md (bounded index of agent-written lessons)
   ${HARNESS_DIR}/memory/journal.md (append-only friction log; the input to curation)
   ${HARNESS_DIR}/memory/graveyard.md (rejected routes, each with an expiry condition)
@@ -81,7 +80,6 @@ const results = [];
 results.push(await copyTemplate('agents.md', await at('AGENTS.md'), replacements, { force }));
 results.push(await copyTemplate('feature-list.json', await at('feature_list.json'), {}, { force }));
 results.push(await copyTemplate('progress.md', await at('progress.md'), {}, { force }));
-results.push(await copyTemplate('session-handoff.md', await at('session-handoff.md'), {}, { force }));
 results.push(await copyTemplate('memory-index.md', await at('memory/index.md'), {}, { force }));
 results.push(await copyTemplate('memory-journal.md', await at('memory/journal.md'), {}, { force }));
 results.push(await copyTemplate('memory-graveyard.md', await at('memory/graveyard.md'), {}, { force }));

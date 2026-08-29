@@ -65,8 +65,7 @@ Three files at the project root; all harness state under `harness/`.
 - `CLAUDE.md` — reference to AGENTS.md
 - `init.sh` — standard startup and verification path
 - `harness/feature_list.json` — feature state tracker
-- `harness/progress.md` — session continuity log w/ per-step verification
-- `harness/session-handoff.md` — optional, for larger sessions
+- `harness/progress.md` — session continuity log; carries the end-of-session handoff
 - `harness/memory/{index,journal,graveyard}.md` — what was *learned*, not where work stopped
 - `harness/dream-queue.md` — curation proposals awaiting a human decision
 - `harness/open-work.md` — work seen but declined under scope discipline

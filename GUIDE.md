@@ -73,9 +73,8 @@ If `init.sh` passes, your harness is operational. The agent can now start, verif
 | `AGENTS.md` | Startup workflow, coding policy, editing rules, safety, verification commands | At the beginning of every session |
 | `CLAUDE.md` | One-line pointer to AGENTS.md | If present, Claude reads this first |
 | `harness/feature_list.json` | Feature state tracker — what's in progress, done, blocked | At startup (step 5) |
-| `harness/progress.md` | Session continuity log — what was done, what's next, what's blocked | At startup and end of session |
+| `harness/progress.md` | Session continuity log — what was done, what's next, what's blocked; end-of-session handoff | At startup and end of session |
 | `init.sh` | Verification entrypoint — runs tests, lint, build | At startup (step 4) and before claiming "done" |
-| `harness/session-handoff.md` | Optional structured handoff for multi-session features | End of large sessions |
 
 ### What AGENTS.md contains
 

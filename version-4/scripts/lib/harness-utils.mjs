@@ -286,7 +286,6 @@ export function scoreHarness(files, { killRate } = {}) {
   const featureList = byPath.get('feature_list.json') || byPath.get('feature-list.json') || '';
   const progress = byPath.get('progress.md') || '';
   const init = byPath.get('init.sh') || '';
-  const handoff = byPath.get('session-handoff.md') || '';
   const environment = byPath.get('environment.md') || '';
   const memoryIndex = byPath.get('memory/index.md') || '';
   const memoryJournal = byPath.get('memory/journal.md') || '';
@@ -329,7 +328,7 @@ export function scoreHarness(files, { killRate } = {}) {
       jsonFeatureList(featureList, 'Feature tracker is valid and has feature fields'),
       hasFile(byPath, ['progress.md'], 'Progress log exists'),
       structuredHas(progress, ['Current State', 'What', 'Next'], 'Progress log supports restart'),
-      structuredHas(handoff || progress, ['Blockers', 'Files', 'Next Session'], 'Handoff captures blockers/files/next step')
+      structuredHas(progress, ['Blockers', 'Files', 'Next Session'], 'Handoff captures blockers/files/next step')
     ],
     verification: [
       hasFile(byPath, ['init.sh'], 'Verification entrypoint exists'),
@@ -352,8 +351,7 @@ export function scoreHarness(files, { killRate } = {}) {
     lifecycle: [
       hasFile(byPath, ['init.sh'], 'Startup script exists'),
       structuredHas(agents, ['End of Session', 'Before ending'], 'End-of-session procedure exists'),
-      hasFile(byPath, ['session-handoff.md'], 'Session handoff template exists'),
-      structuredHas(progress + '\n' + handoff, ['Last Updated', 'Current Objective', 'Recommended Next Step'], 'Session restart markers exist'),
+      structuredHas(progress, ['Last Updated', 'Active Feature', 'Recommended Next Step'], 'Session restart markers exist'),
       textHas(agents + init, ['restartable', 'clean', 'Next steps'], 'Clean restart path documented')
     ],
     // Memory checks inspect the store, not the prose describing it. Keyword checks
@@ -659,7 +657,6 @@ export async function loadHarnessFiles(root) {
     'feature_list.json',
     'feature-list.json',
     'progress.md',
-    'session-handoff.md',
     'init.sh',
     'dream-queue.md',
     // hasFile() reads byPath, which is built only from what this list returned. A check
@@ -696,7 +693,6 @@ async function firstExisting(root, relatives) {
 const LAYOUT_WITNESSES = [
   'feature_list.json',
   'progress.md',
-  'session-handoff.md',
   'dream-queue.md',
   'open-work.md',
   'environment.md',

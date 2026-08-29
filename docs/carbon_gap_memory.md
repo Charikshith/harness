@@ -12,7 +12,7 @@
 | # | Notes concept | version-4 status | Verdict |
 |---|---|---|---|
 | 1 | Working memory = active context (the desk) | `references/context-engineering-pattern.md`; `validate-harness.mjs --budget` | ✅ Covered (mostly) |
-| 2 | Episodic memory = time-stamped "what happened" | `memory/journal.md` (friction log) + `progress.md`/`session-handoff.md` (state) | 🟡 Partial |
+| 2 | Episodic memory = time-stamped "what happened" | `memory/journal.md` (friction log) + `progress.md` (state) | 🟡 Partial |
 | 3 | Semantic memory = standing facts ("what is true") | `memory/index.md` + `memory/<slug>.md` lessons; `AGENTS.md` as instruction memory | 🟡 Partial |
 | 4 | Procedural memory = "how to act" | Skills (`SKILL.md` + `references/`), orchestration (`curate-memory.mjs`, `enrich-harness.mjs`) | ✅ Strong |
 | 5 | Context builder (retrieve → rank → resolve → assemble) | Only **documented** in `context-engineering-pattern.md`; no runtime component | 🔴 **Gap** |
@@ -44,7 +44,7 @@
 
 | Notes claim | version-4 evidence |
 |---|---|
-| "What happened" with a **when** | `memory/journal.md` — append-only dated blocks per session. **This is the closest artifact.** Also `progress.md` ("Last Updated") and `session-handoff.md` |
+| "What happened" with a **when** | `memory/journal.md` — append-only dated blocks per session. **This is the closest artifact.** Also `progress.md` ("Last Updated") |
 | Search past sessions for issue history / focused slice | ❌ **No session search.** `journal.md` is read by `curate-memory.mjs` only as a *corpus* for counting recurring tokens; there is no tool for the agent to query past sessions by keyword, date, or outcome |
 | Storage: markdown / SQLite+FTS / vector / temporal graph | Markdown only. **No FTS, no vector index, no temporal knowledge graph** — verified: `sqlite`, `full-text`, `vector`, `temporal knowledge`, `session-search` all return zero hits in `version-4/` |
 | "Tricky question: can't tell old from new" | `journal.md` entries are dated, so *human* readers can; the **agent** has no retrieval path to exploit the dates |

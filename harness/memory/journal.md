@@ -50,4 +50,10 @@ restatements and will yield no proposals.
 
 ## Entries
 
-_No entries yet. The first one belongs here at the end of this session._
+## 2026-08-29 — feat-013
+
+- looked up: `python3` — not on this machine (Windows); inline `node - <<'EOF'` works for small file-mangling probes
+- surprised: `edit` is atomic per call — one non-matching `edits[].oldText` silently reverts the sibling edits in the same call; verify the whole call landed
+- differently: `version-4/templates/*` are CRLF. Probe/replace strings with `\n` fail silently (string not found). Read the exact bytes (or `indexOf`) before crafting edits against shipped templates
+- surprised: a new check referencing a `const` declared later in the same block is a TDZ runtime error, not a lint-visible problem — `node --check` does not catch it; the unit run does
+

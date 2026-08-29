@@ -2,8 +2,12 @@
 
 ## Current State
 
-**Last Updated:** 2026-08-09
-**Active Feature:** feat-012 Episodic session search (not-started; P1 of the memory-retrieval plan in harness/open-work.md)
+**Last Updated:** 2026-08-29
+**Active Feature:** feat-013 Fold session-handoff.md into progress.md
+
+## Recommended Next Step
+
+- [ ] feat-012 Episodic session search → verify: `node version-4/scripts/search-journal.test.mjs` passes and `./init.sh` is green
 
 ## Status
 
@@ -22,10 +26,14 @@
 - [x] **feat-011** — environment contract added to both examples; the schema template parses
       as JSON and was used to validate all four feature lists; a third defect found on the way
       (`templates/init.sh` named the fail-fast flag in a comment, defeating that check)
+- [x] **feat-013** — `session-handoff.md` removed as a scored/scaffolded artifact; its content
+      (objective, blockers, files, decisions, next step) folded into `progress.md` via a
+      `Recommended Next Step` marker. Checks now read `progress.md` alone; lifecycle drops its
+      existence check (43 checks total)
 
 ### What's In Progress
 
-- [ ] Nothing active. All 11 features are done.
+- [ ] Nothing active. All features done except feat-012 (not-started).
 
 ### What's Next (with verification per step)
 
@@ -62,12 +70,15 @@ No open features. Candidates, none urgent:
 
 ## Files Modified This Session
 
-- `version-4/` — renamed from `version-3.1/`, 66 files
-- `version-4/scripts/lib/harness-utils.mjs` — layout primitives, `insertAtAnchor()`
-- `version-4/scripts/*.mjs` — all routed through the layout resolvers
-- `version-4/templates/*` — harness/ destinations and paths
-- `version-4/scripts/{insert-anchor,index-coverage}.test.mjs` — new self-checks
-- `AGENTS.md`, `init.sh`, `README.md`, `GUIDE.md`, `harness/*` — this repo's own harness
+- `version-4/scripts/lib/harness-utils.mjs` — removed the handoff check; state/lifecycle checks read `progress.md` alone
+- `version-4/scripts/enrich-harness.mjs` — GAP_FIXES retargeted to `progress.md`
+- `version-4/scripts/create-harness.mjs` — no longer scaffolds `session-handoff.md`
+- `version-4/scripts/index-coverage.test.mjs` — new reverse assertion (Required-but-unenforced bullet) + probe
+- `version-4/templates/{agents.md,progress.md,index.md}` — dropped the bullet, added `Recommended Next Step`
+- `version-4/examples/*/AGENTS.md`, `examples/*/harness/progress.md` — same, so they still score 100
+- `version-4/{README.md,SKILL.md,CHANGELOG.md,scripts/index.md,evals/*}` — docs and eval expectations
+- `AGENTS.md`, `README.md`, `GUIDE.md`, `docs/carbon_gap_memory.md`, `harness/*` — this repo's own harness
+- Deleted: `harness/session-handoff.md`, `version-4/templates/session-handoff.md`, both examples' copies
 
 ## Evidence of Completion
 
@@ -75,9 +86,9 @@ No open features. Candidates, none urgent:
 - [x] Harness score: `node version-4/scripts/validate-harness.mjs --target . --no-fail --mutate`
       → 100/100, 3/3 mutants killed
 - [x] Both examples: 100/100 at `--min-score 100`
-- [x] Unit checks: 7 + 12 passing, both wired into `./init.sh`
-- [x] Regression-probed: reverting the insertion fix, removing an index row, breaking a script,
-      regressing an example, and an unmet environment contract each exit non-zero
+- [x] Unit checks: 7 + 15 passing, both wired into `./init.sh`
+- [x] Regression-probed: the new Required-but-unenforced assertion fails with a re-introduced
+      `session-handoff.md` bullet and passes clean after restore
 
 ## Notes for Next Session
 

@@ -161,11 +161,12 @@ check('every shipped init.sh reads the environment contract', () => {
 
 // templates/agents.md tells an agent which artifacts are required. If that list disagrees
 // with what scoreHarness() actually enforces, the instruction file is lying in whichever
-// direction it drifted. Three such mismatches existed before this check:
+// direction it drifted. Four such mismatches existed at various points:
 //   graveyard.md      listed unqualified (reads required), optional in code
 //   dream-queue.md    listed unqualified (reads required), not scored at all
-//   session-handoff.md  listed "Optional", yet hasFile-checked — following the doc and
-//                       deleting it silently cost a lifecycle check
+//   (historical)      session-handoff.md was listed "Optional" yet hasFile-checked —
+//                      following the doc and deleting it silently cost a lifecycle check
+//                     until the file was folded into progress.md
 // Covers the bundled examples too, not just the template. They score 100 either way, since
 // these labels do not affect scoring — which is exactly why both examples kept the wrong list
 // through several passes. A reference example teaching the wrong thing is still wrong.
@@ -203,14 +204,22 @@ check(`${relative.replace(/\\/g, '/')} required/optional groups match what the s
   const inOptional = named(optionalBlock);
 
   // Anything the doc calls optional must not be one the scorer demands.
+  // CLAUDE.md is the documented alternative to AGENTS.md, and feature-list.json is the
+  // pre-rename name, so either satisfies the slot the scorer demands by its canonical name.
+  const alternatives = new Set(['CLAUDE.md', 'feature-list.json']);
   const wronglyOptional = [...inOptional].filter((f) => enforced.has(f));
   assert.deepEqual(wronglyOptional, [],
     `listed Optional but hasFile-checked: ${wronglyOptional.join(', ')}`);
 
+  // The mirror: a bullet in the Required group the scorer no longer demands reads as a
+  // promise the gate never keeps. That direction was unguarded until the session-handoff
+  // bullet outlived its check — the bullet was listed "Must exist", the check was gone.
+  const phantomRequired = [...inRequired].filter((f) => !alternatives.has(f) && !enforced.has(f));
+  assert.deepEqual(phantomRequired, [],
+    `listed Required but no longer enforced: ${phantomRequired.join(', ')}`);
+
   // And every scored artifact must appear in the required group, so nothing enforced is
-  // either missing from the list or quietly sitting in the optional one. CLAUDE.md is the
-  // documented alternative to AGENTS.md, so either satisfies the instruction-file slot.
-  const alternatives = new Set(['CLAUDE.md', 'feature-list.json']);
+  // either missing from the list or quietly sitting in the optional one.
   const missing = [...enforced]
     .filter((f) => !alternatives.has(f))
     .filter((f) => !inRequired.has(f));

@@ -12,7 +12,7 @@ Start here. All scripts use Node.js built-in modules only — zero dependencies.
 
 | Document | Type | Tags | Summary |
 |---|---|---|---|
-| [create-harness.mjs](create-harness.mjs) | script | scaffold, create, harness, bootstrap | Scaffolds AGENTS.md, CLAUDE.md and init.sh at the project root; feature_list.json, progress.md, session-handoff.md, memory/, dream-queue.md and open-work.md under harness/ |
+| [create-harness.mjs](create-harness.mjs) | script | scaffold, create, harness, bootstrap | Scaffolds AGENTS.md, CLAUDE.md and init.sh at the project root; feature_list.json, progress.md, memory/, dream-queue.md and open-work.md under harness/ |
 | [validate-harness.mjs](validate-harness.mjs) | script | validate, audit, score, assessment | Scores seven subsystems (instructions, state, verification, scope, lifecycle, memory, behavioral). `--mutate` additionally measures whether the gate catches breakage |
 | [mutate-gate.mjs](mutate-gate.mjs) | script | mutation, adversary, verification, gate | Breaks the project or init.sh in known ways and reports what went unnoticed. Both probe types scored |
 | [enrich-harness.mjs](enrich-harness.mjs) | script | enrich, retrofit, gaps, fixes | Retrofits a harness that already exists: creates missing files from templates and splices missing sections into the right place in files already present. `--apply` writes; default is a dry run |

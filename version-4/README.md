@@ -43,9 +43,9 @@ in `harness/memory/index.md`, which stay sibling-relative.
 - `AGENTS.md` — Full instruction file with embedded behavioral policies
 - `CLAUDE.md` — Reference to AGENTS.md
 - `harness/feature_list.json` — Feature state tracker with dependencies
-- `harness/progress.md` — Session continuity log with per-step verification
+- `harness/progress.md` — Session continuity log with per-step verification; also carries the
+  end-of-session handoff (blockers, decisions, files changed, recommended next step)
 - `init.sh` — Standard startup and verification entrypoint
-- `harness/session-handoff.md` — Optional multi-session handoff
 - `harness/memory/index.md` — Bounded, always-on index of agent-written lessons
 - `harness/memory/journal.md` — Append-only session friction log; the input to curation
 - `harness/memory/graveyard.md` — Routes tried and rejected, each with an expiry condition
@@ -65,10 +65,10 @@ of a single lesson).
 | Dimension | Type | What it validates |
 |---|---|---|
 | Instructions | Structural | AGENTS.md exists, startup workflow, definition of done, verification commands, state routing |
-| State | Structural | harness/feature_list.json, harness/progress.md, handoff structure, restart support |
+| State | Structural | harness/feature_list.json, harness/progress.md (blockers, files, next-session notes), restart support |
 | Verification | Structural | init.sh, fail-fast, test/static commands, evidence recording, that the entrypoint actually runs a command, declared environment preconditions, and — with `--mutate` — whether the gate demonstrably catches breakage |
 | Scope | Structural | One-feature-at-a-time, dependencies, status fields, scope boundaries, recruitable open-work surface |
-| Lifecycle | Structural | Startup script, end-of-session, handoff, restart markers |
+| Lifecycle | Structural | Startup script, end-of-session, restart markers |
 | **Memory** | **v0.3.1** | Index exists, is initialised and within its cap; links intact (no dangling/orphaned lessons); curation input present; two-step save and curation cadence documented; graveyard rows carry a cause and an expiry |
 | **Behavioral** | **v0.3.0** | Coding ladder, coding standards, surgical editing, test-first gates, assumption surfacing, safety carve-outs |
 
@@ -147,11 +147,10 @@ harness-creator/
 │   └── lib/harness-utils.mjs
 ├── templates/
 │   ├── agents.md          ← v0.3.0: embedded behavioral policies
-│   ├── progress.md        ← v0.3.0: per-step verification + ponytail debt
+│   ├── progress.md        ← v0.3.0: per-step verification + ponytail debt; carries the end-of-session handoff
 │   ├── feature-list.json
 │   ├── feature-list.schema.json
 │   ├── init.sh
-│   ├── session-handoff.md
 │   └── index.md
 ├── references/
 │   ├── index.md

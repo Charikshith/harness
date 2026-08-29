@@ -21,11 +21,10 @@
       "id": 2,
       "name": "Session Continuity Setup",
       "prompt": "My agent forgets everything between sessions. I need persistent memory and session handoff so it can work on multi-day features.",
-      "expected_output": "harness/progress.md template, harness/session-handoff.md structure, memory directory setup instructions",
+      "expected_output": "harness/progress.md template (carrying the end-of-session handoff: current state, done/in-progress/next, blockers, decisions, files modified, recommended next step), memory directory setup instructions",
       "files": [],
       "expectations": [
-        "harness/progress.md includes sections: current state, what's done, what's in progress, what's next (with per-step verify), ponytail debt, blockers/notes for next session",
-        "harness/session-handoff.md includes: what was accomplished, what remains, blockers/decisions, files modified",
+        "harness/progress.md includes sections: current state, what's done, what's in progress, what's next (with per-step verify), ponytail debt, blockers/notes for next session, recommended next step",
         "Instructions for memory directory creation (harness/memory/, or .claude/memory/ for an existing store)",
         "Two-step save invariant explained (topic file then index)"
       ]
@@ -196,7 +195,7 @@
       "id": 15,
       "name": "Full v4 Harness with Behavioral Layer",
       "prompt": "I'm starting a new Python project and want the complete v4 harness — all five structural subsystems plus full behavioral policies. Set everything up.",
-      "expected_output": "Complete v4 harness: AGENTS.md (~130 lines with behavioral sections), harness/feature_list.json, harness/progress.md (with per-step verify and ponytail debt), init.sh, harness/session-handoff.md, CLAUDE.md",
+      "expected_output": "Complete v4 harness: AGENTS.md (~130 lines with behavioral sections), harness/feature_list.json, harness/progress.md (with per-step verify, ponytail debt and recommended next step), init.sh, CLAUDE.md",
       "files": [],
       "expectations": [
         "AGENTS.md has all 5 structural sections (Startup Workflow, Working Rules, Required Artifacts, Definition of Done, End of Session, Verification Commands, Escalation)",
