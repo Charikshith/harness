@@ -25,10 +25,10 @@ This guide covers the V3 harness — structural scaffolding plus embedded behavi
 ### 1. Install the skill
 
 ```bash
-npx skills add Charikshith/harness --skill harness-creator-v4
+npx skills add Charikshith/harness --skill harness
 ```
 
-This makes the harness-creator available to your coding agent. The agent now knows how to build and audit harnesses.
+This makes the harness skill available to your coding agent. The agent now knows how to build and audit harnesses.
 
 ### 2. Generate a harness for your project
 
@@ -488,7 +488,7 @@ Escalation
 
 ## Summary
 
-1. **Install**: `npx skills add Charikshith/harness --skill harness-creator-v4`
+1. **Install**: `npx skills add Charikshith/harness --skill harness`
 2. **Create**: `node version-4/scripts/create-harness.mjs --target .`
 3. **Fill**: Replace placeholder feature entries in harness/feature_list.json
 4. **Verify**: `./init.sh` then `node version-4/scripts/validate-harness.mjs --target .`

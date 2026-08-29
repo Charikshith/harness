@@ -1,4 +1,4 @@
-# harness-creator v4
+# harness v4
 
 A compact skill for building and auditing harnesses around AI coding agents.
 
@@ -9,7 +9,7 @@ It helps a repository provide everything agents need: instructions, state, verif
 ## Install
 
 ```bash
-npx skills add Charikshith/harness --skill harness-creator-v4
+npx skills add Charikshith/harness --skill harness
 ```
 
 Or copy `version-4/` into your skill path.
@@ -129,7 +129,7 @@ The behavioral checks validate that the AGENTS.md contains:
 ## Files
 
 ```text
-harness-creator/
+harness/
 ├── SKILL.md
 ├── README.md
 ├── CHANGELOG.md

@@ -1,5 +1,5 @@
 ---
-name: harness-creator-v4
+name: harness
 version: "0.4.0"
 description: >-
   Build, audit, and improve harnesses that make AI coding agents reliable: AGENTS.md/CLAUDE.md
@@ -15,7 +15,7 @@ description: >-
 license: MIT
 ---
 
-# Harness Creator v4
+# Harness
 
 Use this skill to make a repository easier for coding agents to start, stay in scope, verify work, and resume across sessions. Keep the harness small enough that agents actually follow it.
 
@@ -59,7 +59,7 @@ whole reason memory is its own subsystem.
 Use the bundled script when working on a local repository:
 
 ```bash
-node skills/harness-creator/scripts/create-harness.mjs --target /path/to/project
+node skills/harness/scripts/create-harness.mjs --target /path/to/project
 ```
 
 Options:
@@ -102,7 +102,7 @@ for the store's layering rules.
 Run:
 
 ```bash
-node skills/harness-creator/scripts/validate-harness.mjs --target /path/to/project
+node skills/harness/scripts/validate-harness.mjs --target /path/to/project
 ```
 
 Report the five structural subsystem scores, the memory score, the behavioral policy score, the lowest-scoring area (plus anything on the `Also low:` line), and the first 2-3 changes that would improve reliability. Treat the lowest score as a candidate bottleneck; confirm with failures, logs, or task outcomes before claiming causality.
@@ -116,8 +116,8 @@ Report the five structural subsystem scores, the memory score, the behavioral po
 Use when the user wants a shareable assessment:
 
 ```bash
-node skills/harness-creator/scripts/render-assessment-html.mjs --target /path/to/project
-node skills/harness-creator/scripts/run-benchmark.mjs --target /path/to/project --html /path/to/report.html
+node skills/harness/scripts/render-assessment-html.mjs --target /path/to/project
+node skills/harness/scripts/run-benchmark.mjs --target /path/to/project --html /path/to/report.html
 ```
 
 Be clear that this is a structural benchmark. The benchmark first runs a self-check — it scaffolds a throwaway harness and validates it, proving the bundled scripts work end-to-end — then scores the target and eval coverage. Real effectiveness still needs before/after agent sessions on representative tasks.

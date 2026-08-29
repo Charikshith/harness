@@ -54,7 +54,7 @@ There are two stores with overlapping purpose and no reconciliation policy:
 | | Global auto-memory | `harness/memory/` |
 |---|---|---|
 | Path | `~/.claude/projects/<slug>/memory/` | `harness/memory/` in the repo |
-| Governed by | the agent's system prompt | `AGENTS.md` / harness-creator skill |
+| Governed by | the agent's system prompt | `AGENTS.md` / harness skill |
 | In git? | No — personal, this machine only | Yes |
 | Audience | only this user's sessions | any agent/teammate on the repo |
 | Loaded | **automatically every session** (recall) | only if `AGENTS.md` startup step 6 is followed |

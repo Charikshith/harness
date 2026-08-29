@@ -13,7 +13,7 @@ Build and audit harnesses that make AI coding agents reliable.
 
 ```bash
 # Latest (v4 — structural + memory + behavioral, recommended)
-npx skills add Charikshith/harness --skill harness-creator-v4
+npx skills add Charikshith/harness --skill harness
 ```
 
 ### Install a specific version
@@ -22,16 +22,16 @@ Each release is a self-contained folder — install and pin the one you want:
 
 ```bash
 # v4 — harness/ install layout, memory subsystem (folder: version-4/)
-npx skills add Charikshith/harness --skill harness-creator-v4
+npx skills add Charikshith/harness --skill harness
 ```
 
-This repo ships one product line: `harness-creator-v4` (semver in `version-4/SKILL.md`, history in
+This repo ships one product line: `harness` (semver in `version-4/SKILL.md`, history in
 `version-4/CHANGELOG.md` — those two are the only authoritative versions). Pre-v4 lines
 (v1, v2, v3) are frozen in git history; they are not in the working tree.
 
 | Version | Folder | Skill name | Notes |
 |---|---|---|---|
-| **v4** (0.4.0) | `version-4/` | `harness-creator-v4` | Behavioral policies, memory subsystem and curation, environment contract, verification adversary, and the `harness/` install layout — three files at the project root, all harness state under `harness/` |
+| **v4** (0.4.0) | `version-4/` | `harness` | Behavioral policies, memory subsystem and curation, environment contract, verification adversary, and the `harness/` install layout — three files at the project root, all harness state under `harness/` |
 
 ## Use
 

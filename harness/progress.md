@@ -17,7 +17,7 @@
 - [x] `harness/` install layout: three files at the project root, all state under `harness/`
 - [x] Backward compatibility for the pre-`harness/` flat layout, including `detectHarnessLayout()`
       so a missing file is created into the layout a project already uses
-- [x] Version scheme collapsed onto one: `version-4/`, `harness-creator-v4`, semver `0.4.0`
+- [x] Version scheme collapsed onto one: `version-4/`, skill name (now `harness`), semver `0.4.0`
 - [x] This repo migrated onto its own harness: 83/100 → 100/100, 3/3 mutants killed
 - [x] `init.sh` replaced: was a placeholder echo that verified nothing, now syntax-checks all
       scripts, runs the unit checks, and requires both examples to score 100
