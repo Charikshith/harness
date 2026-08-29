@@ -484,8 +484,6 @@ Escalation
 | **Karpathy** | "How should any agent behave in any codebase?" | [Karpathy CLAUDE.md](https://github.com/karpathy/CLAUDE.md) |
 | **Ponytail** | "Which solution do I pick, and how minimal is minimal enough?" | [Ponytail](https://github.com/Charikshith/ponytail) |
 
-For the full architecture rationale, see [SEQUENTIAL-INTEGRATION.md](SEQUENTIAL-INTEGRATION.md).
-
 ---
 
 ## Summary

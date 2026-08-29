@@ -23,26 +23,15 @@ Each release is a self-contained folder — install and pin the one you want:
 ```bash
 # v4 — harness/ install layout, memory subsystem (folder: version-4/)
 npx skills add Charikshith/harness --skill harness-creator-v4
-
-# v3 — OKF-aligned with behavioral policies (folder: version-3/)
-npx skills add Charikshith/harness --skill harness-creator-v3
-
-# v2 — OKF knowledge layer (folder: legacy/version-2/)
-npx skills add Charikshith/harness --skill harness-creator-v2
-
-# v1 — Original, pre-OKF (folder: legacy/version-1/)
-npx skills add Charikshith/harness --skill harness-creator-v1
 ```
 
-The folder is the coarse product line. The precise version is the semver in that folder's
-`SKILL.md` and the headings in its `CHANGELOG.md` — those two are the only authoritative ones.
+This repo ships one product line: `harness-creator-v4` (semver in `version-4/SKILL.md`, history in
+`version-4/CHANGELOG.md` — those two are the only authoritative versions). Pre-v4 lines
+(v1, v2, v3) are frozen in git history; they are not in the working tree.
 
 | Version | Folder | Skill name | Notes |
 |---|---|---|---|
-| **v4** (0.4.0) | `version-4/` | `harness-creator-v4` | v3 + memory subsystem and curation, environment contract, verification adversary, and the `harness/` install layout — three files at the project root, all harness state under `harness/` |
-| v3 (0.3.0) | `version-3/` | `harness-creator-v3` | v2 + behavioral policies: Ponytail ladder, surgical editing, test-first DoD, safety carve-outs |
-| v2 | `legacy/version-2/` | `harness-creator-v2` | OKF layer, `enrich-harness.mjs`, tiered CI, worked examples |
-| v1 | `legacy/version-1/` | `harness-creator-v1` | Original — state/progress files, per-subsystem docs |
+| **v4** (0.4.0) | `version-4/` | `harness-creator-v4` | Behavioral policies, memory subsystem and curation, environment contract, verification adversary, and the `harness/` install layout — three files at the project root, all harness state under `harness/` |
 
 ## Use
 
