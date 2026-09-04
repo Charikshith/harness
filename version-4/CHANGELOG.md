@@ -8,7 +8,19 @@ updated: 2026-07-27
 
 # Changelog
 
-## 2026-08-22 (unreleased)
+## 2026-08-29 (v0.4.1)
+
+### `scratchpad/` folder for agent rough work
+`create-harness.mjs` now writes `scratchpad/README.md`, and the generated AGENTS.md gains a
+Working Rule routing throwaway scripts there. Rough work stays inside the repo — visible
+and reviewable — instead of scattering into temp dirs outside it.
+
+### Skill stops after scaffolding
+"Create a harness" no longer implies running validation afterward. A fresh scaffold scores
+by construction, so the skill now says to report, stop, and ask whether to audit next
+rather than running `validate-harness.mjs` unprompted.
+
+## 2026-08-22 (v4.1.0)
 
 ### `session-handoff.md` folded into `progress.md`
 Handoff was a second home for state the progress log already carried: objective, completed
