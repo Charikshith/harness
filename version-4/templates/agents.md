@@ -98,6 +98,8 @@ higher one and move on. The first lazy solution that works is the right one.
 - **Verification required**: Don't claim done without running verification commands
 - **Update artifacts**: Before ending session, update `harness/progress.md` and `harness/feature_list.json`
 - **Stay in scope**: Don't modify files unrelated to the current feature
+- **Rough work goes in `scratchpad/`**: throwaway scripts, probes and intermediary code
+  land in the `scratchpad/` folder at the project root — never in temp dirs outside the repo.
 - **Leave clean state**: Next session must be able to run `./init.sh` immediately
 
 ## Required Artifacts

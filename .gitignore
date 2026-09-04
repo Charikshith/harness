@@ -55,6 +55,9 @@ tmp/
 temp/
 *.tmp
 
+# Scratchpad (agent rough work — visible locally, never committed)
+scratchpad/
+
 # Media analysis artifacts (generated, not source)
 video/
 frames/

@@ -3,7 +3,7 @@
 ## Current State
 
 **Last Updated:** 2026-08-29
-**Active Feature:** feat-013 Fold session-handoff.md into progress.md
+**Active Feature:** feat-014 Scratchpad folder for rough work
 
 ## Recommended Next Step
 
@@ -34,6 +34,13 @@
 ### What's In Progress
 
 - [ ] Nothing active. All features done except feat-012 (not-started).
+
+### What's Done This Session (feat-014)
+
+- [x] **feat-014** — `scratchpad/` scaffolded by `create-harness.mjs` (writes `scratchpad/README.md`);
+      Working Rule "Rough work goes in `scratchpad/`" added to `templates/agents.md` and this
+      repo's `AGENTS.md`; `.gitignore` ignores `scratchpad/`. No scored check, no CLI flag —
+      the feature is the folder plus the instruction.
 
 ### What's Next (with verification per step)
 
@@ -78,7 +85,6 @@ No open features. Candidates, none urgent:
 - `version-4/examples/*/AGENTS.md`, `examples/*/harness/progress.md` — same, so they still score 100
 - `version-4/{README.md,SKILL.md,CHANGELOG.md,scripts/index.md,evals/*}` — docs and eval expectations
 - `AGENTS.md`, `README.md`, `GUIDE.md`, `docs/carbon_gap_memory.md`, `harness/*` — this repo's own harness
-- Deleted: `harness/session-handoff.md`, `version-4/templates/session-handoff.md`, both examples' copies
 
 ## Evidence of Completion
 

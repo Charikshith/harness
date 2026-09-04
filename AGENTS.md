@@ -41,6 +41,8 @@ If baseline verification is failing, repair that first before adding new scope.
 - **Verification required**: Don't claim done without running verification commands
 - **Update artifacts**: Before ending session, update `harness/progress.md` and `harness/feature_list.json`
 - **Stay in scope**: Don't modify files unrelated to the current feature
+- **Rough work goes in `scratchpad/`**: throwaway scripts, probes and intermediary code
+  land in the `scratchpad/` folder at the project root — never in temp dirs outside the repo.
 - **No bonus surface**: Build only what the request names. Do NOT add new CLI flags,
   commands, modes, config keys, or abstractions beyond the stated feature. If a
   useful extra occurs to you, name it in one line and ask — don't build it.

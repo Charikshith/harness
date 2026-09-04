@@ -51,6 +51,8 @@ in `harness/memory/index.md`, which stay sibling-relative.
 - `harness/memory/graveyard.md` — Routes tried and rejected, each with an expiry condition
 - `harness/dream-queue.md` — Out-of-band curation proposals awaiting a human decision
 - `harness/open-work.md` — Work seen but declined under scope discipline; recruitable
+- `scratchpad/` — the agent's working area for throwaway scripts and intermediary code
+  (created with a README; add it to `.gitignore` so rough work stays out of source control)
 
 Two further templates exist but are **not** scaffolded — created only when a project needs
 them: `harness/environment.md` (declared external preconditions) and `memory-entry.md` (the shape

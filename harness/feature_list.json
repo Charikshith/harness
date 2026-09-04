@@ -102,6 +102,14 @@
       "dependencies": ["feat-002", "feat-004"],
       "status": "done",
       "evidence": "Fresh scaffold no longer creates session-handoff.md and scores 100/100 with the new progress.md. Enricher recreates a deleted progress.md including the Recommended Next Step section (probed on a copy of react-harness). Both bundled examples 100/100. New reverse assertion in index-coverage.test.mjs (listed Required but no longer enforced) regression-probed to catch a re-introduced session-handoff bullet, then passes clean. ./init.sh green; this repo 100/100, 3/3 mutants killed."
+    },
+    {
+      "id": "feat-014",
+      "name": "Scratchpad folder for rough work",
+      "description": "Scaffold a scratchpad/ folder at the project root so an agent's throwaway scripts and intermediary code stay inside the repo — visible and reviewable — instead of scattering into temp dirs outside it. create-harness.mjs writes scratchpad/README.md; templates/agents.md adds a Working Rule routing rough work there; this repo gitignores scratchpad/",
+      "dependencies": ["feat-001"],
+      "status": "done",
+      "evidence": "Fresh scaffold on a scratch target writes scratchpad/README.md alongside the other files. The Working Rule ('Rough work goes in scratchpad/') appears in templates/agents.md, the fresh target's AGENTS.md, and this repo's AGENTS.md. .gitignore lists scratchpad/. ./init.sh green; this repo 100/100, 3/3 mutants killed."
     }
   ]
 }

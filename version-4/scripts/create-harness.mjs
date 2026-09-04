@@ -35,9 +35,20 @@ harness state lives under ${HARNESS_DIR}/.
   ${HARNESS_DIR}/dream-queue.md (out-of-band curation proposals, human-gated)
   ${HARNESS_DIR}/open-work.md (work seen but declined under scope discipline)
 
+  scratchpad/ (throwaway scripts and intermediary code from sessions)
+
 Existing files are skipped unless --force is set.`);
   process.exit(0);
 }
+
+const SCRATCHPAD_README = `# scratchpad
+
+Throwaway scripts, probes and intermediary code from agent sessions land here.
+
+Add \`scratchpad/\` to your \`.gitignore\` so this rough work stays out of source
+control. The folder exists so it stays inside the repo — visible and reviewable —
+instead of scattering into temp dirs outside it.
+`;
 
 const target = path.resolve(args.target || args._[0] || process.cwd());
 const force = Boolean(args.force);
@@ -102,6 +113,17 @@ if (force || !await exists(claudePath)) {
   results.push({ path: claudePath, status: 'written' });
 } else {
   results.push({ path: claudePath, status: 'skipped', reason: 'exists' });
+}
+
+// scratchpad/ is the agent's working area for throwaway scripts. Created so rough work
+// stays inside the repo (visible and reviewable) instead of scattering into temp dirs
+// outside it. Gitignored by the target project's own rules; this only writes the folder.
+const scratchpadReadme = path.join(target, 'scratchpad', 'README.md');
+if (force || !await exists(scratchpadReadme)) {
+  await writeText(scratchpadReadme, SCRATCHPAD_README);
+  results.push({ path: scratchpadReadme, status: 'written' });
+} else {
+  results.push({ path: scratchpadReadme, status: 'skipped', reason: 'exists' });
 }
 
 console.log(`Created harness for ${target}`);
