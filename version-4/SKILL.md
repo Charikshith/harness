@@ -69,7 +69,13 @@ Options:
 - `--commands "cmd one,cmd two"` for custom verification.
 - `--force` only after confirming overwrites are acceptable.
 
-Then explain what was created and how the user should replace placeholder feature entries.
+Then report what was created and how the user should replace placeholder feature entries.
+
+**Do not run validation automatically.** A freshly scaffolded harness scores by
+construction, so auditing it unprompted only adds output the user did not ask for.
+Stop after scaffolding and ask whether they want an audit next — run
+`validate-harness.mjs` only if they say yes.
+
 The generated AGENTS.md includes embedded behavioral policies (coding ladder, surgical
 editing, test-first verification, safety carve-outs) — no external skill dependency required.
 For advanced features (intensity levels, debt tracking, review/audit), install the Ponytail skill separately.
