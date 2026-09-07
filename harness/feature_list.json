@@ -118,6 +118,14 @@
       "dependencies": ["feat-001"],
       "status": "done",
       "evidence": "templates/style.md added with starter ELI5-style rules; templates/index.md lists it. create-harness.mjs writes it via copyTemplate alongside open-work.md. templates/agents.md startup step 2 reads it and the Optional Artifacts section documents it. Two new checks in index-coverage.test.mjs guard both wires (script writes it, agents.md mentions it). ./init.sh green; this repo's own 100/100 score and both bundled examples' 100/100 unaffected since the artifact is unscored."
+    },
+    {
+      "id": "feat-016",
+      "name": "Plan-before-code gate",
+      "description": "Extend the existing Before Multi-Step Work section in templates/agents.md so a non-trivial task shows a human-readable plan (project one-liner, ASCII flow diagram with a 'you are here' marker, current stage, the change, files touched, files also affected) and waits for an explicit go-ahead before any code is written. Same >2-files-or-3-steps gate the section already used, so no new trigger logic. Portable: it is prose in AGENTS.md, not a Claude-only feature, so any agent that reads the file follows it.",
+      "dependencies": ["feat-001"],
+      "status": "done",
+      "evidence": "templates/agents.md Before Multi-Step Work section now shows the Plan block and states the wait-for-go rule. New guard check in index-coverage.test.mjs asserts the wait-for-go wording survives future edits. ./init.sh green; this repo 100/100, both bundled examples 100/100 unaffected since this is prose, not a scored artifact."
     }
   ]
 }

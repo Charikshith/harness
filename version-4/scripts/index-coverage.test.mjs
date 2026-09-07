@@ -243,6 +243,14 @@ check('templates/agents.md startup workflow reads harness/style.md', () => {
     'templates/agents.md never mentions harness/style.md');
 });
 
+// The plan-before-code gate only works if the agent actually stops and waits; a template
+// edit that drops the wording silently turns the gate back into a suggestion.
+check('templates/agents.md Before Multi-Step Work waits for a go-ahead', () => {
+  const agents = fs.readFileSync(path.join(SKILL_ROOT, 'templates', 'agents.md'), 'utf8');
+  assert.ok(agents.includes('wait for a "go" before writing any code'),
+    'templates/agents.md no longer gates code-writing on user confirmation');
+});
+
 if (process.exitCode) {
   console.error(`\n${run} checks run, failures above.`);
 } else {
