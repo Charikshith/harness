@@ -24,3 +24,4 @@ Start here. Match artifact name to find the right template.
 | [dream-queue.md](dream-queue.md) | template | harness/dream-queue.md | memory, dreaming, curation, review, human-gate | Bounded queue of curation proposals with evidence and prevalence, awaiting human decision |
 | [environment.md](environment.md) | template | harness/environment.md | verification, environment, preconditions, tools, contract | Declared external preconditions checked by init.sh separately from the project's own tests. Optional; not auto-scaffolded |
 | [open-work.md](open-work.md) | template | harness/open-work.md | scope, recruitment, backlog, multi-agent | Work seen but declined under scope discipline, with reason codes; recruitable by a later session |
+| [style.md](style.md) | template | harness/style.md | style, communication, tone, format | Talk rules for how the agent replies — tone, format, structure. Optional; auto-scaffolded with starter content |

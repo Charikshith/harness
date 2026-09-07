@@ -227,6 +227,22 @@ check(`${relative.replace(/\\/g, '/')} required/optional groups match what the s
 });
 }
 
+// create-harness.mjs must write harness/style.md alongside the other optional artifacts,
+// or a fresh scaffold never gets the file templates/agents.md instructs the agent to read.
+check('create-harness.mjs writes harness/style.md', () => {
+  const script = fs.readFileSync(path.join(SKILL_ROOT, 'scripts', 'create-harness.mjs'), 'utf8');
+  assert.ok(script.includes("copyTemplate('style.md'"),
+    'create-harness.mjs has no copyTemplate call for style.md');
+});
+
+// The Startup Workflow is where an agent learns to read harness/style.md at all; a template
+// that scaffolds the file but never tells the agent to read it ships a dead artifact.
+check('templates/agents.md startup workflow reads harness/style.md', () => {
+  const agents = fs.readFileSync(path.join(SKILL_ROOT, 'templates', 'agents.md'), 'utf8');
+  assert.ok(agents.includes('harness/style.md'),
+    'templates/agents.md never mentions harness/style.md');
+});
+
 if (process.exitCode) {
   console.error(`\n${run} checks run, failures above.`);
 } else {

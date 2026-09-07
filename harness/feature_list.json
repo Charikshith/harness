@@ -110,6 +110,14 @@
       "dependencies": ["feat-001"],
       "status": "done",
       "evidence": "Fresh scaffold on a scratch target writes scratchpad/README.md alongside the other files. The Working Rule ('Rough work goes in scratchpad/') appears in templates/agents.md, the fresh target's AGENTS.md, and this repo's AGENTS.md. .gitignore lists scratchpad/. ./init.sh green; this repo 100/100, 3/3 mutants killed."
+    },
+    {
+      "id": "feat-015",
+      "name": "Output style artifact",
+      "description": "Claude Code has a native output-style setting; most other agent runtimes do not. Add harness/style.md as an optional, auto-scaffolded template holding talk rules (tone, format, structure); templates/agents.md reads it at startup and follows it for every reply, so the behavior is portable to any agent that reads AGENTS.md, not just runtimes with native support. Optional and unscored, matching the dream-queue.md/graveyard.md pattern rather than the required set.",
+      "dependencies": ["feat-001"],
+      "status": "done",
+      "evidence": "templates/style.md added with starter ELI5-style rules; templates/index.md lists it. create-harness.mjs writes it via copyTemplate alongside open-work.md. templates/agents.md startup step 2 reads it and the Optional Artifacts section documents it. Two new checks in index-coverage.test.mjs guard both wires (script writes it, agents.md mentions it). ./init.sh green; this repo's own 100/100 score and both bundled examples' 100/100 unaffected since the artifact is unscored."
     }
   ]
 }
