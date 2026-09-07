@@ -17,6 +17,7 @@ yarn-error.log*
 
 # TokenSave code-graph cache
 .tokensave/
+.serena/
 
 # IDE
 .vscode/
