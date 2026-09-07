@@ -2,8 +2,8 @@
 
 ## Current State
 
-**Last Updated:** 2026-08-29
-**Active Feature:** feat-014 Scratchpad folder for rough work
+**Last Updated:** 2026-09-07
+**Active Feature:** feat-016 Plan-before-code gate (feat-015 also done this session)
 
 ## Recommended Next Step
 
@@ -30,17 +30,27 @@
       (objective, blockers, files, decisions, next step) folded into `progress.md` via a
       `Recommended Next Step` marker. Checks now read `progress.md` alone; lifecycle drops its
       existence check (43 checks total)
+- [x] **feat-014** — `scratchpad/` scaffolded by `create-harness.mjs` (writes `scratchpad/README.md`);
+      Working Rule "Rough work goes in `scratchpad/`" added to `templates/agents.md` and this
+      repo's `AGENTS.md`; `.gitignore` ignores `scratchpad/`. No scored check, no CLI flag —
+      the feature is the folder plus the instruction.
 
 ### What's In Progress
 
 - [ ] Nothing active. All features done except feat-012 (not-started).
 
-### What's Done This Session (feat-014)
+### What's Done This Session (feat-015, feat-016)
 
-- [x] **feat-014** — `scratchpad/` scaffolded by `create-harness.mjs` (writes `scratchpad/README.md`);
-      Working Rule "Rough work goes in `scratchpad/`" added to `templates/agents.md` and this
-      repo's `AGENTS.md`; `.gitignore` ignores `scratchpad/`. No scored check, no CLI flag —
-      the feature is the folder plus the instruction.
+- [x] **feat-015** — `harness/style.md` added as an optional, auto-scaffolded template holding
+      talk rules (tone, format, structure). `create-harness.mjs` writes it via `copyTemplate`;
+      `templates/agents.md` reads it at startup (step 2) and documents it in Optional Artifacts.
+      Unscored, same pattern as `dream-queue.md`/`graveyard.md`. Two new guard checks in
+      `index-coverage.test.mjs`.
+- [x] **feat-016** — Plan-before-code gate added to the existing `Before Multi-Step Work`
+      section: for tasks over 2 files or 3 steps, show a plan (project one-liner, ASCII flow
+      diagram with a "you are here" marker, current stage, the change, files touched/affected)
+      and wait for a go-ahead before writing code. Reuses the section's existing size gate —
+      no new trigger logic. One new guard check in `index-coverage.test.mjs`.
 
 ### What's Next (with verification per step)
 
@@ -75,38 +85,36 @@ No open features. Candidates, none urgent:
 - **`--min-score 100` for the bundled examples, not `--fail-fast`.** Measured: `--fail-fast`
   passes anything ≥85, so a whole subsystem could regress unnoticed.
 
-## Files Modified This Session
+## Files Modified This Session (feat-015, feat-016)
 
-- `version-4/scripts/lib/harness-utils.mjs` — removed the handoff check; state/lifecycle checks read `progress.md` alone
-- `version-4/scripts/enrich-harness.mjs` — GAP_FIXES retargeted to `progress.md`
-- `version-4/scripts/create-harness.mjs` — no longer scaffolds `session-handoff.md`
-- `version-4/scripts/index-coverage.test.mjs` — new reverse assertion (Required-but-unenforced bullet) + probe
-- `version-4/templates/{agents.md,progress.md,index.md}` — dropped the bullet, added `Recommended Next Step`
-- `version-4/examples/*/AGENTS.md`, `examples/*/harness/progress.md` — same, so they still score 100
-- `version-4/{README.md,SKILL.md,CHANGELOG.md,scripts/index.md,evals/*}` — docs and eval expectations
-- `AGENTS.md`, `README.md`, `GUIDE.md`, `docs/carbon_gap_memory.md`, `harness/*` — this repo's own harness
+- `version-4/templates/style.md` — new: starter talk-rules template (feat-015)
+- `version-4/templates/agents.md` — reads `harness/style.md` at startup; documents it in
+  Optional Artifacts; Plan-before-code block added to `Before Multi-Step Work` (feat-016)
+- `version-4/templates/index.md` — lists `style.md`
+- `version-4/scripts/create-harness.mjs` — writes `style.md` via `copyTemplate`, help text updated
+- `version-4/scripts/index-coverage.test.mjs` — 3 new guard checks: script writes `style.md`,
+  `agents.md` mentions `harness/style.md`, `agents.md` still gates on "wait for a \"go\""
+- `harness/feature_list.json` — feat-015 and feat-016 added, both done with evidence
 
 ## Evidence of Completion
 
-- [x] Gate passes: `./init.sh` → exit 0
-- [x] Harness score: `node version-4/scripts/validate-harness.mjs --target . --no-fail --mutate`
-      → 100/100, 3/3 mutants killed
-- [x] Both examples: 100/100 at `--min-score 100`
-- [x] Unit checks: 7 + 15 passing, both wired into `./init.sh`
-- [x] Regression-probed: the new Required-but-unenforced assertion fails with a re-introduced
-      `session-handoff.md` bullet and passes clean after restore
+- [x] Gate passes: `./init.sh` → exit 0, 18 unit checks passing (was 15)
+- [x] Both examples: 100/100 at `--min-score 100`, unaffected since both additions are unscored
+- [x] Functional smoke test: scaffolded a throwaway project into `scratchpad/`, confirmed
+      `harness/style.md` was written, then removed it
 
 ## Notes for Next Session
 
-All 11 features are done. The two candidates listed above are optional; neither fails a check.
+`feat-012` (Episodic session search) is still the only not-started feature.
 
-The lesson that keeps paying: every check added this session was probed by breaking the thing
-it watches. Two of them were decorative until that probe — see harness/memory/index.md.
+**Gap found and left open:** the plan-before-code gate (feat-016) only has a guard check
+that the wording survives edits to `agents.md`. Nothing verifies the agent actually stops
+and waits for a "go" in practice — that is a behavioral claim, not a testable one with this
+repo's current tooling. Flagged, not fixed.
 
-Two audit scripts used this session live in the scratchpad, not the repo: a documented-flag
-audit and a claims audit. The reusable parts became `scripts/index-coverage.test.mjs`. If you
-want the flag audit permanently, note it has one known false positive — `mutate-gate.mjs`
-mentions `validate-harness.mjs --mutate` in its help as a cross-reference, not its own flag.
+**Process note:** this file and `harness/memory/journal.md` went stale for feat-015/feat-016
+— both features were committed without the End-of-Session update. Caught only when asked
+"what else do we need" a session later. Lesson recorded in `harness/memory/`.
 
 
 ---

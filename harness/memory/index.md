@@ -37,6 +37,7 @@ This file holds only what was **learned**.
 
 - [A synchronous runner silently passes every async check](async-check-cannot-fail.md) — a check that cannot fail is worse than no check; probe it by breaking what it watches
 - [A keyword check is satisfied by a comment mentioning the keyword](keyword-checks-satisfied-by-comments.md) — never write the literal a check greps for into a comment in the same file
+- [Committing a feature is not the same as ending the session](commit-is-not-session-end.md) — update progress.md + journal.md right after each commit, not only at "session end"
 
 ## Retired
 

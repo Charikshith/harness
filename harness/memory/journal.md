@@ -57,3 +57,15 @@ restatements and will yield no proposals.
 - differently: `version-4/templates/*` are CRLF. Probe/replace strings with `\n` fail silently (string not found). Read the exact bytes (or `indexOf`) before crafting edits against shipped templates
 - surprised: a new check referencing a `const` declared later in the same block is a TDZ runtime error, not a lint-visible problem — `node --check` does not catch it; the unit run does
 
+## 2026-09-07 — feat-015, feat-016
+
+- looked up: root `harness/feature_list.json` tracks version-4's own development (the tool
+  that scaffolds OTHER projects), not this repo as a scaffolded target — easy to miss on a
+  first read
+- surprised: `index-coverage.test.mjs` only requires a new "Optional" artifact to stay out of
+  the scorer's `hasFile()` set — a new optional artifact (`style.md`) needed zero scorer
+  changes, just the doc bullet in the right group
+- differently: committed both features without the End-of-Session `progress.md`/`journal.md`
+  update; only caught it a session later when asked "what else do we need" — see
+  `harness/memory/commit-is-not-session-end.md`
+
