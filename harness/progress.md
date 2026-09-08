@@ -2,8 +2,8 @@
 
 ## Current State
 
-**Last Updated:** 2026-09-07
-**Active Feature:** feat-016 Plan-before-code gate (feat-015 also done this session)
+**Last Updated:** 2026-09-08
+**Active Feature:** feat-017 registered (docs/workaround done, script not started)
 
 ## Recommended Next Step
 
@@ -37,9 +37,7 @@
 
 ### What's In Progress
 
-- [ ] Nothing active. All features done except feat-012 (not-started).
-
-### What's Done This Session (feat-015, feat-016)
+- [ ] Nothing active. All features done except feat-012 and feat-017 (both not-started).
 
 - [x] **feat-015** — `harness/style.md` added as an optional, auto-scaffolded template holding
       talk rules (tone, format, structure). `create-harness.mjs` writes it via `copyTemplate`;
@@ -51,6 +49,19 @@
       diagram with a "you are here" marker, current stage, the change, files touched/affected)
       and wait for a go-ahead before writing code. Reuses the section's existing size gate —
       no new trigger logic. One new guard check in `index-coverage.test.mjs`.
+
+### What's Done This Session (feat-017 docs)
+
+- [x] `version-4/README.md` gained an "Upgrading an existing harness" section: 4 manual
+      steps (read CHANGELOG.md, copy new optional templates by hand, merge changed
+      instruction text by hand, re-run validate-harness.mjs). Also fixed a small gap found
+      while writing it: `harness/style.md` was missing from the file list.
+- [x] Tested the 4 steps for real: copied `version-4/examples/react-harness` into
+      `scratchpad/`, applied steps 2-3 (added `style.md`, merged the new Before Multi-Step
+      Work text), ran `validate-harness.mjs --target scratchpad/upgrade-test --no-fail` →
+      100/100, production tier. Scratch copy deleted after.
+- [x] `feat-017` registered in `feature_list.json` as not-started, dependency `feat-004`
+      (enrich-harness.mjs) since a real fix likely extends that script.
 
 ### What's Next (with verification per step)
 
@@ -85,7 +96,7 @@ No open features. Candidates, none urgent:
 - **`--min-score 100` for the bundled examples, not `--fail-fast`.** Measured: `--fail-fast`
   passes anything ≥85, so a whole subsystem could regress unnoticed.
 
-## Files Modified This Session (feat-015, feat-016)
+## Files Modified This Session (feat-015, feat-016, feat-017)
 
 - `version-4/templates/style.md` — new: starter talk-rules template (feat-015)
 - `version-4/templates/agents.md` — reads `harness/style.md` at startup; documents it in
@@ -94,27 +105,41 @@ No open features. Candidates, none urgent:
 - `version-4/scripts/create-harness.mjs` — writes `style.md` via `copyTemplate`, help text updated
 - `version-4/scripts/index-coverage.test.mjs` — 3 new guard checks: script writes `style.md`,
   `agents.md` mentions `harness/style.md`, `agents.md` still gates on "wait for a \"go\""
-- `harness/feature_list.json` — feat-015 and feat-016 added, both done with evidence
+- `version-4/README.md` — new "Upgrading an existing harness" section (feat-017); fixed
+  `harness/style.md` missing from the file list
+- `harness/feature_list.json` — feat-015, feat-016 done with evidence; feat-017 registered not-started
+- `harness/memory/{index.md,journal.md,commit-is-not-session-end.md}` — caught up the same
+  session the features shipped, per the new lesson below
 
 ## Evidence of Completion
 
 - [x] Gate passes: `./init.sh` → exit 0, 18 unit checks passing (was 15)
 - [x] Both examples: 100/100 at `--min-score 100`, unaffected since both additions are unscored
-- [x] Functional smoke test: scaffolded a throwaway project into `scratchpad/`, confirmed
-      `harness/style.md` was written, then removed it
+- [x] Functional smoke test (feat-015): scaffolded a throwaway project into `scratchpad/`,
+      confirmed `harness/style.md` was written, then removed it
+- [x] Functional smoke test (feat-017 workaround): copied `examples/react-harness` into
+      `scratchpad/`, applied the 4 manual upgrade steps by hand, `validate-harness.mjs`
+      still reported 100/100, then removed the scratch copy
 
 ## Notes for Next Session
 
-`feat-012` (Episodic session search) is still the only not-started feature.
+`feat-012` (Episodic session search) and `feat-017` (real upgrade command) are the two
+not-started features.
 
 **Gap found and left open:** the plan-before-code gate (feat-016) only has a guard check
 that the wording survives edits to `agents.md`. Nothing verifies the agent actually stops
 and waits for a "go" in practice — that is a behavioral claim, not a testable one with this
 repo's current tooling. Flagged, not fixed.
 
-**Process note:** this file and `harness/memory/journal.md` went stale for feat-015/feat-016
-— both features were committed without the End-of-Session update. Caught only when asked
-"what else do we need" a session later. Lesson recorded in `harness/memory/`.
+**Second gap found while writing the feat-017 workaround:** `enrich-harness.mjs` keeps its
+own hardcoded copy of the `Before Multi-Step Work` snippet (used to splice the section into
+a harness that's missing it entirely). That copy is now the *old* pre-feat-016 wording — it
+has drifted from `templates/agents.md`. Not fixed this session; a real `feat-017` fix should
+probably resolve both drifts at once.
+
+**Process note (applied, not just noted this time):** progress.md and journal.md were
+updated in the same commit as the feature work, per
+`harness/memory/commit-is-not-session-end.md` — the lesson from the previous gap.
 
 
 ---

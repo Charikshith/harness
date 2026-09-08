@@ -126,6 +126,13 @@
       "dependencies": ["feat-001"],
       "status": "done",
       "evidence": "templates/agents.md Before Multi-Step Work section now shows the Plan block and states the wait-for-go rule. New guard check in index-coverage.test.mjs asserts the wait-for-go wording survives future edits. ./init.sh green; this repo 100/100, both bundled examples 100/100 unaffected since this is prose, not a scored artifact."
+    },
+    {
+      "id": "feat-017",
+      "name": "Real upgrade command for an already-scaffolded project",
+      "description": "Neither existing script updates a project once it has its own AGENTS.md: create-harness.mjs --force overwrites everything (a reset, not an upgrade), and enrich-harness.mjs --apply only fixes checks that are currently failing, so improved wording on an already-passing section (or a new unscored optional artifact) never reaches it. Needs a script that diffs a project's AGENTS.md sections against the current version-4/templates/agents.md and proposes just the delta, plus copies any new optional templates the project is missing. Documented the manual workaround in version-4/README.md in the meantime.",
+      "dependencies": ["feat-004"],
+      "status": "not-started"
     }
   ]
 }

@@ -69,3 +69,14 @@ restatements and will yield no proposals.
   update; only caught it a session later when asked "what else do we need" — see
   `harness/memory/commit-is-not-session-end.md`
 
+## 2026-09-08 — feat-017 (docs/workaround, script not started)
+
+- looked up: neither `create-harness.mjs --force` nor `enrich-harness.mjs --apply` updates
+  an already-scaffolded project's instruction text — the first overwrites everything, the
+  second only fixes checks that are currently failing
+- surprised: `enrich-harness.mjs` carries its own separate, hardcoded copy of the
+  `Before Multi-Step Work` snippet (for splicing it into a harness missing the section
+  entirely) — it is now stale against `templates/agents.md` after feat-016
+- differently: applied `harness/memory/commit-is-not-session-end.md` for real this time —
+  updated `progress.md` and this file in the same commit as the feature, not after
+

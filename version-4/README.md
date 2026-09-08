@@ -51,6 +51,7 @@ in `harness/memory/index.md`, which stay sibling-relative.
 - `harness/memory/graveyard.md` — Routes tried and rejected, each with an expiry condition
 - `harness/dream-queue.md` — Out-of-band curation proposals awaiting a human decision
 - `harness/open-work.md` — Work seen but declined under scope discipline; recruitable
+- `harness/style.md` — Talk rules for how the agent replies (tone, format, structure); optional, unscored
 - `scratchpad/` — the agent's working area for throwaway scripts and intermediary code
   (created with a README; add it to `.gitignore` so rough work stays out of source control)
 
@@ -184,6 +185,28 @@ a version is authoritative.
 | v3 (0.3.0–0.3.2) | `version-3/`, then `version-4/` | Embedded behavioral policies (Ponytail ladder, surgical editing, test-first, safety), 6-dimension scoring; memory subsystem and curation in 0.3.1; environment contract and verification adversary in 0.3.2 |
 | v2 | `version-2/` | OKF knowledge layer, enrich-harness.mjs, tiered CI, worked examples |
 | v1 | `version-1/` | Step-by-step instructions, state/progress files, per-subsystem docs |
+
+## Upgrading an existing harness
+
+There is no automatic upgrade command yet. `create-harness.mjs --force` overwrites every
+file, including your own edits to `AGENTS.md` — that is a reset, not an upgrade.
+`enrich-harness.mjs --apply` only fixes checks that are currently **failing**; better
+wording on a section that already passes is not a failing check, so it will not touch it.
+
+To bring an existing scaffolded project up to date by hand:
+
+1. Read `CHANGELOG.md` for what changed since you scaffolded. A project has no version
+   marker of its own to compare against.
+2. **New optional artifact** (e.g. `harness/style.md`): copy the file straight from
+   `version-4/templates/<name>.md` into your project's `harness/` folder.
+3. **Changed instruction text** (e.g. an updated `AGENTS.md` section): open
+   `version-4/templates/agents.md`, find the section, and merge the new wording into your
+   own `AGENTS.md` by hand.
+4. Run `node version-4/scripts/validate-harness.mjs --target /path/to/project` afterward
+   to confirm nothing regressed.
+
+A real upgrade command that diffs a project's `AGENTS.md` against the current template and
+proposes just the delta is tracked as `feat-017`, not built yet.
 
 ## Boundaries
 
