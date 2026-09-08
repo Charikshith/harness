@@ -37,7 +37,15 @@ is reading this file.
 
 ## Items
 
-_No open items yet._
+- [needs-review] Plan-before-code gate only has a guard check that its wording survives
+  edits to `agents.md`. Nothing verifies the agent actually stops and waits for a "go" in
+  practice — that's a behavioral claim, not testable with this repo's current tooling
+  (seen in feat-016)
+- [cheap-parallel-win] `enrich-harness.mjs` carries its own hardcoded copy of the
+  `Before Multi-Step Work` snippet (used to splice the section into a harness missing it
+  entirely). That copy is still the pre-feat-016 wording — stale against
+  `templates/agents.md`. Fixable independent of the full feat-017 upgrade script
+  (seen in feat-017)
 
 ## Design decision (2026-08-09): close the memory retrieval gaps
 
