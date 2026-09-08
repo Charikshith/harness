@@ -16,6 +16,12 @@ Build and audit harnesses that make AI coding agents reliable.
 npx skills add Charikshith/harness --skill harness
 ```
 
+## Update
+
+```bash
+npx skills update harness
+```
+
 ### Install a specific version
 
 Each release is a self-contained folder — install and pin the one you want:
