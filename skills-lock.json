@@ -4,8 +4,8 @@
     "harness": {
       "source": "Charikshith/harness",
       "sourceType": "github",
-      "skillPath": "skills/harness/SKILL.md",
-      "computedHash": "ea0db2614fb8443846acf53dd929e247d39da4d65d13b991205c5c80343edfa1"
+      "skillPath": "version-4/SKILL.md",
+      "computedHash": "567a644d1130cf43a134ce775f1a8713b85195f8c0ab558ca03923442fb3279f"
     },
     "watch": {
       "source": "bradautomates/claude-video",
