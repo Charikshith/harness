@@ -23,6 +23,16 @@ user closes the terminal or walks away, the agent never gets a turn to run it.
 treat every safe stopping point as if it might be the last. A `SessionEnd`/`Stop`
 hook would make it deterministic.
 
+**Update (2026-09-13):** `version-4/harness`'s own dogfood repo shipped a different,
+narrower mitigation — a git `pre-commit` hook (`.githooks/pre-commit`, feat-018) that
+blocks any commit touching non-harness files unless `harness/progress.md` and
+`harness/memory/journal.md` are staged in the same commit. It closes the specific
+"committed a feature, forgot the state update" case (the exact incident behind
+`harness/memory/commit-is-not-session-end.md`), and it's tool-agnostic — git enforces
+it regardless of which agent is committing. But it's a commit-time gate, not a
+session-end one: it does nothing if the agent never commits, so A1's underlying gap
+(no true session-end event) is still open.
+
 ### A2. Repo harness memory isn't auto-loaded — _open_
 Unlike the personal `~/.claude` auto-memory (always injected as recall),
 `harness/memory/` only surfaces if a session actually follows `AGENTS.md`
@@ -107,4 +117,6 @@ the doc. Related convention: `harness/memory/scraper-string-columns.md`.
   `harness/memory/` so they travel with the repo.
 - Verify **C3** to settle whether feat-005 is real or stale.
 - Consider a `SessionEnd`/`Stop` hook to make the End-of-Session routine
-  deterministic (fixes A1).
+  deterministic (fixes A1). **Partially addressed 2026-09-13** by a git
+  `pre-commit` hook instead (see A1) — still no true session-end event, only a
+  commit-time one.

@@ -232,5 +232,20 @@ Use the signals the templates already define:
   `harness/memory/graveyard.md` (dead end), and a `journal.md` block.
 - **Not yet done:** the `Stop` hook (§5.1), the `AGENTS.md` trigger-table rewrite
   (§5.2), the two-store rule (§5.4), and any curation cadence (§5.5).
-- This file is standalone under `docs/` by request — not promoted into `harness/`
-  and not committed.
+- This file was later moved into `gaps/` and is tracked in git (see `gaps/` history);
+  the line above about staying standalone under `docs/` no longer holds.
+
+**Update (2026-09-13) — §5.1 partially addressed, differently than proposed:**
+`version-4/harness` shipped a git `pre-commit` hook (`.githooks/pre-commit`,
+feat-018) instead of a Claude `Stop` hook. Same goal — the agent shouldn't be able
+to silently skip recording state — different mechanism and a narrower guarantee:
+
+- It fires at `git commit`, not at session end, so it only catches "committed code
+  without updating `progress.md`/`journal.md`" — not "ended the session (or got
+  interrupted) without committing at all." §5.1's actual proposal (a `Stop` hook)
+  would still close that wider gap; it remains undone.
+- It's tool-agnostic (any committer trips it, not just Claude Code), and it's real
+  and shipped, not a snippet in a findings doc — which the §5.1 snippets above
+  explicitly were not ("verify against current docs before committing").
+- §5.2 (event-driven trigger table), §5.4 (two-store reconciliation), and §5.5
+  (curation cadence) are all still undone, unaffected by this.

@@ -55,3 +55,10 @@ yet noticed about itself, not just one it's deferred.
 - **Open, already tracked internally:** primitive 8 concurrency (Cluster E,
   `missing-subsystems.md`), primitive 10 observability (§9, same doc).
 - Nothing in this file has been applied to `version-4/` — comparison only.
+
+**Update (2026-09-13):** since this comparison, primitive 6 (Durable State) gained a
+mechanical layer it didn't have before — a git `pre-commit` hook (feat-018,
+`.githooks/pre-commit`) that blocks a commit changing non-harness files unless
+`progress.md`/`journal.md` are staged too, rather than relying on the agent to
+remember. It doesn't touch primitives 5, 8, or 10 above, which remain open exactly as
+described.
