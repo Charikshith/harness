@@ -141,6 +141,10 @@ read it in — so `harness/progress.md` means that, even when you are already in
 - `harness/style.md` — Talk rules for how the agent replies: tone, format, structure. Read
   at startup (see Startup Workflow) and followed for every reply. Scaffolded with starter
   content; optional because the default agent voice is fine for many projects.
+- `.githooks/pre-commit` — Blocks a commit that changes non-harness files unless
+  `harness/progress.md` and `harness/memory/journal.md` are staged in the same commit (see
+  End of Session). Activated by `init.sh` setting `core.hooksPath`; bypass with
+  `git commit --no-verify` for genuinely non-feature changes.
 
 ## Memory
 
@@ -261,6 +265,9 @@ Before ending a session:
    correction always qualifies. Otherwise leave it in the journal for curation to find.
 6. Commit with descriptive message once work is in safe state
 7. Leave repo clean enough for next session to run `./init.sh` immediately
+
+Steps 1 and 4 are enforced mechanically for non-harness changes if `.githooks/pre-commit`
+is present — see Required Artifacts.
 
 ## Safety (Never Simplify Away)
 

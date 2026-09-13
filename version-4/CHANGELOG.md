@@ -8,6 +8,18 @@ updated: 2026-07-27
 
 # Changelog
 
+## 2026-09-13 (v0.4.2)
+
+### Pre-commit hook enforcing harness state updates (feat-018)
+A git pre-commit hook (`templates/pre-commit.sh`, scaffolded to `.githooks/pre-commit`)
+blocks any commit that changes a non-harness file unless `harness/progress.md` and
+`harness/memory/journal.md` are staged in the same commit — mechanical enforcement of
+`harness/memory/commit-is-not-session-end.md` instead of relying on the agent to
+remember. Tool-agnostic: git invokes it for any committer, not just Claude. `init.sh`
+(both the generator and the reference template) activates it by setting
+`core.hooksPath`, guarded on the hook file existing and on being inside a git repo.
+Optional and unscored, same pattern as `style.md`.
+
 ## 2026-08-29 (v0.4.1)
 
 ### `scratchpad/` folder for agent rough work

@@ -36,6 +36,7 @@ harness state lives under ${HARNESS_DIR}/.
   ${HARNESS_DIR}/open-work.md (work seen but declined under scope discipline)
   ${HARNESS_DIR}/style.md (talk rules for how the agent replies)
 
+  .githooks/pre-commit (blocks a commit missing progress.md/journal.md updates)
   scratchpad/ (throwaway scripts and intermediary code from sessions)
 
 Existing files are skipped unless --force is set.`);
@@ -98,6 +99,7 @@ results.push(await copyTemplate('memory-graveyard.md', await at('memory/graveyar
 results.push(await copyTemplate('dream-queue.md', await at('dream-queue.md'), {}, { force }));
 results.push(await copyTemplate('open-work.md', await at('open-work.md'), {}, { force }));
 results.push(await copyTemplate('style.md', await at('style.md'), {}, { force }));
+results.push(await copyTemplate('pre-commit.sh', path.join(target, '.githooks', 'pre-commit'), {}, { force }));
 
 const initPath = await at('init.sh');
 if (force || !await exists(initPath)) {

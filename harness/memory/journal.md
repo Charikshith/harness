@@ -50,6 +50,25 @@ restatements and will yield no proposals.
 
 ## Entries
 
+## 2026-09-13 — feat-018
+
+- looked up: `init.sh` is never copied to a scaffolded project — `create-harness.mjs`
+  generates it from `initScriptFromCommands()` in `lib/harness-utils.mjs`. A hook-activation
+  line added only to `templates/init.sh` would be invisible to every real scaffold, same
+  trap the `ENV_CONTRACT_BLOCK` comment already warns about
+- surprised: `core.hooksPath` is local `git config`, not a tracked file — it doesn't survive
+  a fresh clone, so `init.sh` has to re-set it (idempotently) on every run rather than once
+- surprised: this repo's own instance and the generic shipped template needed different
+  trigger conditions on purpose — `version-4/` here vs. "anything outside `harness/`" in
+  general — genuine customization, not drift, since this repo dogfoods the tool on itself
+- differently: built the repo-local `.githooks/pre-commit` first and tested it live before
+  generalizing into a template — cheaper to find the guard logic's edge cases (empty diff,
+  non-git dir under `set -e`) against one real hook than to design the generic version blind
+- corrected: mid-verification, `git reset --hard HEAD~1` (undoing a throwaway test commit)
+  silently discarded an uncommitted `init.sh` edit sitting in the working tree at the time —
+  `--hard` resets the tree, not just HEAD; caught via the stale-file-on-disk warning and
+  reapplied. Reset harder than the commit it was meant to undo
+
 ## 2026-08-29 — feat-013
 
 - looked up: `python3` — not on this machine (Windows); inline `node - <<'EOF'` works for small file-mangling probes
