@@ -244,13 +244,18 @@ check('templates/agents.md startup workflow reads harness/style.md', () => {
     'templates/agents.md never mentions harness/style.md');
 });
 
-// The plan-before-code gate only works if the agent actually stops and waits; a template
-// edit that drops the wording silently turns the gate back into a suggestion.
-check('templates/agents.md Before Multi-Step Work waits for a go-ahead', () => {
-  const agents = fs.readFileSync(path.join(SKILL_ROOT, 'templates', 'agents.md'), 'utf8');
-  assert.ok(agents.includes('wait for a "go" before writing any code'),
-    'templates/agents.md no longer gates code-writing on user confirmation');
-});
+// The plan-before-code gate only works if the agent actually stops and waits; an
+// AGENTS.md that drops the wording silently turns the gate back into a suggestion.
+// Covers the bundled examples too, not just the template — they went two features
+// (feat-015, feat-018) without ever picking up the feat-016 wording, and nothing caught it
+// because this check used to look only at templates/agents.md.
+for (const relative of AGENT_FILES) {
+  check(`${relative.replace(/\\/g, '/')} Before Multi-Step Work waits for a go-ahead`, () => {
+    const agents = fs.readFileSync(path.join(SKILL_ROOT, relative), 'utf8');
+    assert.ok(agents.includes('wait for a "go" before writing any code'),
+      `${relative} no longer gates code-writing on user confirmation`);
+  });
+}
 
 // create-harness.mjs must write .githooks/pre-commit alongside the other optional
 // artifacts, or a fresh scaffold never gets the hook templates/agents.md documents.

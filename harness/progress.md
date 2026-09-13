@@ -3,7 +3,7 @@
 ## Current State
 
 **Last Updated:** 2026-09-13
-**Active Feature:** none — closed the stale-examples gap (bundled examples now match current scaffolder output)
+**Active Feature:** none — closed the feat-016 wording drift in both bundled examples, plus the regression guard for it
 
 ## Recommended Next Step
 
@@ -112,6 +112,21 @@
       language) — out of scope for this fix, which was specifically about the missing
       files. Left as a known, separate drift.
 
+### What's Done This Session (feat-016 wording drift closed)
+
+- [x] Replaced both examples' outdated "Before Multi-Step Work" section (one-line
+      success criterion + bare numbered steps) with the current `templates/agents.md`
+      wording: the full "Plan — waiting for your OK" block (project one-liner, ASCII flow
+      diagram, current stage, change, files touched/affected) and the explicit
+      wait-for-"go" gate.
+- [x] The guard check that verifies this wording (`templates/agents.md Before
+      Multi-Step Work waits for a go-ahead`) used to check only `templates/agents.md` —
+      exactly why this drift went unnoticed through feat-015 and feat-018. Widened it to
+      loop over the same `AGENT_FILES` list the Required/Optional-groups check already
+      uses (template + both examples), so a future drift here fails the gate instead of
+      silently shipping.
+- [x] Gate passes: `./init.sh` → exit 0, 24 unit checks passing (was 22)
+
 ### What's Next (with verification per step)
 
 No open features. Candidates, none urgent:
@@ -144,6 +159,15 @@ No open features. Candidates, none urgent:
   policies and the memory subsystem shipped in this release. They did not.
 - **`--min-score 100` for the bundled examples, not `--fail-fast`.** Measured: `--fail-fast`
   passes anything ≥85, so a whole subsystem could regress unnoticed.
+
+## Files Modified This Session (feat-016 wording drift)
+
+- `version-4/examples/{react-harness,python-api-harness}/AGENTS.md` — "Before
+  Multi-Step Work" replaced with the current `templates/agents.md` wording (plan block +
+  wait-for-"go" gate)
+- `version-4/scripts/index-coverage.test.mjs` — widened the wording guard check from
+  `templates/agents.md` only to the shared `AGENT_FILES` list (template + both examples)
+- `harness/progress.md`, `harness/memory/journal.md` — this session's record
 
 ## Files Modified This Session (stale-examples gap)
 

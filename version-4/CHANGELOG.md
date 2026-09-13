@@ -8,6 +8,16 @@ updated: 2026-07-27
 
 # Changelog
 
+## 2026-09-13 (v0.4.4)
+
+### Closed the feat-016 wording drift in both bundled examples
+Both examples' "Before Multi-Step Work" section still had the pre-feat-016 wording (a
+bare one-line success criterion + numbered steps, no plan block, no wait-for-"go" gate).
+Replaced with the current `templates/agents.md` text. The guard check that verifies this
+wording checked only `templates/agents.md` — exactly why the drift went unnoticed through
+feat-015 and feat-018 — so it now loops over the same template + both examples the
+Required/Optional-groups check already covers.
+
 ## 2026-09-13 (v0.4.3)
 
 ### Bundled examples brought current (no new feature)

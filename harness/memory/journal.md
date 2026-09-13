@@ -50,6 +50,18 @@ restatements and will yield no proposals.
 
 ## Entries
 
+## 2026-09-13 — feat-016 wording drift (no feat id, maintenance fix)
+
+- looked up: the guard check for this wording (`templates/agents.md Before Multi-Step
+  Work waits for a go-ahead`) already existed since feat-016 — it just only ever read
+  `templates/agents.md`, never the examples, so it couldn't have caught this
+- surprised: the fix and the regression guard were the same shape as the
+  Required/Optional-groups check already sitting in this file (`AGENT_FILES` array) —
+  reused it instead of writing a second list of the same three paths
+- differently: widened the existing check in place rather than adding a parallel
+  examples-only check; two checks asserting the same string in different files is the
+  kind of duplication that itself drifts
+
 ## 2026-09-13 — stale-examples gap (no feat id, maintenance fix)
 
 - looked up: `create-harness.mjs` skips any file that already exists unless `--force` —

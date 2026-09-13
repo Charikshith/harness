@@ -114,12 +114,36 @@ Before writing any code, stop at the first rung that holds:
 
 ## Before Multi-Step Work
 
-State a **one-line success criterion**. If the task spans more than 2 files or
-3 logical steps, add a numbered plan with a verify check per step:
+If the task spans more than 2 files or 3 logical steps, show the plan below
+and **wait for a "go" before writing any code.** One-liners and trivial
+changes skip this — the task itself is the criterion.
+
+```
+## Plan — waiting for your OK
+
+**Project:** <one line: what the whole app/service does>
+
+**Flow diagram:** <ASCII arrows through this feature's steps, with a marker
+on the step being touched>
+
+**Current stage:** <which step of the flow this task changes>
+
+**Change:** <one line: what will change>
+
+**Files touched:**
+- <file> — <why>
+
+**Also affected:**
+- <file> — <why>
+```
+
+Alongside the plan, state a **one-line success criterion** and a numbered
+step list with a verify check per step:
 
 ```
 1. [Step] → verify: [specific check]
 2. [Step] → verify: [specific check]
+3. [Step] → verify: [specific check]
 ```
 
 For bugs: write a reproduction test FIRST, then make it pass.
