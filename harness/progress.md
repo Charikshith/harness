@@ -3,7 +3,7 @@
 ## Current State
 
 **Last Updated:** 2026-09-13
-**Active Feature:** feat-018 done (pre-commit hook enforcing harness state updates)
+**Active Feature:** none — closed the stale-examples gap (bundled examples now match current scaffolder output)
 
 ## Recommended Next Step
 
@@ -88,6 +88,30 @@
       project scaffolded before this feature existed — same class of gap as feat-017 for
       `style.md`/`scratchpad/`. Not fixed this session.
 
+### What's Done This Session (stale-examples gap closed)
+
+- [x] Both bundled examples (`react-harness`, `python-api-harness`) predated
+      `scratchpad/`, `CLAUDE.md`, `harness/style.md`, and now `.githooks/pre-commit` —
+      none of those were ever regenerated in after each feature shipped, so a reader
+      copying either example got a stale picture of what the scaffolder actually produces.
+- [x] Fixed non-destructively: ran `create-harness.mjs` (no `--force`) against both
+      example directories. It skips every existing file, so `AGENTS.md`,
+      `feature_list.json`, `progress.md`, and the hand-written `init.sh` were untouched —
+      only the four missing files were added.
+- [x] `init.sh` in both examples predates the feat-018 hook wiring and is hand-maintained
+      (never regenerated, since it already exists), so `core.hooksPath` self-install was
+      added to each by hand, identical to the block in `templates/init.sh`.
+- [x] Both examples' `AGENTS.md` Optional Artifacts list was missing `harness/style.md`
+      and `.githooks/pre-commit` entirely (predates feat-015 and feat-018) — added both
+      bullets, matching the current `templates/agents.md` wording.
+- [x] Verified live: copied `react-harness` into `scratchpad/`, made it a real git repo,
+      ran `./init.sh` (set `core.hooksPath`), committed a non-harness file alone — rejected
+      with the expected message. Scratch copy removed after.
+- [x] Deliberately did not touch: the "Before Multi-Step Work" plan-gate wording (feat-016)
+      is also stale in both examples' `AGENTS.md` (no ASCII-diagram / wait-for-"go"
+      language) — out of scope for this fix, which was specifically about the missing
+      files. Left as a known, separate drift.
+
 ### What's Next (with verification per step)
 
 No open features. Candidates, none urgent:
@@ -120,6 +144,18 @@ No open features. Candidates, none urgent:
   policies and the memory subsystem shipped in this release. They did not.
 - **`--min-score 100` for the bundled examples, not `--fail-fast`.** Measured: `--fail-fast`
   passes anything ≥85, so a whole subsystem could regress unnoticed.
+
+## Files Modified This Session (stale-examples gap)
+
+- `version-4/examples/react-harness/` and `version-4/examples/python-api-harness/` —
+  added `scratchpad/README.md`, `CLAUDE.md`, `harness/style.md`, `.githooks/pre-commit`
+  (via `create-harness.mjs` without `--force`, so nothing existing was touched)
+- `version-4/examples/{react-harness,python-api-harness}/init.sh` — added the
+  `core.hooksPath` self-install block by hand (not regenerated; the scaffolder skips an
+  existing `init.sh`)
+- `version-4/examples/{react-harness,python-api-harness}/AGENTS.md` — added the
+  `harness/style.md` and `.githooks/pre-commit` Optional Artifacts bullets
+- `harness/progress.md`, `harness/memory/journal.md` — this session's record
 
 ## Files Modified This Session (feat-018)
 

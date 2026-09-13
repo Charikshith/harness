@@ -8,6 +8,20 @@ updated: 2026-07-27
 
 # Changelog
 
+## 2026-09-13 (v0.4.3)
+
+### Bundled examples brought current (no new feature)
+Both `examples/react-harness` and `examples/python-api-harness` predated `scratchpad/`,
+`CLAUDE.md`, `harness/style.md`, and `.githooks/pre-commit` — none had ever been
+regenerated after those shipped, so copying an example gave a stale picture of what
+`create-harness.mjs` actually produces today. Fixed non-destructively by running
+`create-harness.mjs` (no `--force`) against both, which only adds missing files; hand-added
+the `core.hooksPath` wiring to each example's `init.sh` since an existing `init.sh` is
+never regenerated. Both examples' `AGENTS.md` Optional Artifacts list now mentions
+`harness/style.md` and `.githooks/pre-commit`. Deliberately left alone: both examples'
+"Before Multi-Step Work" wording still predates feat-016's plan-gate language — a separate,
+known drift.
+
 ## 2026-09-13 (v0.4.2)
 
 ### Pre-commit hook enforcing harness state updates (feat-018)

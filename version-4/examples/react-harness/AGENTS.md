@@ -106,6 +106,13 @@ Before writing any code, stop at the first rung that holds:
 - `harness/environment.md` — Declared external preconditions, checked first by the entrypoint
 - `harness/memory/audit-log.jsonl` — Append-only audit history, written only by
   `validate-harness.mjs --log`. Never rewrite or prune it; it is evidence
+- `harness/style.md` — Talk rules for how the agent replies: tone, format, structure.
+  Scaffolded with starter content; optional because the default agent voice is fine for
+  many projects
+- `.githooks/pre-commit` — Blocks a commit that changes non-harness files unless
+  `harness/progress.md` and `harness/memory/journal.md` are staged too. Activated by
+  `init.sh` setting `core.hooksPath`; bypass with `git commit --no-verify` for genuinely
+  non-feature changes
 
 ## Before Multi-Step Work
 

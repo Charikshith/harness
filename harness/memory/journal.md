@@ -50,6 +50,22 @@ restatements and will yield no proposals.
 
 ## Entries
 
+## 2026-09-13 — stale-examples gap (no feat id, maintenance fix)
+
+- looked up: `create-harness.mjs` skips any file that already exists unless `--force` —
+  running it plain against a stale example is safe, adds only what's missing, and can't
+  clobber the example's hand-curated `AGENTS.md`/`feature_list.json`/`progress.md`
+- surprised: both bundled examples were missing `scratchpad/` and `CLAUDE.md` too, not just
+  `style.md` — three features (feat-013, feat-014, feat-015) had shipped without either
+  example ever being regenerated to pick them up
+- surprised: `init.sh` is the one artifact `--force`-free regeneration can't touch once it
+  exists, so the feat-018 hook wiring had to be hand-copied into both examples' `init.sh`
+  separately — same reason `templates/init.sh` itself has to be hand-kept in sync
+- differently: found (but deliberately left alone) that both examples' plan-before-code
+  wording is *also* stale against feat-016 — no ASCII diagram, no wait-for-"go" language.
+  Scoped this session to the files the user actually named; flagged the wording drift as
+  separate, not silently fixed in the same pass
+
 ## 2026-09-13 — feat-018
 
 - looked up: `init.sh` is never copied to a scaffolded project — `create-harness.mjs`
