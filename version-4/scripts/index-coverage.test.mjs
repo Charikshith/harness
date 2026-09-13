@@ -15,6 +15,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { initScriptFromCommands } from './lib/harness-utils.mjs';
 
 const SKILL_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -249,6 +250,41 @@ check('templates/agents.md Before Multi-Step Work waits for a go-ahead', () => {
   const agents = fs.readFileSync(path.join(SKILL_ROOT, 'templates', 'agents.md'), 'utf8');
   assert.ok(agents.includes('wait for a "go" before writing any code'),
     'templates/agents.md no longer gates code-writing on user confirmation');
+});
+
+// create-harness.mjs must write .githooks/pre-commit alongside the other optional
+// artifacts, or a fresh scaffold never gets the hook templates/agents.md documents.
+check('create-harness.mjs writes .githooks/pre-commit', () => {
+  const script = fs.readFileSync(path.join(SKILL_ROOT, 'scripts', 'create-harness.mjs'), 'utf8');
+  assert.ok(script.includes("copyTemplate('pre-commit.sh'"),
+    'create-harness.mjs has no copyTemplate call for pre-commit.sh');
+});
+
+// The hook is useless unless something activates it. initScriptFromCommands() generates
+// every scaffolded project's init.sh and never copies templates/init.sh, so the
+// self-install line has to live in the generator itself — matching it here is what makes
+// that the actual behaviour, not just the documented one.
+check('initScriptFromCommands() sets core.hooksPath', () => {
+  const generated = initScriptFromCommands(['echo test']);
+  assert.ok(generated.includes('core.hooksPath'),
+    'generated init.sh never wires in .githooks via core.hooksPath');
+});
+
+// templates/init.sh is reference documentation only (never copied — see the comment on
+// ENV_CONTRACT_BLOCK), but a reference that no longer matches the real generator teaches
+// the wrong thing to anyone reading it directly.
+check('templates/init.sh documents core.hooksPath too', () => {
+  const template = fs.readFileSync(path.join(SKILL_ROOT, 'templates', 'init.sh'), 'utf8');
+  assert.ok(template.includes('core.hooksPath'),
+    'templates/init.sh no longer documents the pre-commit hook activation');
+});
+
+// The Optional Artifacts list is where an agent learns .githooks/pre-commit exists at all;
+// a template that scaffolds the file but never documents it ships a silent, unexplained gate.
+check('templates/agents.md documents .githooks/pre-commit', () => {
+  const agents = fs.readFileSync(path.join(SKILL_ROOT, 'templates', 'agents.md'), 'utf8');
+  assert.ok(agents.includes('.githooks/pre-commit'),
+    'templates/agents.md never mentions .githooks/pre-commit');
 });
 
 if (process.exitCode) {

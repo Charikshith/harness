@@ -3,6 +3,17 @@ set -e
 
 echo "=== Harness Initialization ==="
 
+# core.hooksPath is repo-local git config, not tracked by git itself, so a fresh clone
+# needs it re-set on every run. Wires in .githooks/pre-commit, which enforces
+# harness/memory/commit-is-not-session-end.md (a version-4/ change must also update
+# progress.md + journal.md in the same commit). Guarded on the hook file existing and
+# this being a git repo at all, so it is a no-op everywhere else.
+if [ -f .githooks/pre-commit ] && git rev-parse --git-dir >/dev/null 2>&1; then
+  if [ "$(git config --get core.hooksPath 2>/dev/null)" != ".githooks" ]; then
+    git config core.hooksPath .githooks
+  fi
+fi
+
 # Environment contract runs before anything else and reports separately from test output:
 # a missing tool is not a failing test, and conflating the two sends the next session
 # debugging code that was never broken. The eval sits inside an `if` so fail-fast does

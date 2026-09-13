@@ -133,6 +133,14 @@
       "description": "Neither existing script updates a project once it has its own AGENTS.md: create-harness.mjs --force overwrites everything (a reset, not an upgrade), and enrich-harness.mjs --apply only fixes checks that are currently failing, so improved wording on an already-passing section (or a new unscored optional artifact) never reaches it. Needs a script that diffs a project's AGENTS.md sections against the current version-4/templates/agents.md and proposes just the delta, plus copies any new optional templates the project is missing. Documented the manual workaround in version-4/README.md in the meantime.",
       "dependencies": ["feat-004"],
       "status": "not-started"
+    },
+    {
+      "id": "feat-018",
+      "name": "Pre-commit hook enforcing harness state updates",
+      "description": "A git pre-commit hook (templates/pre-commit.sh, scaffolded to .githooks/pre-commit) blocks any commit that changes a non-harness file unless harness/progress.md and harness/memory/journal.md are staged in the same commit — mechanical enforcement of harness/memory/commit-is-not-session-end.md instead of relying on the agent remembering. Tool-agnostic: git invokes it for any committer (Claude, another agent, or a human), not just this one. Activated by init.sh setting core.hooksPath (repo-local git config, not tracked by git, so re-set on every run). Bypass with git commit --no-verify for genuinely non-feature changes.",
+      "dependencies": ["feat-001"],
+      "status": "done",
+      "evidence": "templates/pre-commit.sh added and wired into create-harness.mjs via copyTemplate; initScriptFromCommands() and templates/init.sh both set core.hooksPath (guarded on the hook file existing and on being inside a git repo). templates/agents.md documents it under Optional Artifacts and cross-references it from End of Session. Four new guard checks in index-coverage.test.mjs (script writes it, generator sets core.hooksPath, template documents core.hooksPath, agents.md mentions the hook). Verified live: fresh scaffold in scratchpad/ got the hook, init.sh set core.hooksPath, a commit touching only a non-harness file was rejected, one also staging progress.md + journal.md succeeded; this repo's own .githooks/pre-commit (customized to gate on version-4/ specifically) tested the same way. ./init.sh green (22 checks, was 19); both bundled examples 100/100 unaffected since the artifact is unscored."
     }
   ]
 }

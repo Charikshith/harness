@@ -239,12 +239,24 @@ if [ -f "$ENV_CONTRACT" ]; then
   fi
 fi`;
 
+// Kept in sync with the same block in templates/init.sh, for the same reason as
+// ENV_CONTRACT_BLOCK above. core.hooksPath is repo-local git config, not tracked by git
+// itself, so a fresh clone needs it re-set on every run. Guarded on both the hook file
+// existing and this being a git repo at all, so it is a no-op everywhere else.
+const HOOKS_BLOCK = `if [ -f .githooks/pre-commit ] && git rev-parse --git-dir >/dev/null 2>&1; then
+  if [ "$(git config --get core.hooksPath 2>/dev/null)" != ".githooks" ]; then
+    git config core.hooksPath .githooks
+  fi
+fi`;
+
 export function initScriptFromCommands(commands) {
   const body = commands.map((command) => `echo "=== ${escapeForEcho(command)} ==="\n${command}`).join('\n\n');
   return `#!/bin/bash
 set -e
 
 echo "=== Harness Initialization ==="
+
+${HOOKS_BLOCK}
 
 ${ENV_CONTRACT_BLOCK}
 

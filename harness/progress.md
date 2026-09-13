@@ -2,8 +2,8 @@
 
 ## Current State
 
-**Last Updated:** 2026-09-08
-**Active Feature:** feat-017 registered (docs/workaround done, script not started)
+**Last Updated:** 2026-09-13
+**Active Feature:** feat-018 done (pre-commit hook enforcing harness state updates)
 
 ## Recommended Next Step
 
@@ -63,6 +63,31 @@
 - [x] `feat-017` registered in `feature_list.json` as not-started, dependency `feat-004`
       (enrich-harness.mjs) since a real fix likely extends that script.
 
+### What's Done This Session (feat-018)
+
+- [x] `.githooks/pre-commit` (from new `templates/pre-commit.sh`) blocks a commit that
+      changes a non-harness file unless `harness/progress.md` and
+      `harness/memory/journal.md` are staged in the same commit — mechanical enforcement
+      of `harness/memory/commit-is-not-session-end.md`. Bypass with `git commit --no-verify`
+      for genuinely non-feature changes.
+- [x] `init.sh` (both `initScriptFromCommands()` and the reference `templates/init.sh`)
+      sets `core.hooksPath` to `.githooks` on every run — guarded on the hook file existing
+      and on being inside a git repo, so it's a no-op everywhere else. Needed because
+      `core.hooksPath` is repo-local git config, not tracked by git, so a fresh clone
+      would otherwise never activate the hook.
+- [x] This repo's own root `init.sh`/`.githooks/pre-commit` got the same wiring first (as
+      the motivating, hand-written instance), then the generic version was built for the
+      shipped harness. This repo's copy is intentionally customized: it gates on
+      `version-4/` specifically rather than "anything outside `harness/`", since that's
+      the actual product-vs-state boundary in this repo.
+- [x] Verified live end-to-end: fresh scaffold in `scratchpad/` got `.githooks/pre-commit`
+      (mode 755) and `init.sh` correctly set `core.hooksPath`; a commit touching only a
+      non-harness file was rejected with the expected message, one also staging
+      `progress.md` + `journal.md` succeeded. Same drill against this repo's own hook.
+- [x] Left open: `enrich-harness.mjs` does not retrofit `.githooks/pre-commit` into a
+      project scaffolded before this feature existed — same class of gap as feat-017 for
+      `style.md`/`scratchpad/`. Not fixed this session.
+
 ### What's Next (with verification per step)
 
 No open features. Candidates, none urgent:
@@ -96,6 +121,24 @@ No open features. Candidates, none urgent:
 - **`--min-score 100` for the bundled examples, not `--fail-fast`.** Measured: `--fail-fast`
   passes anything ≥85, so a whole subsystem could regress unnoticed.
 
+## Files Modified This Session (feat-018)
+
+- `version-4/templates/pre-commit.sh` — new: the shipped pre-commit hook
+- `version-4/scripts/lib/harness-utils.mjs` — `HOOKS_BLOCK` constant; included in
+  `initScriptFromCommands()`'s output
+- `version-4/templates/init.sh` — matching reference-doc copy of the same block
+- `version-4/scripts/create-harness.mjs` — `copyTemplate('pre-commit.sh', ...)`; help text
+  updated
+- `version-4/templates/agents.md` — new Optional Artifacts bullet; End of Session
+  cross-reference
+- `version-4/templates/index.md` — lists `pre-commit.sh`
+- `version-4/scripts/index-coverage.test.mjs` — 4 new guard checks: script writes the
+  hook, generator sets `core.hooksPath`, template documents it, `agents.md` mentions it
+- `version-4/CHANGELOG.md`, `version-4/SKILL.md`, `version-4/README.md` — v0.4.2
+- `harness/feature_list.json` — feat-018 done, evidence recorded
+- `.githooks/pre-commit`, `init.sh` (this repo's own root copies, customized to
+  `version-4/`) — the hand-written instance the generic version was built from
+
 ## Files Modified This Session (feat-015, feat-016, feat-017)
 
 - `version-4/templates/style.md` — new: starter talk-rules template (feat-015)
@@ -120,11 +163,21 @@ No open features. Candidates, none urgent:
 - [x] Functional smoke test (feat-017 workaround): copied `examples/react-harness` into
       `scratchpad/`, applied the 4 manual upgrade steps by hand, `validate-harness.mjs`
       still reported 100/100, then removed the scratch copy
+- [x] Functional smoke test (feat-018): scaffolded a throwaway project into `scratchpad/`,
+      confirmed `.githooks/pre-commit` (mode 755) was written and `./init.sh` set
+      `core.hooksPath`; a commit touching only a non-harness file was rejected, one also
+      staging `progress.md` + `journal.md` succeeded; removed the scratch copy
+- [x] Gate passes: `./init.sh` → exit 0, 22 unit checks passing (was 18)
 
 ## Notes for Next Session
 
 `feat-012` (Episodic session search) and `feat-017` (real upgrade command) are the two
 not-started features.
+
+**Gap found and left open (feat-018):** `enrich-harness.mjs` does not retrofit
+`.githooks/pre-commit` into a project scaffolded before this feature existed — same class
+of gap as feat-017 already tracks for `style.md`/`scratchpad/`. A real `feat-017` fix
+should probably cover all three at once.
 
 **Gap found and left open:** the plan-before-code gate (feat-016) only has a guard check
 that the wording survives edits to `agents.md`. Nothing verifies the agent actually stops
