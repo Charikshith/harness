@@ -148,3 +148,18 @@ restatements and will yield no proposals.
   the skip path, not by any test
 - looked up: `git config --get` exits 1 when a key is unset; under `set -e` that kills the
   script from inside `$(...)` in an assignment, hence `|| true`
+
+## 2026-09-27 — AGENTS.md drift (Coding Policy, Before Multi-Step Work)
+
+- surprised: this repo's own `AGENTS.md` lacked two template sections for months and still
+  scored 100. `Coding minimalism policy` passed on "In one line" (startup step 8);
+  `Multi-step planning` passed on "verify" (startup step 4). Both checks accept any one of
+  several needles, and the generic needle rescues a missing section. Same class as
+  `keyword-checks-satisfied-by-comments.md`: the check stops measuring the thing it names
+- surprised: startup step 10 said "(see Coding Policy)" — a pointer to a section that did
+  not exist, and nothing checks that in-file references resolve
+- differently: `enrich-harness.mjs` could never have caught it — it only acts on failing
+  checks, and these two were falsely passing
+- (same day, follow-up) making the two checks honest exposed that enrich's Multi-Step fix
+  was an empty `{}` under the check that names the section — unreachable since the check
+  could never fail. A fix nobody can trigger rots unseen: its snippet was still pre-feat-016

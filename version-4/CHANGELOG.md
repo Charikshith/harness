@@ -8,6 +8,29 @@ updated: 2026-07-27
 
 # Changelog
 
+## 2026-09-27 (v0.4.7)
+
+### Two behavioral checks no longer pass without their section
+`Coding minimalism policy (Ponytail ladder) present` accepted the needle `one line`, and
+`Multi-step planning with verify-per-step documented` accepted `verify`. Every Startup
+Workflow contains both words, so either check passed with its section absent. This repo's
+own `AGENTS.md` scored 100 for months without `## Coding Policy` or
+`## Before Multi-Step Work`, and `enrich-harness` never inserted them because nothing
+failed. Both generic needles are removed. A harness that really lacks a section now scores
+97 instead of 100; the bundled examples and this repo stay at 100.
+
+Making the checks fail exposed two bugs in `enrich-harness.mjs`:
+- **The Multi-Step fix was unreachable from its own check.** That check's entry was an
+  empty object, so enrich listed the gap and did nothing. The snippet sat under the
+  test-first key alone. Both keys now share one `MULTI_STEP_FIX`.
+- **The snippet was stale:** it had the pre-feat-016 wording, with no plan block and no
+  wait for "go". It is now the current template text. The Coding Policy snippet had also
+  lost its closing sentence.
+
+New `section-checks.test.mjs` (7 cases): each check passes on the template, fails with its
+section cut out, and is restored by `enrich --apply` exactly once, with the current
+wording.
+
 ## 2026-09-27 (v0.4.6)
 
 ### enrich-harness installs the pre-commit hook (feat-020)

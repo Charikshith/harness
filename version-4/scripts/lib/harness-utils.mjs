@@ -394,11 +394,13 @@ export function scoreHarness(files, { killRate } = {}) {
       lessonsWellFormed(memoryTopics, 'Lessons carry a Why and a Source')
     ],
     behavioral: [
-      structuredHas(agents, ['Coding Policy', 'ladder', 'YAGNI', 'standard library', 'one line'], 'Coding minimalism policy (Ponytail ladder) present'),
+      // No "one line" / "verify" needles below: both occur in any Startup Workflow, so they
+      // passed these checks with the section absent. section-checks.test.mjs guards it.
+      structuredHas(agents, ['Coding Policy', 'ladder', 'YAGNI', 'standard library'], 'Coding minimalism policy (Ponytail ladder) present'),
       structuredHas(agents, ['no abstractions', 'minimum code', 'speculative', 'Deletion over addition'], 'Coding standards (no over-engineering) documented'),
       structuredHas(agents, ['Editing Discipline', 'Touch only', 'match the existing style', 'surgical'], 'Surgical editing discipline documented'),
       textHas(agents, ['reproduction test was written FIRST', 'write the verification check FIRST', 'test-first', 'test first'], 'Test-first verification gate present'),
-      structuredHas(agents, ['Before Multi-Step Work', 'success criterion', 'verify'], 'Multi-step planning with verify-per-step documented'),
+      structuredHas(agents, ['Before Multi-Step Work', 'success criterion'], 'Multi-step planning with verify-per-step documented'),
       structuredHas(agents, ['state your understanding', 'stop and ask', 'ambiguity'], 'Proactive assumption surfacing documented'),
       structuredHas(agents, ['Safety (Never Simplify Away)', 'Never simplify away'], 'Safety carve-outs documented'),
       structuredHas(agents, ['over-specified', 'question whether the spec'], 'Over-specified requirements escalation documented')

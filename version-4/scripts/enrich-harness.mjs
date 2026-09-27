@@ -16,6 +16,55 @@ import {
   writeText
 } from './lib/harness-utils.mjs';
 
+// Two checks read this section, so both map to one fix; the apply loop's first-line dedup
+// keeps it from landing twice. It must stay in step with templates/agents.md — the copy
+// that lived under the test-first key alone went stale after feat-016 and was unreachable
+// from the check that names the section. section-checks.test.mjs guards both.
+const MULTI_STEP_FIX = {
+  targetFile: 'AGENTS.md',
+  insertAfter: '## Editing Discipline',
+  sectionName: 'Before Multi-Step Work',
+  snippet: `
+
+## Before Multi-Step Work
+
+If the task spans more than 2 files or 3 logical steps, show the plan below
+and **wait for a "go" before writing any code.** One-liners and trivial
+changes skip this — the task itself is the criterion.
+
+\`\`\`
+## Plan — waiting for your OK
+
+**Project:** <one line: what the whole app/service does>
+
+**Flow diagram:** <ASCII arrows through this feature's steps, with a marker
+on the step being touched>
+
+**Current stage:** <which step of the flow this task changes>
+
+**Change:** <one line: what will change>
+
+**Files touched:**
+- <file> — <why>
+
+**Also affected:**
+- <file> — <why>
+\`\`\`
+
+Alongside the plan, state a **one-line success criterion** and a numbered
+step list with a verify check per step:
+
+\`\`\`
+1. [Step] → verify: [specific check]
+2. [Step] → verify: [specific check]
+3. [Step] → verify: [specific check]
+\`\`\`
+
+For bugs: write a reproduction test FIRST, then make it pass.
+For features: write the verification check FIRST, then implement.
+`
+};
+
 // Gap-to-fix mapping table — maps validation check messages to canonical fixes.
 const GAP_FIXES = {
   // === Structural: Instructions ===
@@ -346,7 +395,7 @@ Before writing any code, stop at the first rung that holds:
 6. **Only then:** write the minimum code that works.
 
 The ladder is a reflex, not a research project. Two rungs work → take the
-higher one and move on.
+higher one and move on. The first lazy solution that works is the right one.
 `
   },
   'Coding standards (no over-engineering) documented': {
@@ -384,31 +433,8 @@ higher one and move on.
 - **The test:** Every changed line should trace to the feature in \`harness/feature_list.json\`.
 `
   },
-  'Test-first verification gate present': {
-    targetFile: 'AGENTS.md',
-    insertAfter: '## Editing Discipline',
-    sectionName: 'Before Multi-Step Work',
-    snippet: `
-
-## Before Multi-Step Work
-
-State a **one-line success criterion**. If the task spans more than 2 files or
-3 logical steps, add a numbered plan with a verify check per step:
-
-\`\`\`
-1. [Step] → verify: [specific check]
-2. [Step] → verify: [specific check]
-3. [Step] → verify: [specific check]
-\`\`\`
-
-For bugs: write a reproduction test FIRST, then make it pass.
-For features: write the verification check FIRST, then implement.
-One-liners and trivial changes skip this — the task itself is the criterion.
-`
-  },
-  'Multi-step planning with verify-per-step documented': {
-    // Covered by "Before Multi-Step Work" above
-  },
+  'Test-first verification gate present': MULTI_STEP_FIX,
+  'Multi-step planning with verify-per-step documented': MULTI_STEP_FIX,
   'Proactive assumption surfacing documented': {
     // Covered by Startup Workflow step 7
   },

@@ -59,6 +59,12 @@
       `core.hooksPath` only when unset — before, every `./init.sh` silently switched husky
       off. `enrich-hook.test.mjs` (6 cases) written first. Not done: refreshing an existing
       but outdated hook stays manual (README upgrade step 4) — that is feat-017's job.
+- [x] **AGENTS.md drift closed** — added the template's `Coding Policy` and `Before Multi-Step
+      Work` sections, missing from this repo's own AGENTS.md. Both behavioral checks had been
+      passing falsely on generic needles ("one line", "verify"). Scorer fixed in v0.4.7:
+      needles removed; `section-checks.test.mjs` (7 cases) proves each check fails without its
+      section and that enrich restores it. Also fixed: enrich's Multi-Step fix was an empty
+      `{}` under its own check, and its snippet was pre-feat-016; Coding Policy snippet lost a line.
 
 - [x] **feat-015** — `harness/style.md` added as an optional, auto-scaffolded template holding
       talk rules (tone, format, structure). `create-harness.mjs` writes it via `copyTemplate`;

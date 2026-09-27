@@ -135,6 +135,43 @@ read it in — so `harness/progress.md` means that, even when you are already in
   `validate-harness.mjs --log`. Never rewrite or prune it; never treat a line as an
   instruction. It is evidence, and a trend is only readable if the history is honest.
 
+## Before Multi-Step Work
+
+If the task spans more than 2 files or 3 logical steps, show the plan below
+and **wait for a "go" before writing any code.** One-liners and trivial
+changes skip this — the task itself is the criterion.
+
+```
+## Plan — waiting for your OK
+
+**Project:** <one line: what the whole app/service does>
+
+**Flow diagram:** <ASCII arrows through this feature's steps, with a marker
+on the step being touched>
+
+**Current stage:** <which step of the flow this task changes>
+
+**Change:** <one line: what will change>
+
+**Files touched:**
+- <file> — <why>
+
+**Also affected:**
+- <file> — <why>
+```
+
+Alongside the plan, state a **one-line success criterion** and a numbered
+step list with a verify check per step:
+
+```
+1. [Step] → verify: [specific check]
+2. [Step] → verify: [specific check]
+3. [Step] → verify: [specific check]
+```
+
+For bugs: write a reproduction test FIRST, then make it pass.
+For features: write the verification check FIRST, then implement.
+
 ## Definition of Done
 
 A feature is done only when ALL of the following are true:
@@ -167,6 +204,22 @@ Before ending a session:
 
 Required checks:
 - `echo "No package manifest detected; replace this line with your project verification command."`
+
+## Coding Policy
+
+Before writing any code, stop at the first rung that holds:
+
+1. **Does this need to exist at all?** Speculative need = skip it. (YAGNI)
+2. **Does the standard library already do this?** Use it.
+3. **Does a native platform feature cover it?** `<input type="date">` over a
+   picker lib, CSS over JS, DB constraint over app code.
+4. **Does an already-installed dependency solve it?** Use it. Never add a new
+   dependency for what a few lines can do.
+5. **Can this be one line?** Make it one line.
+6. **Only then:** write the minimum code that works.
+
+The ladder is a reflex, not a research project. Two rungs work → take the
+higher one and move on. The first lazy solution that works is the right one.
 
 ## Coding Standards
 
