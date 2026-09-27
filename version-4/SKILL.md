@@ -1,6 +1,6 @@
 ---
 name: harness
-version: "0.4.4"
+version: "0.4.5"
 description: >-
   Build, audit, and improve harnesses that make AI coding agents reliable: AGENTS.md/CLAUDE.md
   instruction files, feature/state tracking, verification gates, scope boundaries,

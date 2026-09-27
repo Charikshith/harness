@@ -50,9 +50,9 @@ If baseline verification is failing, repair that first before adding new scope.
 `
   },
   // === Memory ===
-  // Only the artifact-creation and documentation gaps are auto-fixable. The two
-  // integrity checks ("index is initialised and within its cap", "links intact") are
-  // deliberately absent: fixing them means writing or pruning real lessons, which is
+  // Only the artifact-creation and documentation gaps are auto-fixable. The three
+  // integrity checks ("index is initialised and within its cap", "links intact",
+  // "Lessons carry a Why and a Source") are deliberately absent: fixing them means writing or pruning real lessons, which is
   // judgement, not scaffolding. Those report as manual and should stay that way.
   'Memory index exists': {
     template: 'memory-index.md',
@@ -80,8 +80,9 @@ If baseline verification is failing, repair that first before adding new scope.
 
 - **Read \`harness/memory/index.md\` every session.** It is the always-on index, capped at
   ~200 lines. Open a topic file only when its index row matches the task in front of you.
-- **One lesson per file**, each carrying a \`**Why:**\` line. A lesson without a reason
-  gets deleted by the next curation pass.
+- **One lesson per file**, each carrying a \`**Why:**\` line and a \`**Source:**\` line naming what
+  happened. The validator fails a lesson missing either; a lesson without a reason gets
+  deleted by the next curation pass.
 - **Two-step save**: write \`harness/memory/<slug>.md\` first, then append a one-line pointer to
   \`harness/memory/index.md\`. Topic-file-first is deliberate — a crash between the two leaves an
   orphan, never a broken index.

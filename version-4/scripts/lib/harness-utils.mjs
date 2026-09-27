@@ -385,7 +385,8 @@ export function scoreHarness(files, { killRate } = {}) {
         ['curation cadence', 'every ~10 sessions', 'propose, never apply'],
         'Curation cadence and human gate documented'
       ),
-      graveyardWellFormed(memoryGraveyard, 'Graveyard entries carry a cause and an expiry condition')
+      graveyardWellFormed(memoryGraveyard, 'Graveyard entries carry a cause and an expiry condition'),
+      lessonsWellFormed(memoryTopics, 'Lessons carry a Why and a Source')
     ],
     behavioral: [
       structuredHas(agents, ['Coding Policy', 'ladder', 'YAGNI', 'standard library', 'one line'], 'Coding minimalism policy (Ponytail ladder) present'),
@@ -567,6 +568,33 @@ function graveyardWellFormed(graveyardText, message) {
     };
   }
   return { pass: true, message, detail: `${rows.length} rows, all with cause and expiry` };
+}
+
+// The agent writes lessons directly — the only write into memory/ with no human gate — so
+// this is the one place a reasonless or sourceless lesson can be caught. A store with no
+// lessons passes: a young harness has had nothing to learn yet. It checks that a reason
+// and a source are present, not that they are good; that part stays with curation.
+// [ \t]* rather than \s*: under /m, \s would cross the newline and let an empty
+// "**Why:**" borrow the next line's text.
+const LESSON_WHY_RE = /^\*\*Why:\*\*[ \t]*\S/m;
+const LESSON_SOURCE_RE = /^(\*\*Source:\*\*|source:)[ \t]*\S/m;
+
+function lessonsWellFormed(topicFiles, message) {
+  const lessons = topicFiles.filter((file) => !file.path.replace(/^memory\//, '').startsWith('_'));
+  if (!lessons.length) {
+    return { pass: true, message, detail: 'no lessons yet' };
+  }
+  const bad = lessons.flatMap((file) => {
+    const body = file.content.replace(/<!--[\s\S]*?-->/g, '');
+    const missing = [];
+    if (!LESSON_WHY_RE.test(body)) missing.push('Why');
+    if (!LESSON_SOURCE_RE.test(body)) missing.push('Source');
+    return missing.length ? [`${file.path.replace(/^memory\//, '')} (no ${missing.join(', ')})`] : [];
+  });
+  if (bad.length) {
+    return { pass: false, message, detail: `${bad.length}/${lessons.length} lessons: ${bad.slice(0, 3).join('; ')}` };
+  }
+  return { pass: true, message, detail: `${lessons.length} lessons, all with Why and Source` };
 }
 
 // --- Entrypoint substance ---------------------------------------------------

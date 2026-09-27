@@ -2,8 +2,8 @@
 
 ## Current State
 
-**Last Updated:** 2026-09-13
-**Active Feature:** none — closed the feat-016 wording drift in both bundled examples, plus the regression guard for it
+**Last Updated:** 2026-09-27
+**Active Feature:** none — feat-019 (lesson shape gate) done, v0.4.5
 
 ## Recommended Next Step
 
@@ -38,6 +38,18 @@
 ### What's In Progress
 
 - [ ] Nothing active. All features done except feat-012 and feat-017 (both not-started).
+
+- [x] **feat-019** — Lesson shape gate. New memory check "Lessons carry a Why and a Source"
+      (memory 7 → 8 checks) closes the one unguarded write into `harness/memory/`: a lesson
+      the agent writes directly. Reuses `memory-entry.md`'s existing `**Source:**` field
+      (or `source:` frontmatter) rather than adding an Evidence field. The pre-commit hook
+      (template, this repo, both examples) now prints a non-blocking notice listing newly
+      added lesson files. `lesson-shape.test.mjs` (8 cases) written first and seen failing
+      8/8, then passing; wired into `./init.sh`. Hook probed live in a throwaway repo:
+      new lesson → notice, commit succeeds; edit to an existing lesson → no notice.
+      Not done: nothing checks that a Source is *true* or a Why is *good* — that stays
+      with curation. Untracked stray files `10k`, `MEMORY_INDEX_MAX_BYTES)`, `is` at the
+      repo root predate this session (look like mis-quoted shell redirects); left alone.
 
 - [x] **feat-015** — `harness/style.md` added as an optional, auto-scaffolded template holding
       talk rules (tone, format, structure). `create-harness.mjs` writes it via `copyTemplate`;

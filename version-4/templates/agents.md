@@ -154,8 +154,9 @@ separate is the whole point — a bookmark is not a lesson.
 
 - **Read `harness/memory/index.md` every session**; it is the always-on index. Topic files are
   on-demand detail, opened only when an index line looks relevant.
-- **One lesson per file** under `harness/memory/`, each carrying a `**Why:**` line. A lesson
-  without a reason gets deleted by the next curation pass, because nobody can tell
+- **One lesson per file** under `harness/memory/`, each carrying a `**Why:**` line and a
+  `**Source:**` line naming what happened. The validator fails a lesson missing either. A
+  lesson without a reason gets deleted by the next curation pass, because nobody can tell
   whether it still applies.
 - **Two-step save**: write the topic file first, then append a one-line pointer to
   `harness/memory/index.md`. If it fails between the two, an orphaned topic file is the worst

@@ -59,6 +59,7 @@ done
 echo "=== unit checks ==="
 node version-4/scripts/insert-anchor.test.mjs
 node version-4/scripts/index-coverage.test.mjs
+node version-4/scripts/lesson-shape.test.mjs
 
 echo "=== bundled examples still score 100 ==="
 for example in version-4/examples/*/; do

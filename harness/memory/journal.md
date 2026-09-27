@@ -127,3 +127,13 @@ restatements and will yield no proposals.
 - differently: applied `harness/memory/commit-is-not-session-end.md` for real this time —
   updated `progress.md` and this file in the same commit as the feature, not after
 
+
+## 2026-09-27 — feat-019
+
+- looked up: `templates/memory-entry.md` already had a `**Source:**` field — the "Evidence"
+  line the feature asked for existed; the gap was only that nothing validated it
+- surprised: a multi-file `node -e` string replace failed on the first file because
+  `AGENTS.md` is `CRLF` — second session this bit (see 2026-08-29). The Edit tool matched fine
+- differently: the first hook probe committed `.githooks/` itself, which the hook correctly
+  blocked as a project file — the probe was wrong, not the hook. Seed probe repos with
+  `--no-verify`

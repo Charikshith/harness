@@ -141,6 +141,14 @@
       "dependencies": ["feat-001"],
       "status": "done",
       "evidence": "templates/pre-commit.sh added and wired into create-harness.mjs via copyTemplate; initScriptFromCommands() and templates/init.sh both set core.hooksPath (guarded on the hook file existing and on being inside a git repo). templates/agents.md documents it under Optional Artifacts and cross-references it from End of Session. Four new guard checks in index-coverage.test.mjs (script writes it, generator sets core.hooksPath, template documents core.hooksPath, agents.md mentions the hook). Verified live: fresh scaffold in scratchpad/ got the hook, init.sh set core.hooksPath, a commit touching only a non-harness file was rejected, one also staging progress.md + journal.md succeeded; this repo's own .githooks/pre-commit (customized to gate on version-4/ specifically) tested the same way. ./init.sh green (22 checks, was 19); both bundled examples 100/100 unaffected since the artifact is unscored."
+    },
+    {
+      "id": "feat-019",
+      "name": "Lesson shape gate",
+      "description": "Close the unguarded write path into harness/memory/: a lesson written directly by the agent had no mechanical check. (1) New memory check: every lesson file carries a **Why:** line. (2) Same check: every lesson carries a source (**Source:** line or source: frontmatter) naming what happened, so a lesson cannot be written from a hunch. Reuses the Source field memory-entry.md already has rather than adding a new Evidence field. (3) Pre-commit hook prints a non-blocking notice listing newly added lesson files, so a human sees each one before it becomes always-on context.",
+      "dependencies": ["feat-005", "feat-018"],
+      "status": "done",
+      "evidence": "lessonsWellFormed() in lib/harness-utils.mjs; memory subsystem 7 -> 8 checks. lesson-shape.test.mjs (8 cases) written first, failed 8/8, then passed; wired into ./init.sh. Hook notice added to templates/pre-commit.sh, .githooks/pre-commit and both examples; probed live in a throwaway repo (new lesson -> notice + commit ok; edit existing -> no notice). Memory rule wording updated in AGENTS.md, templates/agents.md, enrich-harness.mjs snippet, both examples, harness-components.html. ./init.sh green; this repo 100/100 (4 lessons, all pass); both examples 100/100. v0.4.5."
     }
   ]
 }

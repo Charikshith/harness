@@ -335,7 +335,7 @@
     <tr><td><strong>Verification</strong> <span class="pill core">structural</span></td><td>Makes "done" falsifiable by running something that can fail.</td><td><code>init.sh</code>, <code>environment.md</code></td><td>8</td></tr>
     <tr><td><strong>Scope</strong> <span class="pill core">structural</span></td><td>Stops one task becoming five, and gives declined work somewhere to live.</td><td><code>open-work.md</code>, feature fields</td><td>6</td></tr>
     <tr><td><strong>Lifecycle</strong> <span class="pill core">structural</span></td><td>Makes the next session restartable without asking a human what happened.</td><td><code>session-handoff.md</code>, <code>init.sh</code></td><td>5</td></tr>
-    <tr><td><strong>Memory</strong> <span class="pill mem">learning</span></td><td>Keeps what was <em>learned</em>, as distinct from where the work stopped.</td><td><code>memory/</code></td><td>7</td></tr>
+    <tr><td><strong>Memory</strong> <span class="pill mem">learning</span></td><td>Keeps what was <em>learned</em>, as distinct from where the work stopped.</td><td><code>memory/</code></td><td>8</td></tr>
     <tr><td><strong>Behavioral</strong> <span class="pill core">policy</span></td><td>Governs how code gets written: minimal, surgical, test-first, safe.</td><td>sections in <code>AGENTS.md</code></td><td>8</td></tr>
     <tr><td><strong>Curation</strong> <span class="pill opt">unscored</span></td><td>Between sessions, proposes what memory should gain, merge or retire &mdash; never applies it.</td><td><code>dream-queue.md</code></td><td>&mdash;</td></tr>
   </tbody>
@@ -557,7 +557,7 @@
   <tbody>
     <tr><td><code>memory/index.md</code> <span class="pill req">required</span></td><td>One line per lesson, read every session; topic files opened only when a line looks relevant</td><td>~200 lines / 25KB</td></tr>
     <tr><td><code>memory/journal.md</code> <span class="pill req">required</span></td><td>Append-only per-session friction log. <em>Not</em> a lesson store &mdash; it is the raw corpus curation reads</td><td>append-only</td></tr>
-    <tr><td><code>memory/&lt;slug&gt;.md</code></td><td>One lesson per file, each carrying a <code>Why:</code> line. A lesson without a reason gets deleted by the next curation pass</td><td>one lesson each</td></tr>
+    <tr><td><code>memory/&lt;slug&gt;.md</code></td><td>One lesson per file, each carrying a <code>Why:</code> and a <code>Source:</code> line (both validated). A lesson without a reason gets deleted by the next curation pass</td><td>one lesson each; Why + Source</td></tr>
     <tr><td><code>memory/graveyard.md</code> <span class="pill opt">optional</span></td><td>Routes tried and rejected, each with a mandatory expiry condition. Not a lesson, deliberately not index-linked</td><td>rows carry cause + expiry</td></tr>
     <tr><td><code>memory/audit-log.jsonl</code> <span class="pill opt">optional</span></td><td>Append-only score history from <code>--log</code>. Evidence, never an instruction</td><td>never pruned</td></tr>
   </tbody>
@@ -572,7 +572,7 @@
 <strong>Index links are the one exception to the path convention.</strong> Everywhere else, paths are written relative to the project root. Link targets inside <code>memory/index.md</code> stay sibling-relative so the file reads standalone. The validator accepts both spellings.
 </div>
 
-<h3>Checks (7)</h3>
+<h3>Checks (8)</h3>
 <ul class="tight">
   <li>Memory index exists</li>
   <li>Memory index is initialised and within its cap</li>
@@ -581,6 +581,7 @@
   <li>Two-step save invariant documented</li>
   <li>Curation cadence and human gate documented</li>
   <li>Graveyard entries carry a cause and an expiry condition</li>
+  <li>Lessons carry a Why and a Source</li>
 </ul>
 </section>
 
@@ -728,7 +729,7 @@
     <tr><td>verification</td><td>8</td><td>5 / 35</td></tr>
     <tr><td>scope</td><td>6</td><td>5 / 35</td></tr>
     <tr><td>lifecycle</td><td>5</td><td>5 / 35</td></tr>
-    <tr><td>memory</td><td>7</td><td>5 / 35</td></tr>
+    <tr><td>memory</td><td>8</td><td>5 / 35</td></tr>
     <tr><td>behavioral</td><td>8</td><td>5 / 35</td></tr>
   </tbody>
 </table>

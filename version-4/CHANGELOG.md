@@ -8,6 +8,21 @@ updated: 2026-07-27
 
 # Changelog
 
+## 2026-09-27 (v0.4.5)
+
+### Lesson shape gate (`memory` 7 → 8 checks, feat-019)
+A lesson written directly by the agent is the only write into `harness/memory/` with no
+human gate, and nothing inspected it: a lesson with no reason and no source scored the same
+as a good one. New check **Lessons carry a Why and a Source** fails any lesson file missing
+a non-empty `**Why:**` line or a source (`**Source:**` line or `source:` frontmatter). It
+reuses the `Source` field `templates/memory-entry.md` already had instead of adding a new
+Evidence field. A store with no lessons passes. The check is manual in `enrich-harness.mjs`,
+like the other integrity checks, because fixing it means writing the reason, which is
+judgement. `templates/pre-commit.sh` now also prints a non-blocking notice listing newly
+added lesson files, so each one gets read once before it becomes always-on context. Both
+bundled examples take the new hook and the updated Memory rule wording; both stay at
+100/100 since they have no lessons.
+
 ## 2026-09-13 (v0.4.4)
 
 ### Closed the feat-016 wording drift in both bundled examples

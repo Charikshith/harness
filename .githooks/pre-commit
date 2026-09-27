@@ -5,6 +5,17 @@
 
 staged=$(git diff --cached --name-only --diff-filter=ACMR)
 
+# A lesson is the one write into harness/memory/ with no human gate, and once indexed it is
+# read every session. So a new one is announced here, never blocked, so it gets read once
+# before it becomes always-on context. Runs before the early exit below, because a commit
+# that adds only a lesson touches nothing outside harness/.
+new_lessons=$(git diff --cached --name-only --diff-filter=A \
+  | grep '^harness/memory/[^/]*\.md$' | grep -vE '/(index|journal|graveyard)\.md$')
+if [ -n "$new_lessons" ]; then
+  echo "pre-commit: new lesson(s) — read before they become always-on context:" >&2
+  echo "$new_lessons" | sed 's/^/  /' >&2
+fi
+
 echo "$staged" | grep -q '^version-4/' || exit 0
 
 missing=""
