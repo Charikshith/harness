@@ -181,7 +181,7 @@ a version is authoritative.
 
 | Version | Folder | Key additions |
 |---|---|---|
-| v4 (current, 0.4.5) | `version-4/` | `harness/` install layout — three files at the project root, all harness state under `harness/`; layout-aware resolvers with backward compatibility for the flat layout |
+| v4 (current, 0.4.6) | `version-4/` | `harness/` install layout — three files at the project root, all harness state under `harness/`; layout-aware resolvers with backward compatibility for the flat layout |
 | v3 (0.3.0–0.3.2) | `version-3/`, then `version-4/` | Embedded behavioral policies (Ponytail ladder, surgical editing, test-first, safety), 6-dimension scoring; memory subsystem and curation in 0.3.1; environment contract and verification adversary in 0.3.2 |
 | v2 | `version-2/` | OKF knowledge layer, enrich-harness.mjs, tiered CI, worked examples |
 | v1 | `version-1/` | Step-by-step instructions, state/progress files, per-subsystem docs |
@@ -202,7 +202,13 @@ To bring an existing scaffolded project up to date by hand:
 3. **Changed instruction text** (e.g. an updated `AGENTS.md` section): open
    `version-4/templates/agents.md`, find the section, and merge the new wording into your
    own `AGENTS.md` by hand.
-4. Run `node version-4/scripts/validate-harness.mjs --target /path/to/project` afterward
+4. **Pre-commit hook**: run `node version-4/scripts/enrich-harness.mjs --target
+   /path/to/project --apply`, then `./init.sh` in the project. That installs
+   `.githooks/pre-commit` if missing and adds its activation to `init.sh`, even when the
+   harness already scores 100. An existing hook is left alone — to pick up a newer
+   template (e.g. the v0.4.5 new-lesson notice), copy `version-4/templates/pre-commit.sh`
+   over it by hand. Skipped when another hook manager (husky) owns `core.hooksPath`.
+5. Run `node version-4/scripts/validate-harness.mjs --target /path/to/project` afterward
    to confirm nothing regressed.
 
 A real upgrade command that diffs a project's `AGENTS.md` against the current template and

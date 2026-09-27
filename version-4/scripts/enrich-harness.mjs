@@ -1,11 +1,16 @@
 #!/usr/bin/env node
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { mkdir } from 'node:fs/promises';
 import {
+  copyTemplate,
+  exists,
+  HOOKS_BLOCK,
   insertAtAnchor,
   loadHarnessFiles,
   locateHarnessFile,
   parseArgs,
+  readText,
   scoreHarness,
   usabilityTierLabel,
   writeText
@@ -453,6 +458,10 @@ Each validation check has a canonical fix:
   - Missing section → Inserts the canonical snippet into an existing file
   - Structural JSON → Requires human review (not auto-fixable)
 
+Also, regardless of score: installs .githooks/pre-commit if missing and adds the
+core.hooksPath activation block to init.sh if absent. An existing hook is never
+overwritten; skipped entirely when core.hooksPath points at another hook manager.
+
 Also enriches behavioral policy: Coding Policy, Coding Standards, Editing
 Discipline, Test-First gates, Safety carve-outs.`);
 
@@ -467,6 +476,58 @@ const result = scoreHarness(files);
 console.log(`Harness enrichment for ${target}`);
 console.log(`Overall: ${result.overall}/100 — ${usabilityTierLabel(result)}`);
 console.log('');
+
+// === Pre-commit hook ===
+// The one thing enrich installs that no check asks for. The hook is unscored on purpose —
+// a non-git project or a husky user is not a defective harness — so it can never appear in
+// `gaps`, and a full-score harness exits below before the gap loop runs. Hence this runs
+// first and regardless of score. It only adds what is missing: an existing hook is never
+// overwritten, because it may be customised.
+{
+  const hookRel = '.githooks/pre-commit';
+  const initPath = path.join(target, 'init.sh');
+  // The command line itself, not the bare keyword: a comment mentioning core.hooksPath
+  // must not count as the block being present.
+  const activation = /^[ \t]*git config core\.hooksPath \.githooks/m;
+  let hooksPath = '';
+  try {
+    hooksPath = execFileSync('git', ['-C', target, 'config', '--get', 'core.hooksPath'],
+      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+  } catch {
+    // Exit 1 means unset; no git or no repo throws too. Neither leaves anything to defer to.
+  }
+
+  console.log('Pre-commit hook:');
+  if (hooksPath && hooksPath !== '.githooks') {
+    console.log(`   → Skipped: core.hooksPath is ${hooksPath} (another hook manager). Installing`);
+    console.log(`     .githooks/ would switch it off. Add templates/pre-commit.sh's checks to`);
+    console.log(`     ${hooksPath}/pre-commit by hand instead.`);
+  } else {
+    const needHook = !await exists(path.join(target, hookRel));
+    // No init.sh: the init.sh gap fix below creates it from the template, which has the block.
+    const initText = await exists(initPath) ? await readText(initPath) : null;
+    const needBlock = initText !== null && !activation.test(initText);
+
+    if (!needHook && !needBlock) console.log('   → Already installed.');
+    if (needHook) {
+      if (apply) await copyTemplate('pre-commit.sh', path.join(target, hookRel));
+      console.log(`   → ${apply ? 'INSTALLED' : 'Would install'} ${hookRel} from template: pre-commit.sh`);
+    }
+    if (needBlock) {
+      if (apply) {
+        const eol = initText.includes('\r\n') ? '\r\n' : '\n';
+        const block = `# Activates .githooks/pre-commit on every run (added by enrich-harness.mjs).\n${HOOKS_BLOCK}`
+          .replace(/\n/g, eol);
+        // After set -e, where create-harness puts it; else after the shebang line.
+        const anchor = initText.match(/^set -e.*$/m) || initText.match(/^.*$/m);
+        const at = anchor.index + anchor[0].length;
+        await writeText(initPath, `${initText.slice(0, at)}${eol}${eol}${block}${eol}${initText.slice(at)}`);
+      }
+      console.log(`   → ${apply ? 'ADDED' : 'Would add'} the activation block to init.sh (sets core.hooksPath on each run)`);
+    }
+  }
+  console.log('');
+}
 
 // Collect all failing checks
 const gaps = [];

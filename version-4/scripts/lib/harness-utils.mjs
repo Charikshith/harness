@@ -242,10 +242,15 @@ fi`;
 // Kept in sync with the same block in templates/init.sh, for the same reason as
 // ENV_CONTRACT_BLOCK above. core.hooksPath is repo-local git config, not tracked by git
 // itself, so a fresh clone needs it re-set on every run. Guarded on both the hook file
-// existing and this being a git repo at all, so it is a no-op everywhere else.
-const HOOKS_BLOCK = `if [ -f .githooks/pre-commit ] && git rev-parse --git-dir >/dev/null 2>&1; then
-  if [ "$(git config --get core.hooksPath 2>/dev/null)" != ".githooks" ]; then
+// existing and this being a git repo at all, so it is a no-op everywhere else. Sets the
+// path only when unset: overwriting a value another hook manager (husky) wrote would
+// silently switch that manager's hooks off. enrich-harness.mjs inserts this same block.
+export const HOOKS_BLOCK = `if [ -f .githooks/pre-commit ] && git rev-parse --git-dir >/dev/null 2>&1; then
+  hooks_path="$(git config --get core.hooksPath 2>/dev/null || true)"
+  if [ -z "$hooks_path" ]; then
     git config core.hooksPath .githooks
+  elif [ "$hooks_path" != ".githooks" ]; then
+    echo "note: core.hooksPath is $hooks_path (another hook manager); .githooks/pre-commit is not active"
   fi
 fi`;
 

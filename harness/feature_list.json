@@ -149,6 +149,14 @@
       "dependencies": ["feat-005", "feat-018"],
       "status": "done",
       "evidence": "lessonsWellFormed() in lib/harness-utils.mjs; memory subsystem 7 -> 8 checks. lesson-shape.test.mjs (8 cases) written first, failed 8/8, then passed; wired into ./init.sh. Hook notice added to templates/pre-commit.sh, .githooks/pre-commit and both examples; probed live in a throwaway repo (new lesson -> notice + commit ok; edit existing -> no notice). Memory rule wording updated in AGENTS.md, templates/agents.md, enrich-harness.mjs snippet, both examples, harness-components.html. ./init.sh green; this repo 100/100 (4 lessons, all pass); both examples 100/100. v0.4.5."
+    },
+    {
+      "id": "feat-020",
+      "name": "enrich-harness installs the pre-commit hook",
+      "description": "An older harness had no path to the pre-commit hook: enrich-harness only acts on failing checks, the hook is deliberately unscored, and a full-score harness exits at 'No gaps found' before doing anything. New step in enrich-harness, run before that exit and independent of the score: copy .githooks/pre-commit from the template if missing (an existing hook is never overwritten — it may be customised), and add the core.hooksPath activation block to init.sh if absent. Skips entirely, with a warning, when core.hooksPath already points elsewhere (husky etc). The activation block itself changes from 'set unless already .githooks' to 'set only if unset', so init.sh no longer silently disables another hook manager.",
+      "dependencies": ["feat-018"],
+      "status": "done",
+      "evidence": "New pre-score step in enrich-harness.mjs; HOOKS_BLOCK exported from lib/harness-utils.mjs and reused. enrich-hook.test.mjs (6 cases) written first and seen failing (4 enrich cases + import), then passing; wired into ./init.sh. Covers: dry run writes nothing; --apply on a 100-score harness installs hook (byte-equal to template) + exactly one activation line after set -e, bash -n clean; second --apply is a no-op; custom hook preserved; core.hooksPath=.husky leaves everything untouched with a warning; the block sets hooksPath only when unset. End-to-end probe: CRLF init.sh enriched then run -> hooksPath=.githooks; with .husky set, init.sh prints the note and leaves .husky. Block updated in templates/init.sh, this repo's init.sh and both examples (CRLF preserved). enrich dry run on this repo and react example: 'Already installed'. ./init.sh green; both examples 100/100. v0.4.6."
     }
   ]
 }

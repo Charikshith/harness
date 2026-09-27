@@ -8,6 +8,24 @@ updated: 2026-07-27
 
 # Changelog
 
+## 2026-09-27 (v0.4.6)
+
+### enrich-harness installs the pre-commit hook (feat-020)
+An older harness had no route to the hook. `enrich-harness.mjs` acts only on failing
+checks, the hook is deliberately unscored, and a harness at 100 exited at "No gaps found"
+before doing anything. A new step runs first and regardless of score. It copies
+`.githooks/pre-commit` from the template if missing, and adds the `core.hooksPath`
+activation block to `init.sh` (after `set -e`, keeping the file's line endings) if absent.
+An existing hook is never overwritten, since it may be customised. When `core.hooksPath`
+already points at another hook manager (husky), the step skips with a warning.
+
+The activation block itself changed in `templates/init.sh`, `initScriptFromCommands()`,
+this repo and both examples: it used to set `core.hooksPath` whenever it wasn't
+`.githooks`, which silently switched off husky's hooks on every `./init.sh`. It now sets it
+only when unset, and prints a note otherwise. New `enrich-hook.test.mjs` (6 cases) runs
+against a copy of a bundled example with the hook removed, which still scores 100. That is
+exactly the case the old flow skipped.
+
 ## 2026-09-27 (v0.4.5)
 
 ### Lesson shape gate (`memory` 7 → 8 checks, feat-019)

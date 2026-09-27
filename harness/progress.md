@@ -3,7 +3,7 @@
 ## Current State
 
 **Last Updated:** 2026-09-27
-**Active Feature:** none — feat-019 (lesson shape gate) done, v0.4.5
+**Active Feature:** none — feat-020 (enrich installs the pre-commit hook) done, v0.4.6
 
 ## Recommended Next Step
 
@@ -50,6 +50,15 @@
       Not done: nothing checks that a Source is *true* or a Why is *good* — that stays
       with curation. Untracked stray files `10k`, `MEMORY_INDEX_MAX_BYTES)`, `is` at the
       repo root predate this session (look like mis-quoted shell redirects); left alone.
+      (Later deleted on request — all three were 0 bytes.)
+- [x] **feat-020** — `enrich-harness.mjs` now installs the pre-commit hook on an older
+      harness: a pre-score step (runs even at 100/100, where enrich used to exit at "No gaps
+      found") copies `.githooks/pre-commit` if missing and adds the activation block to
+      `init.sh` if absent. Never overwrites an existing hook; skips with a warning when
+      `core.hooksPath` belongs to another manager. The activation block now sets
+      `core.hooksPath` only when unset — before, every `./init.sh` silently switched husky
+      off. `enrich-hook.test.mjs` (6 cases) written first. Not done: refreshing an existing
+      but outdated hook stays manual (README upgrade step 4) — that is feat-017's job.
 
 - [x] **feat-015** — `harness/style.md` added as an optional, auto-scaffolded template holding
       talk rules (tone, format, structure). `create-harness.mjs` writes it via `copyTemplate`;

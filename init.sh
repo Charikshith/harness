@@ -9,8 +9,11 @@ echo "=== Harness Initialization ==="
 # progress.md + journal.md in the same commit). Guarded on the hook file existing and
 # this being a git repo at all, so it is a no-op everywhere else.
 if [ -f .githooks/pre-commit ] && git rev-parse --git-dir >/dev/null 2>&1; then
-  if [ "$(git config --get core.hooksPath 2>/dev/null)" != ".githooks" ]; then
+  hooks_path="$(git config --get core.hooksPath 2>/dev/null || true)"
+  if [ -z "$hooks_path" ]; then
     git config core.hooksPath .githooks
+  elif [ "$hooks_path" != ".githooks" ]; then
+    echo "note: core.hooksPath is $hooks_path (another hook manager); .githooks/pre-commit is not active"
   fi
 fi
 
@@ -60,6 +63,7 @@ echo "=== unit checks ==="
 node version-4/scripts/insert-anchor.test.mjs
 node version-4/scripts/index-coverage.test.mjs
 node version-4/scripts/lesson-shape.test.mjs
+node version-4/scripts/enrich-hook.test.mjs
 
 echo "=== bundled examples still score 100 ==="
 for example in version-4/examples/*/; do

@@ -137,3 +137,14 @@ restatements and will yield no proposals.
 - differently: the first hook probe committed `.githooks/` itself, which the hook correctly
   blocked as a project file — the probe was wrong, not the hook. Seed probe repos with
   `--no-verify`
+
+## 2026-09-27 — feat-020
+
+- surprised: `enrich-harness.mjs` exits at "No gaps found" before doing anything, so any
+  upgrade that is not a failing check can never reach a harness already at 100 — the
+  common case for an older harness. Unscored artifacts need a pre-score step
+- surprised: the `core.hooksPath` activation block overwrote any value that was not
+  `.githooks`, so `./init.sh` silently disabled husky on every run. Found while designing
+  the skip path, not by any test
+- looked up: `git config --get` exits 1 when a key is unset; under `set -e` that kills the
+  script from inside `$(...)` in an assignment, hence `|| true`
