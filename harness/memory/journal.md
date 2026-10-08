@@ -163,3 +163,8 @@ restatements and will yield no proposals.
 - (same day, follow-up) making the two checks honest exposed that enrich's Multi-Step fix
   was an empty `{}` under the check that names the section — unreachable since the check
   could never fail. A fix nobody can trigger rots unseen: its snippet was still pre-feat-016
+
+## 2026-10-08
+
+- `render-feature-list-html.mjs` imported `escapeHtml` from `harness-utils.mjs` while the
+  function was exported nowhere — committed tree was broken at load; export restored

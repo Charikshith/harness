@@ -2,8 +2,8 @@
 
 ## Current State
 
-**Last Updated:** 2026-09-27
-**Active Feature:** none — feat-020 (enrich installs the pre-commit hook) done, v0.4.6
+**Last Updated:** 2026-10-08
+**Active Feature:** none — `escapeHtml` export fix committed; housekeeping + style scoring next
 
 ## Recommended Next Step
 
@@ -12,6 +12,9 @@
 ## Status
 
 ### What's Done
+
+- [x] `escapeHtml` export restored in `harness-utils.mjs` — `render-feature-list-html.mjs`
+      imported it without an export and crashed at load
 
 - [x] **feat-001..010** — all verified implemented, evidence recorded in `harness/feature_list.json`
 - [x] `harness/` install layout: three files at the project root, all state under `harness/`

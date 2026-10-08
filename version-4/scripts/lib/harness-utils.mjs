@@ -968,7 +968,7 @@ function renderSubsystemHtml(name, subsystem) {
   </section>`;
 }
 
-function escapeHtml(value) {
+export function escapeHtml(value) {
   return String(value)
     .replaceAll('&', '&amp;')
     .replaceAll('<', '&lt;')
