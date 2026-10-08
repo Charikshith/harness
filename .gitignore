@@ -62,3 +62,10 @@ scratchpad/
 # Media analysis artifacts (generated, not source)
 video/
 frames/
+
+# Cloned reference repos (not part of this project)
+hindsight/
+
+# Local agent/scratch state
+temp/
+session.json

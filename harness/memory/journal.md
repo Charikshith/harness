@@ -168,3 +168,5 @@ restatements and will yield no proposals.
 
 - `render-feature-list-html.mjs` imported `escapeHtml` from `harness-utils.mjs` while the
   function was exported nowhere — committed tree was broken at load; export restored
+- housekeeping: the `hooksPath` file at the root was a stray (core.hooksPath is `.githooks`);
+  `temp/` and `session.json` are local scratch state and now ignored

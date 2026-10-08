@@ -3,7 +3,7 @@
 ## Current State
 
 **Last Updated:** 2026-10-08
-**Active Feature:** none — `escapeHtml` export fix committed; housekeeping + style scoring next
+**Active Feature:** none — housekeeping committed; style scoring (feat-021) next
 
 ## Recommended Next Step
 
@@ -15,6 +15,8 @@
 
 - [x] `escapeHtml` export restored in `harness-utils.mjs` — `render-feature-list-html.mjs`
       imported it without an export and crashed at load
+- [x] Housekeeping: `temp/` + `session.json` ignored, stray `hooksPath` file deleted,
+      `skills-lock.json` hash resynced
 
 - [x] **feat-001..010** — all verified implemented, evidence recorded in `harness/feature_list.json`
 - [x] `harness/` install layout: three files at the project root, all state under `harness/`
