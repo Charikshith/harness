@@ -324,6 +324,9 @@ export function scoreHarness(files, { killRate } = {}) {
   //     because the check asks whether curation is *documented*, not whether a queue
   //     exists; it is recorded here so the next reader does not mistake it for a bug.
   const dreamQueue = byPath.get('dream-queue.md') || '';
+  // style.md is optional (the default agent voice suits many projects), scored like the
+  // graveyard: absence is not penalised, only a file that exists but does not work.
+  const style = byPath.get('style.md') || '';
   // graveyard.md is not a lesson and is deliberately not linked from the index, so it
   // must be excluded here or memoryLinksIntact reports it as orphaned. Measured before
   // this line existed: scaffolding graveyard.md dropped memory 4/5 -> 3/5, overall
@@ -403,7 +406,13 @@ export function scoreHarness(files, { killRate } = {}) {
       structuredHas(agents, ['Before Multi-Step Work', 'success criterion'], 'Multi-step planning with verify-per-step documented'),
       structuredHas(agents, ['state your understanding', 'stop and ask', 'ambiguity'], 'Proactive assumption surfacing documented'),
       structuredHas(agents, ['Safety (Never Simplify Away)', 'Never simplify away'], 'Safety carve-outs documented'),
-      structuredHas(agents, ['over-specified', 'question whether the spec'], 'Over-specified requirements escalation documented')
+      structuredHas(agents, ['over-specified', 'question whether the spec'], 'Over-specified requirements escalation documented'),
+      // Style is an optional artifact like the graveyard: absence is not penalised, but a
+      // style file that exists must carry rules and be loaded at startup. The routing check
+      // inspects numbered steps only — the Optional artifacts bullet names style.md too, so
+      // a bare filename needle passes with the file never read at startup.
+      styleRulesUsable(style, 'Style rules are usable when present'),
+      styleRouted(agents, style, 'Talk style rules routed as a startup step')
     ]
   };
 
@@ -473,6 +482,37 @@ function structuredText(markdown) {
 
 function structuredHas(markdown, needles, message) {
   return textHas(structuredText(markdown), needles, message);
+}
+
+// --- Style artifact checks --------------------------------------------------
+// Optional artifact, scored like the graveyardWellFormed precedent: a missing style file
+// is fine; one that exists must carry real rules and be reachable at startup.
+
+function styleRulesUsable(styleText, message) {
+  if (!styleText.trim()) {
+    return { pass: true, message, detail: 'no style file (optional)' };
+  }
+  const body = styleText.replace(/^---[\s\S]*?---\n/, '').replace(/<!--[\s\S]*?-->/g, '');
+  const rules = body.split(/\r?\n/).filter((line) => /^([-*+]|\d+\.)\s/.test(line.trim())).length;
+  if (rules < 3) {
+    return { pass: false, message, detail: `${rules} rule lines (need at least 3 — or delete the file, it is optional)` };
+  }
+  return { pass: true, message, detail: `${rules} rule lines` };
+}
+
+// Numbered steps only: the Optional artifacts bullet also names style.md, and a bare
+// filename needle is satisfied by it while the file is never read at startup.
+function styleRouted(agentsText, styleText, message) {
+  if (!styleText.trim()) {
+    return { pass: true, message, detail: 'no style file (optional)' };
+  }
+  const steps = agentsText
+    .split(/\r?\n/)
+    .filter((line) => /^\d+\.\s/.test(line.trim()))
+    .join('\n');
+  return steps.includes('style.md')
+    ? { pass: true, message, detail: 'a numbered step loads style.md' }
+    : { pass: false, message, detail: 'style.md exists but no numbered step loads it — add "Read harness/style.md and follow it for every reply" to the Startup Workflow' };
 }
 
 // --- Memory artifact checks -------------------------------------------------
@@ -710,7 +750,8 @@ export async function loadHarnessFiles(root) {
     // for a file missing from here fails 100% of the time regardless of whether the file
     // exists on disk.
     'environment.md',
-    'open-work.md'
+    'open-work.md',
+    'style.md'
   ];
   const files = [];
   for (const candidate of candidates) {

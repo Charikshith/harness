@@ -170,3 +170,10 @@ restatements and will yield no proposals.
   function was exported nowhere — committed tree was broken at load; export restored
 - housekeeping: the `hooksPath` file at the root was a stray (core.hooksPath is `.githooks`);
   `temp/` and `session.json` are local scratch state and now ignored
+- feat-021: harness/style.md shipped unrouted in three places (this repo + both examples) —
+  the artifact existed and nothing loaded it. The routing check counts numbered steps
+  because the Optional artifacts bullet names the file too
+- the new checks passed vacuously on the first real run: loadHarnessFiles whitelists its
+  candidates and style.md was not on the list. A green run was measuring nothing. The
+  loader probe now pushes a real harness/ through loadHarnessFiles — probe the layer under
+  the check, not just the check

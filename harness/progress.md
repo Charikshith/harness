@@ -3,7 +3,7 @@
 ## Current State
 
 **Last Updated:** 2026-10-08
-**Active Feature:** none — housekeeping committed; style scoring (feat-021) next
+**Active Feature:** none — feat-021 (talk rules scored like the graveyard) done, v0.4.8; feat-012 next
 
 ## Recommended Next Step
 
@@ -17,6 +17,12 @@
       imported it without an export and crashed at load
 - [x] Housekeeping: `temp/` + `session.json` ignored, stray `hooksPath` file deleted,
       `skills-lock.json` hash resynced
+- [x] **feat-021** (v0.4.8) — talk rules scored like the graveyard (absence fine, a present
+      `harness/style.md` must carry rules and be loaded from a startup step); ASD-STE100-spirit
+      starter (20-word sentences, same word for the same thing, ~80% brake, format escalation);
+      routing fixed in this repo's `AGENTS.md` and both examples; `loadHarnessFiles` candidate
+      whitelist bug caught by the new loader probe; `escapeHtml` export for the feature-list
+      renderer. `./init.sh` green; this repo + both examples 100/100
 
 - [x] **feat-001..010** — all verified implemented, evidence recorded in `harness/feature_list.json`
 - [x] `harness/` install layout: three files at the project root, all state under `harness/`

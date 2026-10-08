@@ -90,7 +90,7 @@ const GAP_FIXES = {
 Before writing code:
 
 1. **Confirm working directory** with \`pwd\`
-2. **Read this file** completely
+2. **Read this file** completely. If \`harness/style.md\` exists, read it too and follow it for every reply.
 3. **Read project docs if present** (\`docs/ARCHITECTURE.md\`, \`docs/PRODUCT.md\`, README, or equivalent)
 4. **Run \`./init.sh\`** to verify environment is healthy
 5. **Read \`harness/feature_list.json\`** to see current feature state

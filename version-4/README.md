@@ -51,7 +51,7 @@ in `harness/memory/index.md`, which stay sibling-relative.
 - `harness/memory/graveyard.md` — Routes tried and rejected, each with an expiry condition
 - `harness/dream-queue.md` — Out-of-band curation proposals awaiting a human decision
 - `harness/open-work.md` — Work seen but declined under scope discipline; recruitable
-- `harness/style.md` — Talk rules for how the agent replies (tone, format, structure); optional, unscored
+- `harness/style.md` — Talk rules for how the agent replies (tone, format, structure); optional, scored like the graveyard — absence is fine, a present file must carry rules and be loaded from a startup step
 - `scratchpad/` — the agent's working area for throwaway scripts and intermediary code
   (created with a README; add it to `.gitignore` so rough work stays out of source control)
 
@@ -181,7 +181,7 @@ a version is authoritative.
 
 | Version | Folder | Key additions |
 |---|---|---|
-| v4 (current, 0.4.7) | `version-4/` | `harness/` install layout — three files at the project root, all harness state under `harness/`; layout-aware resolvers with backward compatibility for the flat layout |
+| v4 (current, 0.4.8) | `version-4/` | `harness/` install layout — three files at the project root, all harness state under `harness/`; layout-aware resolvers with backward compatibility for the flat layout |
 | v3 (0.3.0–0.3.2) | `version-3/`, then `version-4/` | Embedded behavioral policies (Ponytail ladder, surgical editing, test-first, safety), 6-dimension scoring; memory subsystem and curation in 0.3.1; environment contract and verification adversary in 0.3.2 |
 | v2 | `version-2/` | OKF knowledge layer, enrich-harness.mjs, tiered CI, worked examples |
 | v1 | `version-1/` | Step-by-step instructions, state/progress files, per-subsystem docs |

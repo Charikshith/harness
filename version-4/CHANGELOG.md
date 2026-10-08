@@ -3,10 +3,43 @@ type: changelog
 title: "Changelog"
 description: "Reverse-chronological history of changes to the harness-creator skill"
 tags: [changelog, history, releases]
-updated: 2026-07-27
+updated: 2026-10-08
 ---
 
 # Changelog
+
+## 2026-10-08 (v0.4.8)
+
+### Talk rules: an upgraded starter, and style is now scored like the graveyard
+`templates/style.md` was tone-and-format guidance. The starter is now a rule set in the
+ASD-STE100 spirit — 20-word sentences, one idea per sentence, the same word for the same
+thing, a hard word explained right after — deliberately run at about 80% so the writing
+still sounds human, plus two additions an analysis of ASD-STE100-for-AI surfaced: format
+escalation (when a picture says it clearer than words, build the diagram, HTML page, or
+explainer video; the report stays one line) and the report/artifact split (the report is
+small; the work can be big). The name collision with "match the existing code style" is
+settled in the file itself: this is talk style — the words, not the code layout.
+
+Style was an unscored optional artifact: it could vanish and no check would notice. Two
+behavioral checks now score it the way `graveyardWellFormed` scores the graveyard —
+absence is not penalised, but a file that exists must carry at least 3 rule lines and be
+loaded from a numbered startup step. The routing check counts numbered steps on purpose:
+the Optional artifacts bullet names `style.md` too, so a bare filename needle passes with
+the file never read at startup — the exact v0.4.7 failure shape. Both checks are
+deliberately absent from enrich's GAP_FIXES: their fixes are judgement (what your rules
+say) or one line you should place yourself.
+
+The routing gap was real in three places: this repo's `AGENTS.md` and both examples had
+`harness/style.md` with nothing loading it. All three now carry the template's startup
+step 2 sentence, and enrich's startup snippet (stale again in the same way) matches. New
+`style-checks.test.mjs` (5 cases): absent passes, the template pair passes, an artifacts
+bullet without a startup step fails routing (the regression probe), a rule-less file fails
+usability, and a loader probe pushes a real `harness/` through `loadHarnessFiles`. That
+probe caught what the first green run was hiding: `style.md` was missing from
+`loadHarnessFiles`' candidate whitelist, so both checks passed vacuously ("no style file")
+against projects that had one — measuring nothing. Wired into `init.sh`. Also: `escapeHtml` is now exported from
+`harness-utils.mjs` — `render-feature-list-html.mjs` imported it without an export and
+crashed at load. Both bundled examples and this repo stay at 100.
 
 ## 2026-09-27 (v0.4.7)
 

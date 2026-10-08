@@ -37,7 +37,7 @@ This repo ships one product line: `harness` (semver in `version-4/SKILL.md`, his
 
 | Version | Folder | Skill name | Notes |
 |---|---|---|---|
-| **v4** (0.4.0) | `version-4/` | `harness` | Behavioral policies, memory subsystem and curation, environment contract, verification adversary, and the `harness/` install layout — three files at the project root, all harness state under `harness/` |
+| **v4** | `version-4/` | `harness` | Behavioral policies, memory subsystem and curation, environment contract, verification adversary, and the `harness/` install layout — three files at the project root, all harness state under `harness/` |
 
 ## Use
 

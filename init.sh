@@ -65,6 +65,7 @@ node version-4/scripts/index-coverage.test.mjs
 node version-4/scripts/lesson-shape.test.mjs
 node version-4/scripts/enrich-hook.test.mjs
 node version-4/scripts/section-checks.test.mjs
+node version-4/scripts/style-checks.test.mjs
 
 echo "=== bundled examples still score 100 ==="
 for example in version-4/examples/*/; do
